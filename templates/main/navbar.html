@@ -1,0 +1,47 @@
+<nav class="navbar navbar-expand-lg rounded-bottom" id="navbar">
+    <div class="container-fluid">
+        <a class="navbar-brand text-white" href="{% url 'home' %}">Smart</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mx-lg-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/' %}active {% endif %}" aria-current="page" href="{% url 'home' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/about' %}active {% endif %}" href="{% url 'about' %}">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/departments' %}active {% endif %}" href="{% url 'departments' %}">Departments</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/doctors' %}active {% endif %}" href="{% url 'doctors' %}">Doctors</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/services' %}active {% endif %}" href="{% url 'services' %}">Services</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/contact' %}active {% endif %}" href="{% url 'contact' %}">Contact</a>
+                </li>
+            </ul>
+            <form class="d-flex" role="search">
+                <input class="form-control search" type="search" placeholder="Search"
+                    aria-label="Search">
+                <button class="btn search-btn" type="submit"><i
+                        class="fa-solid fa-magnifying-glass text-warning"></i></button>
+            </form>
+            <div class="navbar-nav">
+                {% if user.is_authenticated %}
+                <form action="logout" method="post">
+                    <a class="nav-link">logout</a>
+                </form>
+                {% else %}
+                <a class=" nav-link {% if request.path == '/signin' %}active {% endif %}" href="{% url 'signin' %}">login</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>

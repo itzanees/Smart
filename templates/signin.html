@@ -1,0 +1,36 @@
+{% extends 'main/base.html' %}
+
+{% load static %}
+
+{% block title %} Home {% endblock %}
+
+{% block content %}
+
+<div class="modal-dialog" role="document" style="margin-bottom: 100px;">
+    <div class="modal-content rounded-4 shadow"
+        style="background: rgba(112, 114, 114, 0.459)!important; margin-top: 150px;">
+        <div class="modal-header p-5 pb-4 border-bottom-0">
+            <h1 class="fw-bold mb-0 fs-2 text-white">User Login</h1>
+        </div>
+
+        <div class="modal-body p-5 pt-0">
+            <form class="" action="" method="post">
+                <div class="form-floating mb-3">
+                    <input type="text" name="username" class="form-control rounded-3" id="floatingInput" placeholder="">
+                    <label for="floatingInput">Username</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" name="password" class="form-control rounded-3" id="floatingPassword"
+                        placeholder="Password">
+                    <label for="floatingPassword">Password</label>
+                </div>
+                <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit">Sign In</button>
+            </form>
+            <p class="small text-white">Dont have an account? Register one <a href="{% url 'signup' %}"
+                    class="text-white">here</a></p>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
