@@ -21,7 +21,7 @@ Admin Dashboard
 					<div class="col-sm-7 col-auto">
 						<h3 class="page-title">Specialities</h3>
 						<ul class="breadcrumb">
-							<li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+							<li class="breadcrumb-item"><a href="{% url 'admin_home' %}">Dashboard</a></li>
 							<li class="breadcrumb-item active">Specialities</li>
 						</ul>
 					</div>
@@ -51,12 +51,12 @@ Admin Dashboard
 
 											<td>
 												<h2 class="table-avatar">
-													<a href="profile.html" class="avatar avatar-sm mr-2">
+													<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2">
 														<img class="avatar-img"
-															src="assets/img/specialities/specialities-01.png"
+															src="{% static 'admin/img/specialities/specialities-01.png' %}"
 															alt="Speciality">
 													</a>
-													<a href="profile.html">Urology</a>
+													<a href="{% url 'admin_profile' %}">Urology</a>
 												</h2>
 											</td>
 
@@ -78,12 +78,12 @@ Admin Dashboard
 
 											<td>
 												<h2 class="table-avatar">
-													<a href="profile.html" class="avatar avatar-sm mr-2">
+													<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2">
 														<img class="avatar-img"
-															src="assets/img/specialities/specialities-02.png"
+															src="{% static 'admin/img/specialities/specialities-02.png' %}"
 															alt="Speciality">
 													</a>
-													<a href="profile.html">Neurology</a>
+													<a href="{% url 'admin_profile' %}">Neurology</a>
 												</h2>
 											</td>
 
@@ -105,12 +105,12 @@ Admin Dashboard
 
 											<td>
 												<h2 class="table-avatar">
-													<a href="profile.html" class="avatar avatar-sm mr-2">
+													<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2">
 														<img class="avatar-img"
-															src="assets/img/specialities/specialities-03.png"
+															src="{% static 'admin/img/specialities/specialities-03.png' %}"
 															alt="Speciality">
 													</a>
-													<a href="profile.html">Orthopedic</a>
+													<a href="{% url 'admin_profile' %}">Orthopedic</a>
 												</h2>
 											</td>
 
@@ -132,12 +132,12 @@ Admin Dashboard
 
 											<td>
 												<h2 class="table-avatar">
-													<a href="profile.html" class="avatar avatar-sm mr-2">
+													<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2">
 														<img class="avatar-img"
-															src="assets/img/specialities/specialities-04.png"
+															src="{% static 'admin/img/specialities/specialities-04.png' %}"
 															alt="Speciality">
 													</a>
-													<a href="profile.html">Cardiologist</a>
+													<a href="{% url 'admin_profile' %}">Cardiologist</a>
 												</h2>
 											</td>
 
@@ -159,12 +159,12 @@ Admin Dashboard
 
 											<td>
 												<h2 class="table-avatar">
-													<a href="profile.html" class="avatar avatar-sm mr-2">
+													<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2">
 														<img class="avatar-img"
-															src="assets/img/specialities/specialities-05.png"
+															src="{% static 'admin/img/specialities/specialities-05.png' %}"
 															alt="Speciality">
 													</a>
-													<a href="profile.html">Dentist</a>
+													<a href="{% url 'admin_profile' %}">Dentist</a>
 												</h2>
 											</td>
 

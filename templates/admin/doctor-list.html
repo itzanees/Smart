@@ -18,13 +18,17 @@ Admin Dashboard
 			<!-- Page Header -->
 			<div class="page-header">
 				<div class="row">
-					<div class="col-sm-12">
+					<div class="col-sm-7">
 						<h3 class="page-title">List of Doctors</h3>
 						<ul class="breadcrumb">
-							<li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+							<li class="breadcrumb-item"><a href="{% url 'admin_home' %}">Dashboard</a></li>
 							<li class="breadcrumb-item"><a href="javascript:(0);">Users</a></li>
 							<li class="breadcrumb-item active">Doctor</li>
 						</ul>
+					</div>
+					<div class="col-sm-5">
+						<a href="#Add_New_Doctor" data-toggle="modal"
+						class="btn btn-primary float-right mt-2">New Doctor</a>
 					</div>
 				</div>
 			</div>
@@ -38,10 +42,13 @@ Admin Dashboard
 								<table class="datatable table table-hover table-center mb-0">
 									<thead>
 										<tr>
+											<th>Employee Code</th>
 											<th>Doctor Name</th>
+											<th>Degree</th>
 											<th>Speciality</th>
+											<th>Licence Number</th>
+											<th>Experience</th>
 											<th>Member Since</th>
-											<th>Earned</th>
 											<th>Account Status</th>
 
 										</tr>
@@ -49,19 +56,48 @@ Admin Dashboard
 									<tbody>
 										<tr>
 											<td>
+												324325235
+											</td>
+											<td>
 												<h2 class="table-avatar">
-													<a href="profile.html" class="avatar avatar-sm mr-2"><img
+													<a href="{% url 'admin_profile' %}"
+														class="avatar avatar-sm mr-2"><img
 															class="avatar-img rounded-circle"
-															src="assets/img/doctors/doctor-thumb-01.jpg"
+															src="{% static 'images//doctors/doctor-thumb-01.jpg' %}"
 															alt="User Image"></a>
-													<a href="profile.html">Dr. Ruby Perrin</a>
+													<a href="{% url 'admin_profile' %}">Dr. Ruby Perrin</a>
 												</h2>
 											</td>
+											<td>MBBS, MD</td>
 											<td>Dental</td>
-
+											<td>KDC43235235</td>
+											<td>15</td>
 											<td>14 Jan 2019 <br><small>02.59 AM</small></td>
 
-											<td>$3100.00</td>
+											<td>
+												<div class="status-toggle">
+													<input type="checkbox" id="status_1" class="check" checked>
+													<label for="status_1" class="checktoggle">checkbox</label>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>23423523</td>
+											<td>
+												<h2 class="table-avatar">
+													<a href="{% url 'admin_profile' %}"
+														class="avatar avatar-sm mr-2"><img
+															class="avatar-img rounded-circle"
+															src="{% static 'images//doctors/doctor-thumb-02.jpg' %}"
+															alt="User Image"></a>
+													<a href="{% url 'admin_profile' %}">Dr. Darren Elder</a>
+												</h2>
+											</td>
+											<td>MBBS, MD</td>
+											<td>Nephrology</td>
+											<td>KDC43235235</td>
+											<td>15</td>
+											<td>14 Jan 2019 <br><small>02.59 AM</small></td>
 
 											<td>
 												<div class="status-toggle">
@@ -71,44 +107,22 @@ Admin Dashboard
 											</td>
 										</tr>
 										<tr>
+											<td>423423423</td>
 											<td>
 												<h2 class="table-avatar">
-													<a href="profile.html" class="avatar avatar-sm mr-2"><img
+													<a href="{% url 'admin_profile' %}"
+														class="avatar avatar-sm mr-2"><img
 															class="avatar-img rounded-circle"
-															src="assets/img/doctors/doctor-thumb-02.jpg"
+															src="{% static 'images//doctors/doctor-thumb-03.jpg' %}"
 															alt="User Image"></a>
-													<a href="profile.html">Dr. Darren Elder</a>
+													<a href="{% url 'admin_profile' %}">Dr. Deborah Angel</a>
 												</h2>
 											</td>
-											<td>Dental</td>
-
-											<td>11 Jun 2019 <br><small>4.50 AM</small></td>
-
-											<td>$5000.00</td>
-
-											<td>
-												<div class="status-toggle">
-													<input type="checkbox" id="status_1" class="check" checked>
-													<label for="status_1" class="checktoggle">checkbox</label>
-												</div>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<h2 class="table-avatar">
-													<a href="profile.html" class="avatar avatar-sm mr-2"><img
-															class="avatar-img rounded-circle"
-															src="assets/img/doctors/doctor-thumb-03.jpg"
-															alt="User Image"></a>
-													<a href="profile.html">Dr. Deborah Angel</a>
-												</h2>
-											</td>
+											<td>MBBS, MD</td>
 											<td>Cardiology</td>
-
-											<td>4 Jan 2018 <br><small>9.40 AM</small></td>
-
-											<td>$3300.00</td>
-
+											<td>KDC43235235</td>
+											<td>15</td>
+											<td>14 Jan 2019 <br><small>02.59 AM</small></td>
 											<td>
 												<div class="status-toggle">
 													<input type="checkbox" id="status_1" class="check" checked>
@@ -116,14 +130,14 @@ Admin Dashboard
 												</div>
 											</td>
 										</tr>
-										<tr>
+										<!-- <tr>
 											<td>
 												<h2 class="table-avatar">
-													<a href="profile.html" class="avatar avatar-sm mr-2"><img
+													<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2"><img
 															class="avatar-img rounded-circle"
-															src="assets/img/doctors/doctor-thumb-04.jpg"
+															src="{% static 'images//doctors/doctor-thumb-04.jpg' %}"
 															alt="User Image"></a>
-													<a href="profile.html">Dr. Sofia Brient</a>
+													<a href="{% url 'admin_profile' %}">Dr. Sofia Brient</a>
 												</h2>
 											</td>
 											<td>Urology</td>
@@ -142,11 +156,11 @@ Admin Dashboard
 										<tr>
 											<td>
 												<h2 class="table-avatar">
-													<a href="profile.html" class="avatar avatar-sm mr-2"><img
+													<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2"><img
 															class="avatar-img rounded-circle"
-															src="assets/img/doctors/doctor-thumb-05.jpg"
+															src="{% static 'images//doctors/doctor-thumb-05.jpg' %}"
 															alt="User Image"></a>
-													<a href="profile.html">Dr. Marvin Campbell</a>
+													<a href="{% url 'admin_profile' %}">Dr. Marvin Campbell</a>
 												</h2>
 											</td>
 											<td>Orthopaedics</td>
@@ -165,11 +179,11 @@ Admin Dashboard
 										<tr>
 											<td>
 												<h2 class="table-avatar">
-													<a href="profile.html" class="avatar avatar-sm mr-2"><img
+													<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2"><img
 															class="avatar-img rounded-circle"
-															src="assets/img/doctors/doctor-thumb-06.jpg"
+															src="{% static 'images//doctors/doctor-thumb-06.jpg' %}"
 															alt="User Image"></a>
-													<a href="profile.html">Dr. Katharine Berthold</a>
+													<a href="{% url 'admin_profile' %}">Dr. Katharine Berthold</a>
 												</h2>
 											</td>
 											<td>Orthopaedics</td>
@@ -188,11 +202,11 @@ Admin Dashboard
 										<tr>
 											<td>
 												<h2 class="table-avatar">
-													<a href="profile.html" class="avatar avatar-sm mr-2"><img
+													<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2"><img
 															class="avatar-img rounded-circle"
-															src="assets/img/doctors/doctor-thumb-07.jpg"
+															src="{% static 'images//doctors/doctor-thumb-07.jpg' %}"
 															alt="User Image"></a>
-													<a href="profile.html">Dr. Linda Tobin</a>
+													<a href="{% url 'admin_profile' %}">Dr. Linda Tobin</a>
 												</h2>
 											</td>
 											<td>Neurology</td>
@@ -211,11 +225,11 @@ Admin Dashboard
 										<tr>
 											<td>
 												<h2 class="table-avatar">
-													<a href="profile.html" class="avatar avatar-sm mr-2"><img
+													<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2"><img
 															class="avatar-img rounded-circle"
-															src="assets/img/doctors/doctor-thumb-08.jpg"
+															src="{% static 'images//doctors/doctor-thumb-08.jpg' %}"
 															alt="User Image"></a>
-													<a href="profile.html">Dr. Paul Richard</a>
+													<a href="{% url 'admin_profile' %}">Dr. Paul Richard</a>
 												</h2>
 											</td>
 											<td>Dermatology</td>
@@ -234,11 +248,11 @@ Admin Dashboard
 										<tr>
 											<td>
 												<h2 class="table-avatar">
-													<a href="profile.html" class="avatar avatar-sm mr-2"><img
+													<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2"><img
 															class="avatar-img rounded-circle"
-															src="assets/img/doctors/doctor-thumb-09.jpg"
+															src="{% static 'images//doctors/doctor-thumb-09.jpg' %}"
 															alt="User Image"></a>
-													<a href="profile.html">Dr. John Gibbs</a>
+													<a href="{% url 'admin_profile' %}">Dr. John Gibbs</a>
 												</h2>
 											</td>
 											<td>Dental</td>
@@ -257,11 +271,11 @@ Admin Dashboard
 										<tr>
 											<td>
 												<h2 class="table-avatar">
-													<a href="profile.html" class="avatar avatar-sm mr-2"><img
+													<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2"><img
 															class="avatar-img rounded-circle"
-															src="assets/img/doctors/doctor-thumb-10.jpg"
+															src="{% static 'images//doctors/doctor-thumb-10.jpg' %}"
 															alt="User Image"></a>
-													<a href="profile.html">Dr. Olga Barlow</a>
+													<a href="{% url 'admin_profile' %}">Dr. Olga Barlow</a>
 												</h2>
 											</td>
 											<td>Dental</td>
@@ -276,10 +290,95 @@ Admin Dashboard
 													<label for="status_1" class="checktoggle">checkbox</label>
 												</div>
 											</td>
-										</tr>
+										</tr> -->
 									</tbody>
 								</table>
 							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal fade" id="Add_New_Doctor" aria-hidden="true" role="dialog">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Add Doctor</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<form>
+								<div class="row form-row">
+									<div class="col-12 col-sm-6">
+										<div class="form-group">
+											<label>Patient</label>
+											<select class="form-control" name="doctor" id="">
+												<option value="1">Patient 1</option>
+												<option value="2">Patient 2</option>
+												<option value="3">Patient 3</option>
+												<option value="4">Patient 4</option>
+												<option value="5">Patient 5</option>
+												<option value="6">Patient 6</option>
+												<option value="7">Patient 7</option>
+												<option value="8">Patient 8</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-12 col-sm-6">
+										<div class="form-group">
+											<label>Specialities</label>
+											<select class="form-control" name="doctor" id="">
+												<option value="1">Specialities 1</option>
+												<option value="2">Specialities 2</option>
+												<option value="3">Specialities 3</option>
+												<option value="4">Specialities 4</option>
+												<option value="5">Specialities 5</option>
+												<option value="6">Specialities 6</option>
+												<option value="7">Specialities 7</option>
+												<option value="8">Specialities 8</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-12 col-sm-6">
+										<div class="form-group">
+											<label>Doctor</label>
+											<select class="form-control" name="doctor" id="">
+												<option value="1">Doctor 1</option>
+												<option value="2">Doctor 2</option>
+												<option value="3">Doctor 3</option>
+												<option value="4">Doctor 4</option>
+												<option value="5">Doctor 5</option>
+												<option value="6">Doctor 6</option>
+												<option value="7">Doctor 7</option>
+												<option value="8">Doctor 8</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-12 col-sm-4">
+										<div class="form-group">
+											<label>Date</label>
+											<input type="date" class="form-control">
+										</div>
+									</div>
+									<div class="col-12 col-sm-4">
+										<div class="form-group">
+											<label>Time</label>
+											<input type="time" class="form-control">
+										</div>
+									</div>
+									<div class="col-12 col-sm-4">
+										<div class="form-group">
+											<label>Amount</label>
+											<input type="number" disabled class="form-control" value="₹200">
+										</div>
+									</div>
+
+								</div>
+								<button type="submit" class="btn btn-primary btn-block">Make
+									Appointment</button>
+							</form>
 						</div>
 					</div>
 				</div>

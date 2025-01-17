@@ -21,7 +21,7 @@ Admin Dashboard
 					<div class="col-sm-12">
 						<h3 class="page-title">List of Patient</h3>
 						<ul class="breadcrumb">
-							<li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+							<li class="breadcrumb-item"><a href="{% url 'admin_home' %}">Dashboard</a></li>
 							<li class="breadcrumb-item"><a href="javascript:(0);">Users</a></li>
 							<li class="breadcrumb-item active">Patient</li>
 						</ul>
@@ -45,7 +45,7 @@ Admin Dashboard
 												<th>Address</th>
 												<th>Phone</th>
 												<th>Last Visit</th>
-												<th class="text-right">Paid</th>
+												<th class="text-right">Total Spent</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -53,11 +53,11 @@ Admin Dashboard
 												<td>#PT001</td>
 												<td>
 													<h2 class="table-avatar">
-														<a href="profile.html" class="avatar avatar-sm mr-2"><img
+														<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2"><img
 																class="avatar-img rounded-circle"
-																src="assets/img/patients/patient1.jpg"
+																src="{% static 'images/patients/patient1.jpg' %}"
 																alt="User Image"></a>
-														<a href="profile.html">Charlene Reed </a>
+														<a href="{% url 'admin_profile' %}">Charlene Reed </a>
 													</h2>
 												</td>
 												<td>29</td>
@@ -70,11 +70,11 @@ Admin Dashboard
 												<td>#PT002</td>
 												<td>
 													<h2 class="table-avatar">
-														<a href="profile.html" class="avatar avatar-sm mr-2"><img
+														<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2"><img
 																class="avatar-img rounded-circle"
-																src="assets/img/patients/patient2.jpg"
+																src="{% static 'images/patients/patient2.jpg' %}"
 																alt="User Image"></a>
-														<a href="profile.html">Travis Trimble </a>
+														<a href="{% url 'admin_profile' %}">Travis Trimble </a>
 													</h2>
 												</td>
 												<td>23</td>
@@ -87,11 +87,11 @@ Admin Dashboard
 												<td>#PT003</td>
 												<td>
 													<h2 class="table-avatar">
-														<a href="profile.html" class="avatar avatar-sm mr-2"><img
+														<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2"><img
 																class="avatar-img rounded-circle"
-																src="assets/img/patients/patient3.jpg"
+																src="{% static 'images/patients/patient3.jpg' %}"
 																alt="User Image"></a>
-														<a href="profile.html">Carl Kelly</a>
+														<a href="{% url 'admin_profile' %}">Carl Kelly</a>
 													</h2>
 												</td>
 												<td>29</td>
@@ -104,11 +104,11 @@ Admin Dashboard
 												<td>#PT004</td>
 												<td>
 													<h2 class="table-avatar">
-														<a href="profile.html" class="avatar avatar-sm mr-2"><img
+														<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2"><img
 																class="avatar-img rounded-circle"
-																src="assets/img/patients/patient4.jpg"
+																src="{% static 'images/patients/patient4.jpg' %}"
 																alt="User Image"></a>
-														<a href="profile.html"> Michelle Fairfax</a>
+														<a href="{% url 'admin_profile' %}"> Michelle Fairfax</a>
 													</h2>
 												</td>
 												<td>25</td>
@@ -121,11 +121,11 @@ Admin Dashboard
 												<td>#PT005</td>
 												<td>
 													<h2 class="table-avatar">
-														<a href="profile.html" class="avatar avatar-sm mr-2"><img
+														<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2"><img
 																class="avatar-img rounded-circle"
-																src="assets/img/patients/patient5.jpg"
+																src="{% static 'images/patients/patient5.jpg' %}"
 																alt="User Image"></a>
-														<a href="profile.html">Gina Moore</a>
+														<a href="{% url 'admin_profile' %}">Gina Moore</a>
 													</h2>
 												</td>
 												<td>23</td>
@@ -138,11 +138,11 @@ Admin Dashboard
 												<td>#PT006</td>
 												<td>
 													<h2 class="table-avatar">
-														<a href="profile.html" class="avatar avatar-sm mr-2"><img
+														<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2"><img
 																class="avatar-img rounded-circle"
-																src="assets/img/patients/patient6.jpg"
+																src="{% static 'images/patients/patient6.jpg' %}"
 																alt="User Image"></a>
-														<a href="profile.html">Elsie Gilley</a>
+														<a href="{% url 'admin_profile' %}">Elsie Gilley</a>
 													</h2>
 												</td>
 												<td>16</td>
@@ -155,11 +155,11 @@ Admin Dashboard
 												<td>#PT007</td>
 												<td>
 													<h2 class="table-avatar">
-														<a href="profile.html" class="avatar avatar-sm mr-2"><img
+														<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2"><img
 																class="avatar-img rounded-circle"
-																src="assets/img/patients/patient7.jpg"
+																src="{% static 'images/patients/patient7.jpg' %}"
 																alt="User Image"></a>
-														<a href="profile.html"> Joan Gardner</a>
+														<a href="{% url 'admin_profile' %}"> Joan Gardner</a>
 													</h2>
 												</td>
 												<td>25</td>
@@ -172,11 +172,11 @@ Admin Dashboard
 												<td>#PT008</td>
 												<td>
 													<h2 class="table-avatar">
-														<a href="profile.html" class="avatar avatar-sm mr-2"><img
+														<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2"><img
 																class="avatar-img rounded-circle"
-																src="assets/img/patients/patient8.jpg"
+																src="{% static 'images/patients/patient8.jpg' %}"
 																alt="User Image"></a>
-														<a href="profile.html"> Daniel Griffing</a>
+														<a href="{% url 'admin_profile' %}"> Daniel Griffing</a>
 													</h2>
 												</td>
 												<td>21</td>
@@ -189,11 +189,11 @@ Admin Dashboard
 												<td>#PT009</td>
 												<td>
 													<h2 class="table-avatar">
-														<a href="profile.html" class="avatar avatar-sm mr-2"><img
+														<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2"><img
 																class="avatar-img rounded-circle"
-																src="assets/img/patients/patient9.jpg"
+																src="{% static 'images/patients/patient9.jpg' %}"
 																alt="User Image"></a>
-														<a href="profile.html">Walter Roberson</a>
+														<a href="{% url 'admin_profile' %}">Walter Roberson</a>
 													</h2>
 												</td>
 												<td>18</td>
@@ -206,11 +206,11 @@ Admin Dashboard
 												<td>#PT010</td>
 												<td>
 													<h2 class="table-avatar">
-														<a href="profile.html" class="avatar avatar-sm mr-2"><img
+														<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2"><img
 																class="avatar-img rounded-circle"
-																src="assets/img/patients/patient10.jpg"
+																src="{% static 'images/patients/patient10.jpg' %}"
 																alt="User Image"></a>
-														<a href="profile.html">Robert Rhodes</a>
+														<a href="{% url 'admin_profile' %}">Robert Rhodes</a>
 													</h2>
 												</td>
 												<td>19</td>
@@ -223,11 +223,11 @@ Admin Dashboard
 												<td>#PT011</td>
 												<td>
 													<h2 class="table-avatar">
-														<a href="profile.html" class="avatar avatar-sm mr-2"><img
+														<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2"><img
 																class="avatar-img rounded-circle"
-																src="assets/img/patients/patient11.jpg"
+																src="{% static 'images/patients/patient11.jpg' %}"
 																alt="User Image"></a>
-														<a href="profile.html">Harry Williams</a>
+														<a href="{% url 'admin_profile' %}">Harry Williams</a>
 													</h2>
 												</td>
 												<td>9</td>
@@ -240,11 +240,11 @@ Admin Dashboard
 												<td>#PT012</td>
 												<td>
 													<h2 class="table-avatar">
-														<a href="profile.html" class="avatar avatar-sm mr-2"><img
+														<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2"><img
 																class="avatar-img rounded-circle"
-																src="assets/img/patients/patient12.jpg"
+																src="{% static 'images/patients/patient12.jpg' %}"
 																alt="User Image"></a>
-														<a href="profile.html">Robert Johnston</a>
+														<a href="{% url 'admin_profile' %}">Robert Johnston</a>
 													</h2>
 												</td>
 												<td>29</td>
@@ -257,11 +257,11 @@ Admin Dashboard
 												<td>#PT013</td>
 												<td>
 													<h2 class="table-avatar">
-														<a href="profile.html" class="avatar avatar-sm mr-2"><img
+														<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2"><img
 																class="avatar-img rounded-circle"
-																src="assets/img/patients/patient13.jpg"
+																src="{% static 'images/patients/patient13.jpg' %}"
 																alt="User Image"></a>
-														<a href="profile.html">Tracy Mason</a>
+														<a href="{% url 'admin_profile' %}">Tracy Mason</a>
 													</h2>
 												</td>
 												<td>32</td>
@@ -274,11 +274,11 @@ Admin Dashboard
 												<td>#PT014</td>
 												<td>
 													<h2 class="table-avatar">
-														<a href="profile.html" class="avatar avatar-sm mr-2"><img
+														<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2"><img
 																class="avatar-img rounded-circle"
-																src="assets/img/patients/patient14.jpg"
+																src="{% static 'images/patients/patient14.jpg' %}"
 																alt="User Image"></a>
-														<a href="profile.html"> Daniel Finch</a>
+														<a href="{% url 'admin_profile' %}"> Daniel Finch</a>
 													</h2>
 												</td>
 												<td>23</td>
@@ -291,11 +291,11 @@ Admin Dashboard
 												<td>#PT015</td>
 												<td>
 													<h2 class="table-avatar">
-														<a href="profile.html" class="avatar avatar-sm mr-2"><img
+														<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2"><img
 																class="avatar-img rounded-circle"
-																src="assets/img/patients/patient15.jpg"
+																src="{% static 'images/patients/patient15.jpg' %}"
 																alt="User Image"></a>
-														<a href="profile.html">Jessica Garza</a>
+														<a href="{% url 'admin_profile' %}">Jessica Garza</a>
 													</h2>
 												</td>
 												<td>10</td>
