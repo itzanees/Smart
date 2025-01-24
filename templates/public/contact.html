@@ -2,7 +2,7 @@
 
 {% load static %}
 
-{% block title %} Home {% endblock %}
+{% block title %} Contact {% endblock %}
 
 {% block content %}
 
@@ -12,55 +12,63 @@
     <h5>Keeps You Connected</h5>
 </div>
 
+<div class=" content-1">
+    <h3 class="text-center text-white">Contact Us</h3>
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="row pt-3">
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="floatingPassword" placeholder="Full Name">
+                    <label for="floatingPassword">Name</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                    <label for="floatingInput">Email address</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating mb-3">
+                    <input type="number" class="form-control" id="floatingInput" placeholder="">
+                    <label for="floatingInput">Phone Number</label>
+                </div>
+            </div>
 
-<div class="container container-fluid mb-5">
-    <div class="row row-cols-1 row-cols-md-2 g-4 peek">
-        <div class="col-lg-4">
-            <div class="card shadow bg-dark mb-3" style="max-width: 18rem;">
-                <div class="card-header text-success text-center fs-4 fw-bold">
-                    Our Mission
+            <div class="col-md-12 text-white">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
+                        value="Message" checked>
+                    <label class="form-check-label" for="inlineRadio1">Message</label>
                 </div>
-                <div class="card-body text-white">
-                    <p class="card-text px-3">
-                        To refine and redefine healthcare standards through consistent quality enhancement
-                        endeavors.
-                    </p>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
+                        value="Enquiry">
+                    <label class="form-check-label" for="inlineRadio1">Enquiry</label>
                 </div>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="card shadow bg-dark mb-3" style="max-width: 18rem;">
-                <div class="card-header text-success text-center fs-4 fw-bold"> Our Vision</div>
-                <div class="card-body text-white">
-                    <p class="card-text px-3">To achieve global preference in healthcare through our distinctive
-                        services based on excellence.</p>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2"
+                        value="Suggestion">
+                    <label class="form-check-label" for="inlineRadio2">Suggestion</label>
                 </div>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <div class="card shadow bg-dark mb-3" style="max-width: 18rem;">
-                <div class="card-header text-success text-center fs-4 fw-bold"> Our Values</div>
-                <div class="card-body text-white">
-                    <p class="card-text px-3">Excellence, Diversity, Integrity, Compassion, Teamwork, Social
-                        Commitment.</p>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3"
+                        value="Complaint">
+                    <label class="form-check-label" for="inlineRadio3">Complaint</label>
                 </div>
             </div>
+            <div class="col-md-12 my-2">
+                <div class="form-floating">
+                    <textarea class="form-control" placeholder="Leave your feedback here" id="floatingTextarea"
+                        style="height: 100px"></textarea>
+                    <label for="floatingTextarea">Message</label>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <input type="submit" class="btn btn-md btn-primary" value="Submit">
+            </div>
         </div>
-    </div>
+    </form>
 </div>
-<!-- <div class="text-white mt-5 "> -->
-
-    <div>
-        <div class=" content-1 text-white">
-            <h4 class="display-3">Contact Us</h4>
-            <p class="lead">Have questions or need assistance? Our friendly team is here to help. Reach out to us
-                today
-                or
-                find
-                directions to our hospital locations. </p>
-
-            <p class="lead">Emergency? Call +91-9123456789</p>
-        </div>
-
-    </div>
-    {% endblock %}
+{% endblock %}

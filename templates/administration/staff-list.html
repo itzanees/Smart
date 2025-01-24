@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block title %}
+Staffs
+{% endblock %}
+{% block content %}
+
+<!-- Main Wrapper -->
+<div class="main-wrapper">
+
+	{% include 'administration/sidebar.html' %}
+
+	<!-- Page Wrapper -->
+	<div class="page-wrapper">
+		<div class="content container-fluid">
+
+			<!-- Page Header -->
+			<div class="page-header">
+				<div class="row">
+					<div class="col-sm-7">
+						<h3 class="page-title">List of Staffs</h3>
+						<ul class="breadcrumb">
+							<li class="breadcrumb-item"><a href="{% url 'admin_home' %}">Dashboard</a></li>
+							<li class="breadcrumb-item"><a href="javascript:(0);">Users</a></li>
+							<li class="breadcrumb-item active">Staffs</li>
+						</ul>
+					</div>
+					<!-- <div class="col-sm-5">
+						<a href="#Add_New_Staff" data-toggle="modal" class="btn btn-primary float-right mt-2">New
+							Staff</a>
+					</div> -->
+				</div>
+			</div>
+			<!-- /Page Header -->
+
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="card">
+						<div class="card-body">
+							<div class="table-responsive">
+								<table class="datatable table table-hover table-center mb-0">
+									<thead>
+										<tr>
+											<th>Employee Code</th>
+											<th>Staff Name</th>
+											<th>User Name</th>
+											<th>Email</th>
+											<th>Phone Number</th>
+											<th>Member Since</th>
+											<th>Action</th>
+											<!-- <th>Account Status</th> -->
+
+										</tr>
+									</thead>
+									<tbody>
+										{% for staff in staffs %}
+										<tr>
+											<td>
+												{{ staff.staff.employee_code }}
+											</td>
+											<td>
+												<h2 class="table-avatar">
+													{% if staff.staff.profile_pic %}
+													<a href="{% url 'admin_profile' %}"
+														class="avatar avatar-sm mr-2">
+														<img
+															class="avatar-img rounded-circle"
+															src="{{ staff.staff.profile_pic.url }}"
+															alt="User Image">
+														</a>
+														{% endif %}
+													<a href="{% url 'users_profile' staff.id %}">{{ staff.first_name }}</a>
+												</h2>
+											</td>
+											<td>{{ staff.username }}</td>
+											<td>{{ staff.email }}</td>
+											<td>{{ staff.phone_number }}</td>
+											<td>{{ staff.created_at.date }}</td>
+											<td>
+												<div class="actions">
+													<a data-toggle="modal" href="#delete_{{ staff.id }}"
+														class="btn btn-sm bg-danger-light">
+														<i class="fe fe-trash"></i> Delete
+													</a>
+												</div>
+											</td>
+
+											<!-- <td>
+												<div class="status-toggle">
+													<input type="checkbox" id="status_1" class="check" checked>
+													<label for="status_1" class="checktoggle">checkbox</label>
+												</div>
+											</td> -->
+										</tr>
+										<!-- Delete Modal -->
+										<div class="modal fade" id="delete_{{ staff.id }}" aria-hidden="true" role="dialog">
+											<div class="modal-dialog modal-dialog-centered" role="document">
+												<div class="modal-content">
+													<div class="modal-body">
+														<div class="form-content p-2">
+															<h4 class="modal-title">Delete {{ staff.username }}</h4>
+															<p class="mb-4">Are you sure want to delete?</p>
+															<form method="post">
+																{% csrf_token %}
+															<input type="hidden" name="staff_id" value="{{ staff.id }}">
+															<button type="submit" class="btn btn-primary">Delete </button>
+															<button type="button" class="btn btn-danger"
+																data-dismiss="modal">Close</button>
+															</form>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<!-- /Delete Modal -->
+										{% if empty %}
+										<tr>
+											<td colspan="7" class="text-muted text-center">No Staffs added</td>
+										</tr>
+										{% endif %}
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Page Wrapper -->
+	{% endblock %}

@@ -10,6 +10,12 @@ import datetime
 # def adminForgotPassword(request):
 #     return render(request, 'admin/forgot-password.html')
 
+def intranet(request):
+    return render(request, 'staff/intranet.html')
+
+def staffLogin(request):
+    return render(request,'staff/login.html')
+
 # @login_required
 def staffHome(request):
     return render(request, 'staff/index.html')

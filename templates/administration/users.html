@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block title %}
+Users
+{% endblock %}
+{% block content %}
+
+<!-- Main Wrapper -->
+<div class="main-wrapper">
+
+	{% include 'administration/sidebar.html' %}
+
+	<!-- Page Wrapper -->
+	<div class="page-wrapper">
+		<div class="content container-fluid">
+
+			<!-- Page Header -->
+			<div class="page-header">
+				<div class="row">
+					<div class="col-sm-7">
+						<h3 class="page-title">Smart Users</h3>
+						<ul class="breadcrumb">
+							<li class="breadcrumb-item"><a href="{% url 'admin_home' %}">Dashboard</a></li>
+							<li class="breadcrumb-item"><a href="javascript:(0);">Users</a></li>
+							<li class="breadcrumb-item active">Users</li>
+						</ul>
+					</div>
+					<div class="col-sm-5">
+						<a href="#Add_New_User" data-toggle="modal" class="btn btn-primary float-right mt-2">New
+							User</a>
+					</div>
+				</div>
+			</div>
+			<!-- /Page Header -->
+
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="card">
+						<div class="card-body">
+							<div class="table-responsive">
+								<table class="datatable table table-hover table-center mb-0">
+									<thead>
+										<tr>
+											<th>Registration ID</th>
+											<th>User Name</th>
+											<th>User Type</th>
+											<th>Email</th>
+											<th>Phone Number</th>
+											<th>Member Since</th>
+											<th>Action</th>
+											<!-- <th>Account Status</th> -->
+
+										</tr>
+									</thead>
+									<tbody>
+										{% for user in users %} 
+										<tr>
+											<td>
+												{% if user.is_superuser %}
+													Administrator
+												{% elif user.user_type == 'Patient' %}
+													{{ user.patient.pat_mrd_no }}
+												{% elif user.user_type == 'Staff' %} 
+													{{ user.staff.employee_code }}
+												{% elif user.user_type == 'Doctor' %}
+													{{ user.doctor.employ_code }}
+												{% endif %}
+											</td>
+											<td>
+												<h2 class="table-avatar">
+													{% if user.profile_pic %}
+													<a href="{% url 'users_profile' user.id %}" class="avatar avatar-sm mr-2">
+														<img class="avatar-img rounded-circle" src="{{ user.profile_pic.url }}"
+															alt="User Image">
+														</a>
+														{% endif %}
+													<a href="{% url 'users_profile' user.id %}">
+														{% if user.first_name %}{{ user.first_name}} {{ user.last_name }}
+														{% else %}
+														{{ user.username }}</a>
+														{% endif %}
+												</h2>
+											</td>
+											<td>{{ user.user_type }}</td>
+											<td>{{ user.email }}</td>
+											<td>{{ user.phone_number }}</td>
+											<td>{{ user.created_at }} <br></td>
+											<td>
+												<div class="actions">
+													<!-- <a class="btn btn-sm bg-success-light" data-toggle="modal"
+														href="#edit_{{ user.id }}_details">
+														<i class="fe fe-pencil"></i> Edit
+													</a> -->
+													<a data-toggle="modal" href="#delete_{{ user.id }}"
+														class="btn btn-sm bg-danger-light">
+														<i class="fe fe-trash"></i> Delete
+													</a>
+												</div>
+											</td>
+
+											<!-- <td>
+												<div class="status-toggle">
+													<input type="checkbox" id="status_1" class="check" checked>
+													<label for="status_1" class="checktoggle">checkbox</label>
+												</div>
+											</td> -->
+										</tr>
+
+										<!-- Delete Modal -->
+										<div class="modal fade" id="delete_{{ user.id }}" aria-hidden="true" role="dialog">
+											<div class="modal-dialog modal-dialog-centered" role="document">
+												<div class="modal-content">
+													<div class="modal-body">
+														<div class="form-content p-2">
+															<h4 class="modal-title">Delete {{ user.username }}</h4>
+															<p class="mb-4">Are you sure want to delete?</p>
+															<form method="post">
+																{% csrf_token %}
+															<input type="hidden" name="user_id" value="{{ user.id }}">
+															<input type="hidden" name="delete_user" value="true">
+															<button type="submit" class="btn btn-primary">Delete </button>
+															<button type="button" class="btn btn-danger"
+																data-dismiss="modal">Close</button>
+															</form>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<!-- /Delete Modal -->
+										{% empty %}
+										<tr>
+											<td colspan="7" class="text-center text-danger">
+												No users 
+											</td>
+										</tr>
+										
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			{% if form.errors %}
+			<div class="modal fade show" id="Add_New_User" role="dialog" aria-modal="true" style="display: block; padding-left: 17px;">
+				{% else %}
+				<div class="modal fade" id="Add_New_User" aria-hidden="true" role="dialog">
+					{% endif %}
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Add New User</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<form method="post">
+								{% csrf_token %}
+								{% for field in form %}
+								<div class="form-group">
+									{{ field }}
+									{% if field.errors %}
+									<div class="text-warning small  mt-1">
+										{{ field.errors|join:", " }}
+									</div>
+									{% endif %}
+									{% if field.help_text and not field.errors %}
+									<div class="form-text text-muted">
+										{{ field.help_text }}
+									</div>
+									{% endif %}
+								</div>
+								{% endfor %}
+	
+								<button class="w-100 mb-2 btn btn-lg  btn-primary" type="submit">Add user</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<!-- /Page Wrapper -->
+	{% endblock %}

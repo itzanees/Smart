@@ -34,13 +34,7 @@
                         class="fa-solid fa-magnifying-glass text-warning"></i></button>
             </form>
             <div class="navbar-nav">
-                {% if user.is_authenticated %}
-                <form action="logout" method="post">
-                    <a class="nav-link">logout</a>
-                </form>
-                {% else %}
-                <a class=" nav-link {% if request.path == '/signin' %}active {% endif %}" href="{% url 'signin' %}">login</a>
-                {% endif %}
+                <a class=" nav-link {% if request.path == '/signin' %}active {% endif %}" href="{% url 'patient_dashboard' %}">Patient Portal</a>
             </div>
         </div>
     </div>

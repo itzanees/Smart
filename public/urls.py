@@ -10,5 +10,8 @@ urlpatterns = [
     path('contact', views.contact, name='contact'),
     path('signin', views.signin, name='signin'),
     path('signup', views.signup, name='signup'),
-    path('webappointment', views.webAppointment, name='webappointment')
+    path('webappointment', views.webAppointment, name='webappointment'),
+    path('intranet', views.intranet, name='intranet'),
+    path('tos', views.tos, name='tos'),
+    path('privacy', views.privacy, name='privacy'),
 ]

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block title %}
+Admin Login
+{% endblock %}
+{% block content %}
+
+<!-- Main Wrapper -->
+<div class="main-wrapper login-body admin">
+	<div class="login-wrapper">
+		<div class="container">
+			<div class="loginbox admin">
+				<div class="login-left admin">
+					<h1>Admin Login</h1>
+					<img class="img-fluid" src="{% static 'images/logo-white.png' %}" alt="Logo">
+					<p class="account-subtitle">Access to Admin dashboard</p>
+				</div>
+				<div class="login-right admin">
+					<div class="login-right-wrap">
+
+						<!-- Form -->
+						<form method="post">
+							{% csrf_token %}
+							<div class="form-group">
+								<input class="form-control" name="username" type="text" placeholder="Username">
+							</div>
+							<div class="form-group">
+								<input class="form-control" name="password" type="password" placeholder="Password">
+							</div>
+							<div class="form-group">
+								<button class="btn btn-primary btn-block" type="submit">Login</button>
+							</div>
+						</form>
+						<!-- /Form -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /Main Wrapper -->
+
+{% endblock %}

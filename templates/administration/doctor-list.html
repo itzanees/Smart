@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block title %}
+Doctors
+{% endblock %}
+{% block content %}
+
+<!-- Main Wrapper -->
+<div class="main-wrapper">
+
+	{% include 'administration/sidebar.html' %}
+
+	<!-- Page Wrapper -->
+	<div class="page-wrapper">
+		<div class="content container-fluid">
+
+			<!-- Page Header -->
+			<div class="page-header">
+				<div class="row">
+					<div class="col-sm-7">
+						<h3 class="page-title">List of Doctors</h3>
+						<ul class="breadcrumb">
+							<li class="breadcrumb-item"><a href="{% url 'admin_home' %}">Dashboard</a></li>
+							<li class="breadcrumb-item"><a href="javascript:(0);">Users</a></li>
+							<li class="breadcrumb-item active">Doctor</li>
+						</ul>
+					</div>
+					<!-- <div class="col-sm-5">
+						<a href="#Add_New_Doctor" data-toggle="modal" class="btn btn-primary float-right mt-2">New
+							Doctor</a>
+					</div> -->
+				</div>
+			</div>
+			<!-- /Page Header -->
+
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="card">
+						<div class="card-body">
+							<div class="table-responsive">
+								<table class="datatable table table-hover table-center mb-0">
+									<thead>
+										<tr>
+											<th>Employee Code</th>
+											<th>Doctor Name</th>
+											<th>Degree</th>
+											<th>Speciality</th>
+											<th>Licence Number</th>
+											<th>Member Since</th>
+											<th>Schedules</th>
+											<th>Action</th>
+											<!-- <th>Account Status</th> -->
+
+										</tr>
+									</thead>
+									<tbody>
+										{% for doctor in doctors %}
+										<tr>
+											<td>
+												{{ doctor.doctor.employ_code }}
+											</td>
+											<td>
+												<h2 class="table-avatar">
+													<a href="{% url 'users_profile' doctor.id %}" class="avatar avatar-sm mr-2">
+														{% if doctor.profile_pic %}
+														<img class="avatar-img rounded-circle" src="{{ doctor.profile_pic.url }}" alt="User Image">
+														{% else %}
+														<img class="avatar-img rounded-circle" src="{% static 'images//doctors/doctor-thumb-01.jpg' %}" alt="User Image">
+														{% endif %}
+													</a>
+													<a href="{% url 'users_profile' doctor.id %}">Dr. {{ doctor.first_name }}</a>
+												</h2>
+											</td>
+											<td>{{ doctor.doctor.qualification }}</td>
+											<td>{{ doctor.doctor.department }}</td>
+											<td>{{ doctor.doctor.license_number }}</td>
+											<td>{{ doctor.created_at.date }} <br><small>{{ doctor.created_at.time }}</small></td>
+											<td><a href="{% url 'schedule_view' doctor.id %}">Schedules</a></td>
+											<td>
+												<div class="actions">
+													<!-- <a class="btn btn-sm bg-success-light" data-toggle="modal"
+														href="#edit_{{ user.id }}_details">
+														<i class="fe fe-pencil"></i> Edit
+													</a> -->
+													<a data-toggle="modal" href="#delete_{{ doctor.id }}"
+														class="btn btn-sm bg-danger-light">
+														<i class="fe fe-trash"></i> Delete
+													</a>
+												</div>
+											</td>
+
+											<!-- <td>
+												<div class="status-toggle">
+													<input type="checkbox" id="status_1" class="check" checked>
+													<label for="status_1" class="checktoggle">checkbox</label>
+												</div>
+											</td> -->
+										</tr>
+										<!-- Delete Modal -->
+										<div class="modal fade" id="delete_{{ doctor.id }}" aria-hidden="true" role="dialog">
+											<div class="modal-dialog modal-dialog-centered" role="document">
+												<div class="modal-content">
+													<div class="modal-body">
+														<div class="form-content p-2">
+															<h4 class="modal-title">Delete {{ doctor.username }}</h4>
+															<p class="mb-4">Are you sure want to delete?</p>
+															<form method="post">
+																{% csrf_token %}
+															<input type="hidden" name="doc_id" value="{{ doctor.id }}">
+															<button type="submit" class="btn btn-primary">Delete </button>
+															<button type="button" class="btn btn-danger"
+																data-dismiss="modal">Close</button>
+															</form>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<!-- /Delete Modal -->
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- <div class="modal fade" id="Add_New_Doctor" aria-hidden="true" role="dialog">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Add New Doctor</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<form method="post">
+								<div class="row form-row">
+									{% for field in form %}
+									<div class="col-12 col-sm-12">
+										<div class="form-group">
+											{{ field }}
+											{% if field.errors %}
+											<div class="text-danger small  mt-1">
+												{{ field.errors|join:", " }}
+											</div>
+											{% endif %}
+											{% if field.help_text and not field.errors %}
+											<div class="form-text text-muted">
+												{{ field.help_text }}
+											</div>
+											{% endif %}
+										</div>
+									</div>
+									{% endfor %}
+								</div>
+								<button type="submit" class="btn btn-primary btn-block">Add Doctor</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div> -->
+
+		</div>
+	</div>
+	<!-- /Page Wrapper -->
+	{% endblock %}

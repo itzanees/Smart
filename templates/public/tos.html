@@ -1,0 +1,80 @@
+{% extends 'public/base.html' %}
+
+{% load static %}
+
+{% block title %} TOS : SMART {% endblock %}
+
+{% block content %}
+<div class="text-white inner">
+    <h6>Smart Hospital</h6>
+    <h4>Services</h4>
+    <h5>For All Your Needs</h5>
+</div>
+
+<div class="container bg-primary-subtle p-5" style="margin: 130px auto;">
+    <h1 class="display-5">Terms of Use for Smart Hospital Website</h1>
+    <p class="text-muted">Last Updated: 21-January-2025 </p>
+
+    <div class="section">
+        <h2>1. Acceptance of Terms</h2>
+        <p>By accessing or using our website, you represent that you have read, understood, and agree to be bound by these Terms, our <a href="{% url 'privacy' %}" class="text-black">Privacy Policy</a>, and all applicable laws and regulations.</p>
+    </div>
+
+    <div class="section">
+        <h2>2. User Registration and Accounts</h2>
+        <ul>
+            <li class="navbar-nav"><strong>Eligibility:</strong> You must be at least 18 years old to register.</li>
+            <li class="navbar-nav"><strong>Account Information:</strong> You are responsible for maintaining the confidentiality of your account credentials.</li>
+            <li class="navbar-nav"><strong>Account Security:</strong> Notify us immediately of any unauthorized use.</li>
+            <li class="navbar-nav"><strong>Account Termination:</strong> We reserve the right to suspend or terminate accounts.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>3. Use of Services</h2>
+        <ul>
+            <li class="navbar-nav"><strong>Permitted Use:</strong> You may use our website for lawful purposes only.</li>
+            <li class="navbar-nav"><strong>Appointment Booking:</strong> We do not guarantee appointment availability. Confirm your appointment.</li>
+            <li class="navbar-nav"><strong>Medical Information:</strong> Information is for informational purposes only and does not constitute medical advice. Consult a healthcare professional.</li>
+            <li class="navbar-nav"><strong>Doctor and Department Information:</strong> Information is for general information and may change. We do not endorse any specific doctor or department.</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>4. Intellectual Property</h2>
+        <p>All content is the property of [Hospital Name] or its licensors and is protected by intellectual property laws. You may not reproduce content without our written consent.</p>
+    </div>
+
+    <div class="section">
+        <h2>5. Disclaimer of Warranties</h2>
+        <p>Our website and services are provided "as is" without any warranties.</p>
+    </div>
+
+    <div class="section">
+        <h2>6. Limitation of Liability</h2>
+        <p>To the fullest extent permitted by law, [Hospital Name] shall not be liable for any damages resulting from your use of our website.</p>
+    </div>
+
+    <div class="section">
+        <h2>7. Governing Law</h2>
+        <p>These Terms are governed by the laws of [State/Country].</p>
+    </div>
+
+    <div class="section">
+        <h2>8. Changes to Terms</h2>
+        <p>We may modify these Terms at any time. Continued use constitutes acceptance of the revised Terms.</p>
+    </div>
+
+    <div class="section">
+        <h2>9. Contact Us</h2>
+        <address>
+            <strong>Smart Hospital</strong><br>
+            Trivandrum<br>
+            9123456789<br>
+            <a href="mailto:itzanees@gmail.com">mail@smart.com</a>
+        </address>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'staff/base.html' %}
+
+{% load static %}
+{% block title %}
+Intranet
+{% endblock %}
+{% block content %}
+<!-- Main Wrapper -->
+<div class="container py-3">
+	<header>
+	  <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+		<img src="{% static 'images/logo.png' %}" alt="">
+		<h1 class="display-4 fw-bold text-body-emphasis align-center">Intranet</h1>
+		<!-- <p class="fs-5 text-body-secondary">Quickly build an effective pricing table for your potential customers with this Bootstrap example. It’s built with default Bootstrap components and utilities with little customization.</p> -->
+	  </div>
+	</header>
+  
+	<main>
+	  <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
+		<div class="col">
+		  <div class="bg-dark text-white card mb-4 rounded-3 shadow-lg intranetcard">
+			<div class="py-5">
+			</div>
+			<div class="card-body">
+			  <h1 class="card-title pb-5 pricing-card-title">Doctor <i class="fa-solid fa-user-doctor"></i></h1>
+			  
+			  <a href="{% url 'doctor_login' %}" class="mt-5 w-100 btn btn-lg btn-outline-primary">Login</a>
+			</div>
+		  </div>
+		</div>
+		<div class="col">
+		  <div class="bg-dark text-white card mb-4 rounded-3 shadow-lg intranetcard">
+			<div class="py-5">
+			</div>
+			<div class="card-body">
+			  <h1 class="card-title pb-5 pricing-card-title">Staff <i class="fa-solid fa-user-nurse"></i></h1>
+			  <a href="{% url 'staff_login' %}" class="mt-5 w-100 btn btn-lg btn-primary">Login</a>
+			</div>
+		  </div>
+		</div>
+	  </div>
+	</main>
+  </div>
+{% endblock %}

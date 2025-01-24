@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block title %}
+Appointments
+{% endblock %}
+{% block content %}
+
+<!-- Main Wrapper -->
+<div class="main-wrapper">
+
+	{% include 'doctor/sidebar.html' %}
+
+	<!-- Page Wrapper -->
+	<div class="page-wrapper">
+		<div class="content container-fluid">
+
+			<!-- Page Header -->
+			<div class="page-header">
+				<div class="row">
+					<div class="col-sm-7">
+						<h3 class="page-title">Appointments</h3>
+						<ul class="breadcrumb">
+							<li class="breadcrumb-item"><a href="{% url 'doctor_dashboard' %}">Dashboard</a></li>
+							<li class="breadcrumb-item active">Appointments</li>
+						</ul>
+					</div>
+					<div class="col-sm-5 col">
+						<a href="#Add_Appointment_details" data-toggle="modal"
+							class="btn btn-primary float-right mt-2">Add</a>
+					</div>
+				</div>
+			</div>
+			<!-- /Page Header -->
+			<div class="row">
+				<div class="col-md-12">
+
+					<!-- Recent Orders -->
+					<div class="card  card-table flex-fill">
+                        <div class="card-header">
+                            <h4 class="card-title">Appointment List</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-center mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Patient Register Number</th>
+                                            <th>Patient Name</th>
+                                            <th>Date</th>
+                                            <th>Last Visit</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>SM1100045</td>
+                                            <td>
+                                                <h2 class="table-avatar">
+                                                    <a href="{% url 'home' %}" class="avatar avatar-sm mr-2"><img
+                                                            class="avatar-img rounded-circle"
+                                                            src="{% static '/images/patients/patient1.jpg' %}"
+                                                            alt="User Image"></a>
+                                                    <a href="{% url 'home' %}">Ibrahim</a>
+                                                </h2>
+                                            </td>
+                                            <td>9 Jan 2025 <span class="text-primary d-block">11.00 AM - 11.15 AM</span>
+                                            </td>
+                                            <td>20 Oct 2019</td>
+                                            <td class="text-danger">
+                                                Waiting for test results
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>SM1100001</td>
+                                            <td>
+                                                <h2 class="table-avatar">
+                                                    <a href="{% url 'home' %}" class="avatar avatar-sm mr-2"><img
+                                                            class="avatar-img rounded-circle"
+                                                            src="{% static '/images/patients/patient1.jpg' %}"
+                                                            alt="User Image"></a>
+                                                    <a href="{% url 'home' %}">Charlene Reed </a>
+                                                </h2>
+                                            </td>
+                                            <td>9 Jan 2025 <span class="text-primary d-block">11.00 AM - 11.15 AM</span>
+                                            </td>
+                                            <td>20 Oct 2019</td>
+                                            <td class="text-success">
+                                                Completed
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>SM1100001</td>
+                                            <td>
+                                                <h2 class="table-avatar">
+                                                    <a href="{% url 'home' %}" class="avatar avatar-sm mr-2"><img
+                                                            class="avatar-img rounded-circle"
+                                                            src="{% static '/images/patients/patient1.jpg' %}"
+                                                            alt="User Image"></a>
+                                                    <a href="{% url 'home' %}">Yamuna </a>
+                                                </h2>
+                                            </td>
+                                            <td>9 Jan 2025 <span class="text-primary d-block">10.45 AM - 11.00 AM</span>
+                                            </td>
+                                            <td>20 Oct 2019</td>
+                                            <td class="text-primary">
+                                               In Queue
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>SM1100001</td>
+                                            <td>
+                                                <h2 class="table-avatar">
+                                                    <a href="{% url 'home' %}" class="avatar avatar-sm mr-2"><img
+                                                            class="avatar-img rounded-circle"
+                                                            src="{% static '/images/patients/patient1.jpg' %}"
+                                                            alt="User Image"></a>
+                                                    <a href="{% url 'home' %}">Robin Alex</a>
+                                                </h2>
+                                            </td>
+                                            <td>9 Jan 2025 <span class="text-primary d-block">10.30 AM - 10.45 AM </span>
+                                            </td>
+                                            <td>20 Oct 2019</td>
+                                            <td>
+                                                In Queue
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+					<!-- /Recent Orders -->
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Page Wrapper -->
+</div>
+<!-- /Main Wrapper -->
+{% endblock %}

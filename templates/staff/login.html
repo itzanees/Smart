@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block title %}
+Staff Login
+{% endblock %}
+{% block content %}
+
+<!-- Main Wrapper -->
+<div class="main-wrapper login-body">
+	<div class="login-wrapper">
+		<div class="container">
+			<div class="loginbox">
+				<div class="login-left">
+					<h1>Staff Login</h1>
+					<img class="img-fluid" src="{% static 'images/logo-white.png' %}" alt="Logo">
+					<p class="account-subtitle">Login to dashboard</p>
+				</div>
+				<div class="login-right">
+					<div class="login-right-wrap">
+
+						<!-- Form -->
+						<form action="">
+							<div class="form-group">
+								<input class="form-control" type="text" placeholder="Email">
+							</div>
+							<div class="form-group">
+								<input class="form-control" type="text" placeholder="Password">
+							</div>
+							<div class="form-group">
+								<button class="btn btn-primary btn-block" type="submit">Login</button>
+							</div>
+						</form>
+						<!-- /Form -->
+
+						<div class="text-center forgotpass"><a href="{% url 'admin_forgot_password' %}">Forgot
+								Password?</a></div>
+						<div class="login-or">
+							<span class="or-line"></span>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /Main Wrapper -->
+
+{% endblock %}

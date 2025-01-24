@@ -2,6 +2,18 @@ body{
     background: rgba(32, 32, 32, 1);
 }
 
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+	-moz-appearance: textfield;
+}
+
 .booking-icon {
     background-color: rgba(90, 90, 88, 0.856);
     position: fixed;

@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block title %}
+{{ user.username }}'s Profile
+{% endblock %}
+{% block content %}
+
+<!-- Main Wrapper -->
+<div class="main-wrapper">
+
+	{% include 'administration/sidebar.html' %}
+
+	<!-- Page Wrapper -->
+	<div class="page-wrapper">
+		<div class="content container-fluid">
+
+			<!-- Page Header -->
+			<div class="page-header">
+				<div class="row">
+					<div class="col">
+						<h3 class="page-title">Profile</h3>
+						<ul class="breadcrumb">
+							<li class="breadcrumb-item"><a href="{% url 'admin_home' %}">Dashboard</a></li>
+							<li class="breadcrumb-item active">Profile</li>
+							<li class="breadcrumb-item active">{{ user.username }}</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- /Page Header -->
+
+			<div class="row">
+				<div class="col-md-12">
+					<div class="profile-header">
+						<div class="row align-items-center">
+							<div class="col-auto profile-image">
+								{% if user.profile_pic %}
+								<a href="#">
+									<img class="rounded-circle" alt="User Image"
+										src="{{ user.profile_pic.url }}">
+								</a>
+								{% else %}
+								<a href="#">
+									<img class="rounded-circle" alt="User Image"
+										src="{% static 'images/profiles/male.jpg' %}">
+								</a>
+								{% endif %}
+							</div>
+							<div class="col ml-md-n2 profile-user-info">
+								<h4 class="user-name mb-0">{% if user.firstname %} {{ user.first_name }}
+									{% else %}
+									{{ user.username }}
+									{% endif %}
+								</h4>
+								<h6 class="text-muted">
+									{{ user.email }}
+								</h6>
+								<div class="user-Location"><i class="fa fa-map-marker"></i> {{ user.city.capitalize }}, {{ user.state.capitalize }}</div>
+								{% if user.username == 'admin' %}
+								<div class="about-text">Professional Web developer, RedHat Certified System
+									Administrator, Technical Support Engineer, and Mentor. Specialized in Python,
+									Django, MySQL, Microsoft Windows Server 2016, and Redhat Linux. </div>
+									{% endif %}
+							</div>
+							
+						</div>
+					</div>
+					<div class="profile-menu">
+						<ul class="nav nav-tabs nav-tabs-solid">
+							<li class="nav-item">
+								<a class="nav-link active" data-toggle="tab" href="#per_details_tab">About</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" data-toggle="tab" href="#password_tab">Password</a>
+							</li>
+						</ul>
+					</div>
+					<div class="tab-content profile-tab-cont">
+
+						<!-- Personal Details Tab -->
+						<div class="tab-pane fade show active" id="per_details_tab">
+
+							<!-- Personal Details -->
+							<div class="row">
+								<div class="col-lg-12">
+									<div class="card">
+										<div class="card-body">
+											<h5 class="card-title d-flex justify-content-between">
+												<span>Personal Details</span>
+												<a class="edit-link" data-toggle="modal"
+													href="#edit_personal_details"><i
+														class="fa fa-edit mr-1"></i>Edit</a>
+											</h5>
+											<div class="row">
+												<p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Name</p>
+												<p class="col-sm-10">{{ user.first_name }} {{ user.last_name }}</p>
+											</div>
+											<div class="row">
+												<p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Date of Birth
+												</p>
+												<p class="col-sm-10">{{ user.date_of_birth }}</p>
+											</div>
+											<div class="row">
+												<p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Email ID</p>
+												<p class="col-sm-10">{{ user.email }}</p>
+											</div>
+											<div class="row">
+												<p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Mobile</p>
+												<p class="col-sm-10">{{ user.phone_number }}</p>
+											</div>
+											<div class="row">
+												<p class="col-sm-2 text-muted text-sm-right mb-0">Address</p>
+												<p class="col-sm-10 mb-0">{{ user.address1 }},<br>
+													{% if user.address2 %}{{ user.address2 }}{% endif %}<br>
+													{{ user.city }}, {{ user.state }}, {{ user.pincode }},<br>
+													{{ user.country }}</p>
+											</div>
+										</div>
+									</div>
+									{% if user.user_type == 'Doctor' %}
+									<div class="col-lg-12">
+										<div class="card">
+											<div class="card-body">
+												<h5 class="card-title d-flex justify-content-between">
+													<span>Professional Details</span>
+												</h5>
+												<div class="row">
+													<p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Qualification</p>
+													<p class="col-sm-10">{{ user.doctor.qualification }}</p>
+												</div>
+												<div class="row">
+													<p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Department
+													</p>
+													<p class="col-sm-10">{{ user.doctor.department }}
+													</p>
+												</div>
+												<div class="row">
+													<p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Licence Number</p>
+													<p class="col-sm-10">{{ user.doctor.license_number }}</p>
+												</div>
+												<div class="row">
+													<p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Member Since</p>
+													<p class="col-sm-10">{{ user.created_at.date }}</p>
+												</div>
+											</div>
+										</div>
+									{% endif %}
+									
+
+									<!-- Edit Details Modal -->
+									<div class="modal fade" id="edit_personal_details" aria-hidden="true" role="dialog">
+										<div class="modal-dialog modal-dialog-centered" role="document">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h5 class="modal-title">Personal Details</h5>
+													<button type="button" class="close" data-dismiss="modal"
+														aria-label="Close">
+														<span aria-hidden="true">&times;</span>
+													</button>
+												</div>
+												<div class="modal-body">
+													<form method="post" enctype="multipart/form-data">
+														{% csrf_token %}
+														{{ profileform }}
+														<button type="submit" class="btn btn-primary btn-block mt-3">Save
+															Changes</button>
+													</form>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- /Edit Details Modal -->
+
+								</div>
+								
+
+
+							</div>
+							<!-- /Personal Details -->
+
+						</div>
+						<!-- /Personal Details Tab -->
+
+						<!-- Change Password Tab -->
+						<div id="password_tab" class="tab-pane fade">
+
+							<div class="card">
+								<div class="card-body">
+									<h5 class="card-title">Change Password</h5>
+									<div class="row">
+										<div class="col-md-10 col-lg-6">
+											<form>
+												<div class="form-group">
+													<label>Old Password</label>
+													<input type="password" class="form-control">
+												</div>
+												<div class="form-group">
+													<label>New Password</label>
+													<input type="password" class="form-control">
+												</div>
+												<div class="form-group">
+													<label>Confirm Password</label>
+													<input type="password" class="form-control">
+												</div>
+												<button class="btn btn-primary" type="submit">Save Changes</button>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- /Change Password Tab -->
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<!-- /Page Wrapper -->
+
+</div>
+<!-- /Main Wrapper -->
+{% endblock %}

@@ -1,35 +1,60 @@
 from django.shortcuts import render
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required,permission_required
+from datetime import datetime
+import calendar
 
-import datetime
+def doctorLogin(request):
+    return render(request, 'doctor/login.html')
 
-# def adminLogin(request):
-#     return render(request, 'admin/login.html')
-
-# def adminForgotPassword(request):
-#     return render(request, 'admin/forgot-password.html')
+def doctorForgotPassword(request):
+    return render(request, 'doctor/forgot-password.html')
 
 # @login_required
 def doctorHome(request):
     return render(request, 'doctor/index.html')
 
-# def adminProfile(request):
-#     today = datetime.date.today()
-#     today = str(today)
-#     return render(request, 'admin/profile.html', {'today':today})
+def doctorProfile(request):
+    today = datetime.date.today()
+    today = str(today)
+    return render(request, 'doctor/profile.html', {'today':today})
 
-# def appointmentList(request):
-#     return render(request, 'admin/appointment-list.html')
+def schedules(request):
+    today = datetime.today()
+    year = today.year
+    month = today.month
+    todate = today.day
+    days_in_month = calendar.monthrange(year, month)[month]
+    days = [datetime(year, month, day) for day in range(todate, days_in_month + 1)]
 
-# def transaction(request):
-#     return render(request, 'admin/transactions-list.html')
+    if request.method == 'POST':
+        time_slot = request.POST.get('time_slot')
+        selected_day = request.POST.get('selected_day') 
+        print(selected_day)
+       
+        if selected_day and time_slot:
+            event_date = datetime.strptime(selected_day, '%Y-%m-%d')
+            event_date = event_date.date()
+            print(event_date)
+            event = Schedule(date=event_date, time_slot=time_slot)
+            event.save()
+            return redirect('calendar_view')  
 
-# def specialities(request):
-#     return render(request, 'admin/specialities.html')
+    schedules = Schedule.objects.all()
+    context = {
+        'days': days,
+        'schedules':schedules,
+    }
+    # return render(request, 'calen.html', context)
+    # days = calendar.month(1)
+    text_cal = calendar.TextCalendar()
+    formatted_month = text_cal.formatmonth(2025, 1)
+    # print(days)
+    return render(request, 'doctor/schedule.html', {'days':formatted_month})
 
-# def doctors(request):
-#     return render(request, 'admin/doctor-list.html')
+def drAppointmentList(request):
+    return render(request, 'doctor/appointment-list.html')
 
-# def patients(request):
-#     return render(request, 'admin/patient-list.html')
+
+def patients(request):
+    return render(request, 'doctor/patient-list.html')

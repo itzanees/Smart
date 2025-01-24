@@ -4,12 +4,13 @@ from . import views
 
 urlpatterns = [
     path('', views.doctorHome, name='doctor_dashboard'),
-    # path('profile/', views.adminProfile, name='admin_profile'),
-    # path('appointment_list/', views.appointmentList, name='appointment_list'),
-    # path('specialities/', views.specialities, name='specialities'),
-    # path('doctors/', views.doctors, name='doctors_list'),
-    # path('patients/', views.patients, name='patients_list'),
-    # path('transaction/', views.transaction, name='transaction'),
-    # path('login/', views.adminLogin, name='admin_login'),
-    # path('forgot_password/', views.adminForgotPassword, name='admin_forgot_password'),
+    path('profile/', views.doctorProfile, name='doctor_profile'),
+    path('appointment_list/', views.drAppointmentList, name='doctor_appointment_list'),
+    path('patients/', views.patients, name='doctor_patients_list'),
+    path('schedule/', views.schedules, name='doctor_schedule'),
+    path('login/', views.doctorLogin, name='doctor_login'),
+    path('forgot_password/', views.doctorForgotPassword, name='doctor_forgot_password'),
+
+     path('calendar/', views.schedules, name='calendar'),  # Base calendar view
+    path('calendar/<int:year>/<int:month>/', views.schedules, name='calendar_with_date'),  # With year/month
 ]

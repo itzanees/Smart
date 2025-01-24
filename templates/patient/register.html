@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block title %}
+Register : Patient Portal
+{% endblock %}
+{% block content %}
+<!-- Main Wrapper -->
+<div class="main-wrapper login-body">
+	<div class="login-wrapper">
+		<div class="container">
+			<div class="loginbox">
+				<div class="login-left">
+					<a href="{% url 'home' %}">
+						<img class="img-fluid" src="{% static 'images/logo-white.png' %}" alt="Logo">
+					</a>
+					<h1>Register</h1>
+					<p class="account-subtitle">Be a Smart member</p>
+				</div>
+				<div class="login-right">
+					<div class="login-right-wrap">
+						<form method="post">
+							{% csrf_token %}
+							{% for field in form %}
+							<div class="form-group">
+								{{ field }}
+								{% if field.errors %}
+								<div class="text-warning small  mt-1">
+									{{ field.errors|join:", " }}
+								</div>
+								{% endif %}
+								{% if field.help_text and not field.errors %}
+								<div class="form-text text-muted">
+									{{ field.help_text }}
+								</div>
+								{% endif %}
+							</div>
+							{% endfor %}
+
+							<button class="w-100 mb-2 btn btn-lg  btn-primary" type="submit">Sign up</button>
+							<small class="text-warning">By clicking Sign up, you agree to the terms of use.</small>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+<!-- /Main Wrapper -->
+
+{% endblock %}
+
+<!-- 
+<div class="form-floating mb-3">
+	{{ field }}
+	<label for="floatingInput">{{ field.label }}</label>
+	{% if field.errors %}
+	<div class="text-danger small mt-1">
+		{{ field.errors|join:", " }}
+	</div>
+	{% endif %}
+	{% if field.help_text and not field.errors %}
+	<div class="form-text text-muted">
+		{{ field.help_text }}
+	</div>
+	{% endif %}
+</div> -->

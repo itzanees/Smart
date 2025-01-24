@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from localflavor.in_.in_states import STATE_CHOICES
 
-# Create your views here.
+import datetime
 
 def home(request):
     return render(request, 'public/index.html')
@@ -28,4 +29,15 @@ def signup(request):
     return render(request, 'signup.html')
 
 def webAppointment(request):
-    return render(request, 'public/book-appointment.html')
+    today = datetime.date.today()
+    today = str(today)
+    return render(request, 'public/search-appointment.html', {'today':today})
+
+def intranet(request):
+    return render(request, 'staff/intranet.html')
+
+def tos(request):
+    return render(request, 'public/tos.html')
+
+def privacy(request):
+    return render(request, 'public/privacy.html')
