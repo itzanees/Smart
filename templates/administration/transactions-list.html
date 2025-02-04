@@ -2,7 +2,7 @@
 
 {% load static %}
 {% block title %}
-Admin Dashboard
+Transactions
 {% endblock %}
 {% block content %}
 
@@ -37,39 +37,88 @@ Admin Dashboard
 								<table class="datatable table table-hover table-center mb-0">
 									<thead>
 										<tr>
-											<th>Invoice Number</th>
+											<th>Inv Num</th>
 											<th>Patient ID</th>
+											<th>Appt. Number</th>
 											<th>Patient Name</th>
+											<th>doctor</th>
+											<th>Appt. Date</th>
 											<th>Total Amount</th>
+											<th class="text-right">Payment Date</th>
 											<th class="text-center">Status</th>
-											<th class="text-right">Actions</th>
+											<th>Action</th>
 										</tr>
 									</thead>
 									<tbody>
+										{% for appointment in appointments %}
 										<tr>
-											<td><a href="invoice.html">#IN0001</a></td>
-											<td>#PT001</td>
+											<td><a href="">#IN0001</a></td>
+											<td>{{ appointment.patient.pat_mrd_no }}</td>
+											<td>{{ appointment.appointment_number }}</td>
 											<td>
 												<h2 class="table-avatar">
-													<a href="{% url 'admin_profile' %}" class="avatar avatar-sm mr-2"><img
-															class="avatar-img rounded-circle"
-															src="{% static 'images/patients/patient1.jpg' %}" alt="User Image"></a>
-													<a href="{% url 'admin_profile' %}">Charlene Reed </a>
+													<a href="" class="avatar avatar-sm mr-2">
+														{% if appointment.patient.user.profile_pic %}
+														<img class="avatar-img rounded-circle" src="{{ appointment.patient.user.profile_pic.url }}" alt="User Image">
+														{% else %}
+														<img class="avatar-img rounded-circle" src="{% static 'images/patients/patient1.jpg' %}" alt="User Image">
+														{% endif %}
+													</a>
+													<a href="">{{ appointment.patient.user.first_name }} {{ appointment.patient.user.last_name }}</a>
 												</h2>
 											</td>
-											<td>₹100.00</td>
+											<td>{{ appointment.doctor }}</td>
+											<td>{{ appointment.appointment_on.date }}</td>
+											<td>{{ appointment.appointment_on.date }}</td>
+											<td> {{ appointment.appointment_fees }}</td>
 											<td class="text-center">
-												<span class="badge badge-pill bg-success inv-badge">Paid</span>
+												{% if appointment.status == 'CO' %}
+												<span class="badge badge-pill bg-success inv-badge">Completed</span>
+												{% elif appointment.status == 'RP' %}
+												<span class="badge badge-pill bg-warning inv-badge">Reported</span>
+												{% elif appointment.status == 'SH' %}
+												<span class="badge badge-pill bg-info inv-badge">Scheduled</span>
+												{% endif %}
 											</td>
 											<td class="text-right">
 												<div class="actions">
 													<a class="btn btn-sm bg-danger-light" data-toggle="modal"
-														href="#delete_modal">
+														href="#delete_{{ appointment.id }}">
 														<i class="fe fe-trash"></i> Delete
 													</a>
 												</div>
 											</td>
 										</tr>
+										<nav>
+											<ul class="pagination">
+												{% if appointments.has_previous %}
+													<li class="page-item">
+														<a class="page-link" href="?page=1">First</a>
+													</li>
+													<li class="page-item">
+														<a class="page-link" href="?page={{ appointments.previous_page_number }}">Previous</a>
+													</li>
+												{% endif %}
+										
+												<li class="page-item active">
+													<span class="page-link">Page {{ appointments.number }} of {{ appointments.paginator.num_pages }}</span>
+												</li>
+										
+												{% if appointments.has_next %}
+													<li class="page-item">
+														<a class="page-link" href="?page={{ appointments.next_page_number }}">Next</a>
+													</li>
+													<li class="page-item">
+														<a class="page-link" href="?page={{  appointments.paginator.num_pages }}">Last</a>
+													</li>
+												{% endif %}
+											</ul>
+										</nav>
+										{% empty %}
+										<tr>
+											<td colspan="10" class="text-center text-danger">No transactions</td>
+										</tr>
+										{% endfor %}
 									</tbody>
 								</table>
 							</div>

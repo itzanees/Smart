@@ -18,6 +18,10 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from administration.views import intranet
+from administration.views import Logout
+# from administration.views import change_password, intranet
+# from django.contrib.auth.views import PasswordChangeDoneView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +30,8 @@ urlpatterns = [
     path('patient/', include('patient.urls')),
     path('doctor/', include('doctor.urls')),
     path('staff/', include('staff.urls')),
+    path('intranet', intranet, name ='intranet'),
+    path('logout', Logout, name='logout')
+    # path('change_password/', change_password, name='change_password'),
+    # path("password_change_done/", PasswordChangeDoneView.as_view(template_name="password_change_done.html"), name="password_change_done"),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

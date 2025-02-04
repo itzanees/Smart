@@ -19,7 +19,9 @@
 			<div class="page-header">
 				<div class="row">
 					<div class="col-sm-12">
-						<h3 class="page-title">My Schedules</h3>
+						<h3 class="page-title">
+							Dr. {{ doctor.first_name }}'s ({{ doctor.username }}) Schedule
+						</h3>
 						<ul class="breadcrumb">
 							<li class="breadcrumb-item"><a href="{% url 'doctor_dashboard' %}">Dashboard</a></li>
 							<li class="breadcrumb-item"><a href="javascript:(0);">Doctor</a></li>
@@ -29,37 +31,20 @@
 				</div>
 			</div>
 			<!-- /Page Header -->
-			<div class="container mt-4">
-				<h2>Dr. {{ doctor.first_name }}'s ({{ doctor.username }}) Schedule</h2>
+			<div class="container mt-2 bg-secondary p-4 text-white rounded-lg shadow">
 				<ul class="nav nav-tabs" id="scheduleTab" role="tablist">
-					<li class="nav-item" role="presentation">
-						<a class="nav-link active" id="create-tab" data-bs-toggle="tab" href="#create" role="tab"
-							aria-controls="create" aria-selected="true">Create Slots</a>
+					<li class="nav-item bg-primary" role="presentation">
+						<a class="nav-link active" id="available-tab" data-bs-toggle="tab" href="#available" role="tab"
+							aria-controls="available" aria-selected="true">Available Slots</a>
 					</li>
-					<li class="nav-item" role="presentation">
-						<a class="nav-link" id="available-tab" data-bs-toggle="tab" href="#available" role="tab"
-							aria-controls="available" aria-selected="false">Available Slots</a>
-					</li>
-					<li class="nav-item" role="presentation">
+					<li class="nav-item bg-primary" role="presentation">
 						<a class="nav-link" id="booked-tab" data-bs-toggle="tab" href="#booked" role="tab"
 							aria-controls="booked" aria-selected="false">Booked Slots</a>
 					</li>
 				</ul>
 				<div class="tab-content mt-3" id="scheduleTabContent">
-					<!-- Make Slots Tab -->
-					<div class="tab-pane fade show active" id="create" role="tabpanel" aria-labelledby="create-tab">
-						<h4>Create Slots</h4>
-						<form action="" method="post">
-							{% csrf_token %}
-							{{ form.as_p }}
-							<input type="hidden" name="doc_id" value="{{ doctor.id }}">
-							<input type="hidden" name="create_schedule" value="true">
-							<button type="submit" class="btn btn-primary">Create {{ doctor.id }}</button>
-
-						</form>
-					</div>
 					<!-- Available Slots Tab -->
-					<div class="tab-pane fade " id="available" role="tabpanel"
+					<div class="tab-pane fade show active" id="available" role="tabpanel"
 						aria-labelledby="available-tab">
 						<h4>Available Slots</h4>
 						{% if available_slots %}
@@ -85,10 +70,36 @@
 								{% endfor %}
 							</tbody>
 						</table>
+						<nav>
+							<ul class="pagination">
+								{% if available_slots.has_previous %}
+									<li class="page-item">
+										<a class="page-link" href="?page=1">First</a>
+									</li>
+									<li class="page-item">
+										<a class="page-link" href="?page={{ available_slots.previous_page_number }}">Previous</a>
+									</li>
+								{% endif %}
+						
+								<li class="page-item active">
+									<span class="page-link">Page {{ available_slots.number }} of {{ available_slots.paginator.num_pages }}</span>
+								</li>
+						
+								{% if available_slots.has_next %}
+									<li class="page-item">
+										<a class="page-link" href="?page={{ available_slots.next_page_number }}">Next</a>
+									</li>
+									<li class="page-item">
+										<a class="page-link" href="?page={{ available_slots.paginator.num_pages }}">Last</a>
+									</li>
+								{% endif %}
+							</ul>
+						</nav>
 						{% else %}
 						<p>No available slots at the moment.</p>
 						{% endif %}
 					</div>
+					
 
 					<!-- Booked Slots Tab -->
 					<div class="tab-pane fade" id="booked" role="tabpanel" aria-labelledby="booked-tab">
@@ -100,6 +111,7 @@
 									<th>Date</th>
 									<th>Time</th>
 									<th>Duration (mins)</th>
+									<th>Appontment Number</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -108,15 +120,42 @@
 									<td>{{ slot.date }}</td>
 									<td>{{ slot.start_time }}</td>
 									<td>{{ slot.duration }}</td>
+									<td>{{ slot.schedule.appointment_number }}</td>
 								</tr>
 								{% endfor %}
 							</tbody>
 						</table>
+						<nav>
+							<ul class="pagination">
+								{% if booked_slots.has_previous %}
+									<li class="page-item">
+										<a class="page-link" href="?page=1">First</a>
+									</li>
+									<li class="page-item">
+										<a class="page-link" href="?page={{ booked_slots.previous_page_number }}">Previous</a>
+									</li>
+								{% endif %}
+						
+								<li class="page-item active">
+									<span class="page-link">Page {{ booked_slots.number }} of {{ booked_slots.paginator.num_pages }}</span>
+								</li>
+						
+								{% if booked_slots.has_next %}
+									<li class="page-item">
+										<a class="page-link" href="?page={{ booked_slots.next_page_number }}">Next</a>
+									</li>
+									<li class="page-item">
+										<a class="page-link" href="?page={{ booked_slots.paginator.num_pages }}">Last</a>
+									</li>
+								{% endif %}
+							</ul>
+						</nav>
 						{% else %}
 						<p>No slots booked yet.</p>
 						{% endif %}
 					</div>
 				</div>
+				
 			</div>
 
 			<!-- /Page Wrapper -->

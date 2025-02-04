@@ -26,16 +26,33 @@ Doctors
 							<li class="breadcrumb-item active">Doctor</li>
 						</ul>
 					</div>
-					<!-- <div class="col-sm-5">
-						<a href="#Add_New_Doctor" data-toggle="modal" class="btn btn-primary float-right mt-2">New
-							Doctor</a>
-					</div> -->
+					<div class="col-sm-5">
+						<a href="{% url 'createschedule' %}" class="btn btn-primary float-right mt-2">Generate Schedules</a>
+						<!-- <a href="#Add_New_Doctor" data-toggle="modal" class="btn btn-primary float-right mt-2">New
+							Doctor</a> -->
+					</div>
 				</div>
 			</div>
 			<!-- /Page Header -->
 
 			<div class="row">
 				<div class="col-sm-12">
+					{% for message in messages %}
+					<div class="container container-fluid w-min">
+					{% if message.tags == 'error' %}
+					<div class="text-center alert alert-warning alert-dismissible fade show" role="alert">
+						<strong>{{ message }}</strong>
+						<a class="close" href="#" data-dismiss="alert">×</a>
+					</div>
+					{% endif %}
+					{% if message.tags == 'success' %}
+						<div class="text-center alert alert-success alert-dismissible fade show" role="alert">
+							<strong>{{ message }}</strong>
+						<a class="close" href="#" data-dismiss="alert">×</a>
+						</div>
+					{% endif %}
+					</div>
+					{% endfor %}
 					<div class="card">
 						<div class="card-body">
 							<div class="table-responsive">
@@ -66,7 +83,7 @@ Doctors
 														{% if doctor.profile_pic %}
 														<img class="avatar-img rounded-circle" src="{{ doctor.profile_pic.url }}" alt="User Image">
 														{% else %}
-														<img class="avatar-img rounded-circle" src="{% static 'images//doctors/doctor-thumb-01.jpg' %}" alt="User Image">
+														<img class="avatar-img rounded-circle" src="{% static 'images/doctors/doc.png' %}" alt="User Image">
 														{% endif %}
 													</a>
 													<a href="{% url 'users_profile' doctor.id %}">Dr. {{ doctor.first_name }}</a>
@@ -76,7 +93,9 @@ Doctors
 											<td>{{ doctor.doctor.department }}</td>
 											<td>{{ doctor.doctor.license_number }}</td>
 											<td>{{ doctor.created_at.date }} <br><small>{{ doctor.created_at.time }}</small></td>
-											<td><a href="{% url 'schedule_view' doctor.id %}">Schedules</a></td>
+											<td >
+												<a href="{% url 'schedule_view' doctor.id %}" class="px-1"><i class="fa-solid fa-eye text-info"></i></a>
+											</td>
 											<td>
 												<div class="actions">
 													<!-- <a class="btn btn-sm bg-success-light" data-toggle="modal"
@@ -121,6 +140,31 @@ Doctors
 										{% endfor %}
 									</tbody>
 								</table>
+								<nav>
+									<ul class="pagination">
+										{% if doctors.has_previous %}
+											<li class="page-item">
+												<a class="page-link" href="?page=1">First</a>
+											</li>
+											<li class="page-item">
+												<a class="page-link" href="?page={{ doctors.previous_page_number }}">Previous</a>
+											</li>
+										{% endif %}
+								
+										<li class="page-item active">
+											<span class="page-link">Page {{ doctors.number }} of {{ doctors.paginator.num_pages }}</span>
+										</li>
+								
+										{% if doctors.has_next %}
+											<li class="page-item">
+												<a class="page-link" href="?page={{ doctors.next_page_number }}">Next</a>
+											</li>
+											<li class="page-item">
+												<a class="page-link" href="?page={{ doctors.paginator.num_pages }}">Last</a>
+											</li>
+										{% endif %}
+									</ul>
+								</nav>
 							</div>
 						</div>
 					</div>

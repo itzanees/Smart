@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from datetime import datetime, timezone
+from datetime import datetime, timedelta
+from django.utils import timezone
 
 class CustomUser(AbstractUser):
     GENDER_CHOICES = [
@@ -15,7 +16,7 @@ class CustomUser(AbstractUser):
         ('Staff', 'Staff'),
     ]
 
-    user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='Patient')
+    user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='', null=True, blank=True)
     phone_number = models.CharField(max_length=10, unique=True, null=True, blank=True)
     profile_pic = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
@@ -36,6 +37,7 @@ class Department(models.Model):
     dep_image = models.ImageField(upload_to='department/', null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     is_active = models.BooleanField(default=False)
+    slug = models.SlugField(max_length=32,default='')
 
     def __str__(self):
          return self.name
@@ -52,7 +54,7 @@ class Patient(models.Model):
         super().save(*args, **kwargs)
     
     def __str__(self):
-        return f"{self.user.username}'s Profile"
+        return f"{self.user.first_name} {self.user.last_name}"
 
 # class Schedule(models.Model):
 #     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='schedule')
@@ -61,13 +63,14 @@ class Patient(models.Model):
 #     is_available = models.BooleanField(default=True)
 
 
-class Doctor(models.Model):
+class   Doctor(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='doctor')
     department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
     employ_code = models.CharField(max_length=32, unique=True)
     qualification = models.CharField(max_length=64)
     license_number  = models.CharField(max_length=32, unique=True, null=True, blank=True)
     consult_fees = models.DecimalField(max_digits=6, decimal_places=2, default=100, null=True, blank=True)
+    slug = models.SlugField(max_length=32,default='')
     # experience_years = models.IntegerField()
     def save(self, *args, **kwargs):
         if not self.employ_code:
@@ -77,22 +80,24 @@ class Doctor(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Dr. {self.user.username}'s Profile"
+        return f"Dr. {self.user.first_name} {self.user.last_name}"
 
 class Schedule(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='schedule')
     date = models.DateField()
-    # end_date = models.DateField(null=True,blank=True)
+    end_date = models.DateField(null=True,blank=True)
     start_time = models.TimeField()
+    end_time = models.TimeField(null=True,blank=True)
     duration = models.PositiveIntegerField(help_text='Slot Duration in Minutes')
     is_booked = models.BooleanField(default=False)
+    slug = models.SlugField(max_length=32, default='')
 
     class Meta:
         unique_together = ['doctor', 'date', 'start_time']
     
-    def __str__(self):
-        return f'{self.doctor.username} - {self.date} {self.start_time} '
     
+    def __str__(self):
+        return f'Schedule of {self.doctor} - {self.date} {self.start_time}'
 
 class Staff(models.Model):
     ROLE_CHOICES = [
@@ -123,31 +128,26 @@ class Appointment(models.Model):
         ('RP', 'Reported'),
         ('CO', 'Completed')
     ]
-    REASON = [
-         ('CO', 'Consultaion'),
-         ('FU', 'Follow-up'),
-         ('SG', 'Surgery')
-    ]
 
     appointment_number = models.CharField(max_length=32, unique=True)    
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE) 
-    department = models.ForeignKey(Department, on_delete=models.CASCADE)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
-    reason = models.CharField(max_length=2, choices=REASON)
-    appointment_on = models.ForeignKey(Schedule, on_delete=models.SET_NULL, null=True, blank=True)
-    consultaion_fees = models.DecimalField(max_digits=6,decimal_places=2)
-    status = models.CharField(max_length=2, choices=STATUS)
+    appointment_on = models.OneToOneField(Schedule, on_delete=models.SET_NULL, null=True, blank=True, related_name='schedule')
+    appointment_fees = models.DecimalField(max_digits=6,decimal_places=2, default='100')
+    status = models.CharField(max_length=2, choices=STATUS, default='SH')
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    slug = models.SlugField(max_length=32 ,default='')
     
     def save(self, *args, **kwargs):
         if not self.appointment_number:
             last_appt = Appointment.objects.last()
             today = f"{datetime.today().year}{datetime.today().month}{datetime.today().day}"
-            last_id = int(last_appt.appointment_number.split('-')[1]) if last_appt else 1
-            self.appointment_number = f"SAPT-{today}{last_id + 1}"
+            last_id = int(last_appt.appointment_number.split('-')[2]) if last_appt else 0
+            self.appointment_number = f"SAPT-{today}-{last_id + 1}"
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.patient.username}'s booking with {self.doctor.username}"
+        return f"{self.patient.user.username}'s booking with {self.doctor}"
     
 
 class MedicalRecord(models.Model):

@@ -38,72 +38,216 @@ Appointments
 					<!-- Recent Orders -->
 					<div class="card">
 						<div class="card-body">
-							<div class="table-responsive">
-								<table class="datatable table table-hover table-center mb-0">
-									<thead>
-										<tr>
-											<th>Doctor Name</th>
-											<th>Speciality</th>
-											<th>Patient Name</th>
-											<th>Apointment Time</th>
-											<th>Status</th>
-											<th class="text-right">Amount</th>
-											<th>Action</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>
-												<h2 class="table-avatar">
-													<a href="{% url 'admin_profile' %}"
-														class="avatar avatar-sm mr-2"><img
-															class="avatar-img rounded-circle"
-															src="{% static 'images//doctors/doctor-thumb-01.jpg' %}"
-															alt="User Image"></a>
-													<a href="{% url 'admin_profile' %}">Dr. Ruby Perrin</a>
-												</h2>
-											</td>
-											<td>Dental</td>
-											<td>
-												<h2 class="table-avatar">
-													<a href="{% url 'admin_profile' %}"
-														class="avatar avatar-sm mr-2"><img
-															class="avatar-img rounded-circle"
-															src="{% static 'images//patients/patient1.jpg' %}"
-															alt="User Image"></a>
-													<a href="{% url 'admin_profile' %}">Charlene Reed </a>
-												</h2>
-											</td>
-											<td>9 Nov 2019 <span class="text-primary d-block">11.00 AM - 11.15 AM</span>
-											</td>
-											<td>
-												<div class="status-toggle">
-													<input type="checkbox" id="status_1" class="check" checked>
-													<label for="status_1" class="checktoggle">checkbox</label>
-												</div>
-											</td>
-											<td class="text-right">
-												₹200.00
-											</td>
-											<td>
-												<div class="actions">
-													<a class="btn btn-sm bg-success-light" data-toggle="modal"
-														href="#edit_appointment_details">
-														<i class="fe fe-pencil"></i> Edit
-													</a>
-													<a data-toggle="modal" href="#delete_modal"
-														class="btn btn-sm bg-danger-light">
-														<i class="fe fe-trash"></i> Delete
-													</a>
-												</div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
+							{% if latest_page_obj %}
+								<div class="table-responsive">
+									<table class="datatable table table-hover table-center mb-0">
+										<thead>
+											<tr>
+												<th>Doctor Name</th>
+												<th>Speciality</th>
+												<th>Patient Name</th>
+												<th>Apointment Time</th>
+												<th>Status</th>
+												<th class="text-right">Amount</th>
+												<th>Action</th>
+											</tr>
+										</thead>
+										<tbody>
+											{% for appointment in latest_page_obj %}
+											<tr>
+												<td>
+													<h2 class="table-avatar">
+														<a href=""
+															class="avatar avatar-sm mr-2">
+															<img class="avatar-img rounded-circle"
+																src="{% static 'images//doctors/doctor-thumb-01.jpg' %}"
+																alt="User Image">
+															</a>
+														<a href="">{{ appointment.doctor.user.first_name }} {{ appointment.doctor.user.last_name }}</a>
+													</h2>
+												</td>
+												<td>{{ appointment.doctor.department.name }}</td>
+												<td>
+													<h2 class="table-avatar">
+														<a href="{% url 'admin_profile' %}"
+															class="avatar avatar-sm mr-2"><img
+																class="avatar-img rounded-circle"
+																src="{% static 'images//patients/patient1.jpg' %}"
+																alt="User Image"></a>
+														<a href="{% url 'admin_profile' %}">{{ appointment.patient.user.first_name }}, {{ appointment.patient.user.last_name }} </a>
+													</h2>
+												</td>
+												<td>{{ appointment.appointment_on.date }} <span class="text-primary d-block">{{ appointment.appointment_on.start_time }} - {{ appointment.appointment_on.end_time }}  </span>
+												</td>
+												<td>
+													{% if appointment.status == 'SH' %}
+													<i class="fa-solid fa-calendar-day text-info"></i> Scheduled 
+													{% elif appointment.status == 'RP' %}
+													<i class="fa-solid fa-file-medical text-warning"></i> Reported
+													{% elif appointment.status == 'CO' %}
+													<i class="fa-solid fa-calendar-check text-success"></i> Completed
+													
+													{% endif %}
+													<!-- <div class="status-toggle">
+														<input disabled type="checkbox" id="status_1" class="check" 
+														checked>
+														<label for="status_1" class="checktoggle">Status</label>
+													</div> -->
+													
+												</td>
+												<td class="text-right">
+													₹200.00
+												</td>
+												<td>
+													<div class="actions">
+														<a class="btn btn-sm bg-success-light" data-toggle="modal"
+															href="#edit_appointment_details">
+															<i class="fe fe-pencil"></i> Edit
+														</a>
+														<a data-toggle="modal" href="#delete_modal"
+															class="btn btn-sm bg-danger-light">
+															<i class="fe fe-trash"></i> Delete
+														</a>
+													</div>
+												</td>
+											</tr>
+											{% endfor %}
+											{% endif %}
+										</tbody>
+									</table>
+									{% if latest_page_obj %}
+									<nav>
+										<ul class="pagination">
+											{% if latest_page_obj.has_previous %}
+												<li class="page-item">
+													<a class="page-link" href="?page=1">First</a>
+												</li>
+												<li class="page-item">
+													<a class="page-link" href="?page={{ latest_page_obj.previous_page_number }}">Previous</a>
+												</li>
+											{% endif %}
+									
+											<li class="page-item active">
+												<span class="page-link">Page {{ latest_page_obj.number }} of {{ latest_page_obj.paginator.num_pages }}</span>
+											</li>
+									
+											{% if latest_page_obj.has_next %}
+												<li class="page-item">
+													<a class="page-link" href="?page={{ latest_page_obj.next_page_number }}">Next</a>
+												</li>
+												<li class="page-item">
+													<a class="page-link" href="?page={{ latest_page_obj.paginator.num_pages }}">Last</a>
+												</li>
+											{% endif %}
+										</ul>
+									</nav>
+									{% endif %}
+									{% if all_page_obj %}
+									<div class="table-responsive">
+										<table class="datatable table table-hover table-center mb-0">
+											<thead>
+												<tr>
+													<th>Doctor Name</th>
+													<th>Speciality</th>
+													<th>Patient Name</th>
+													<th>Apointment Time</th>
+													<th>Status</th>
+													<th class="text-right">Amount</th>
+													<th>Action</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% for appointment in all_page_obj %}
+												<tr>
+													<td>
+														<h2 class="table-avatar">
+															<a href=""
+																class="avatar avatar-sm mr-2">
+																<img class="avatar-img rounded-circle"
+																	src="{% static 'images//doctors/doctor-thumb-01.jpg' %}"
+																	alt="User Image">
+																</a>
+															<a href="">{{ appointment.doctor.user.first_name }} {{ appointment.doctor.user.last_name }}</a>
+														</h2>
+													</td>
+													<td>{{ appointment.doctor.department.name }}</td>
+													<td>
+														<h2 class="table-avatar">
+															<a href="{% url 'admin_profile' %}"
+																class="avatar avatar-sm mr-2"><img
+																	class="avatar-img rounded-circle"
+																	src="{% static 'images//patients/patient1.jpg' %}"
+																	alt="User Image"></a>
+															<a href="{% url 'admin_profile' %}">{{ appointment.patient.user.first_name }}, {{ appointment.patient.user.last_name }} </a>
+														</h2>
+													</td>
+													<td>{{ appointment.appointment_on.date }} <span class="text-primary d-block">{{ appointment.appointment_on.start_time }} - {{ appointment.appointment_on.end_time }}  </span>
+													</td>
+													<td>
+														{% if appointment.status == 'SH' %}
+														<i class="fa-solid fa-calendar-day text-info"></i> Scheduled 
+														{% elif appointment.status == 'RP' %}
+														<i class="fa-solid fa-file-medical text-warning"></i> Reported
+														{% elif appointment.status == 'CO' %}
+														<i class="fa-solid fa-calendar-check text-success"></i> Completed
+														
+														{% endif %}
+														<!-- <div class="status-toggle">
+															<input disabled type="checkbox" id="status_1" class="check" 
+															checked>
+															<label for="status_1" class="checktoggle">Status</label>
+														</div> -->
+														
+													</td>
+													<td class="text-right">
+														₹200.00
+													</td>
+													<td>
+														<div class="actions">
+															<a class="btn btn-sm bg-success-light" data-toggle="modal"
+																href="#edit_appointment_details">
+																<i class="fe fe-pencil"></i> Edit
+															</a>
+															<a data-toggle="modal" href="#delete_modal"
+																class="btn btn-sm bg-danger-light">
+																<i class="fe fe-trash"></i> Delete
+															</a>
+														</div>
+													</td>
+												</tr>
+												{% endfor %}
+											</tbody>
+										</table>
+										<nav>
+											<ul class="pagination">
+												{% if all_page_obj.has_previous %}
+													<li class="page-item">
+														<a class="page-link" href="?page=1">First</a>
+													</li>
+													<li class="page-item">
+														<a class="page-link" href="?page={{ all_page_obj.previous_page_number }}">Previous</a>
+													</li>
+												{% endif %}
+										
+												<li class="page-item active">
+													<span class="page-link">Page {{ all_page_obj.number }} of {{ all_page_obj.paginator.num_pages }}</span>
+												</li>
+										
+												{% if all_page_obj.has_next %}
+													<li class="page-item">
+														<a class="page-link" href="?page={{ all_page_obj.next_page_number }}">Next</a>
+													</li>
+													<li class="page-item">
+														<a class="page-link" href="?page={{ all_page_obj.paginator.num_pages }}">Last</a>
+													</li>
+												{% endif %}
+											</ul>
+										</nav>
+									</div>
+									{% endif %}
+								</div>
 						</div>
 					</div>
-					<!-- /Recent Orders -->
 
 					<!-- Add Appointment Modal -->
 					<div class="modal fade" id="Add_Appointment_details" aria-hidden="true" role="dialog">

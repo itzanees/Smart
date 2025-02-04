@@ -1,7 +1,7 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from .models import CustomUser, Department, Doctor, Patient, Schedule
-from datetime import date, timedelta
+from datetime import datetime, date, timedelta
 from django.utils import timezone
 
 class PatientRegistrationForm(UserCreationForm):
@@ -30,7 +30,7 @@ class PatientRegistrationForm(UserCreationForm):
 class DepartmentCreationForm(forms.ModelForm):
     class Meta:
         model = Department
-        fields = '__all__'
+        fields = ['name', 'dep_image', 'description', 'is_active']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -51,7 +51,7 @@ class DepartmentCreationForm(forms.ModelForm):
             if field_name == 'is_active':    
                 field.widget = forms.CheckboxInput(
                     attrs={
-                        'class' : '',
+                        'class' : 'form-control',
                     }
                 )
                 field.label = ('Is Active?')
@@ -59,7 +59,7 @@ class DepartmentCreationForm(forms.ModelForm):
 class UserRegistrationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
             model = CustomUser
-            fields = UserCreationForm.Meta.fields + ('first_name', 'last_name', 'email', 'phone_number', 'user_type')
+            fields = UserCreationForm.Meta.fields + ('first_name', 'last_name', 'gender', 'email', 'phone_number', 'user_type')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -78,6 +78,11 @@ class PatientProfileForm(forms.ModelForm):
 
 
 class ProfileUpdateForm(forms.ModelForm):
+    GENDER_CHOICES = [
+        ('M', 'Male'),
+        ('F', 'Female'),
+        ('T', 'Transgender')
+    ]
     # Fields from CustomUser
     email = forms.EmailField(required=True)
     first_name = forms.CharField(max_length=30, required=True)
@@ -85,6 +90,7 @@ class ProfileUpdateForm(forms.ModelForm):
     phone_number = forms.CharField(max_length=10,required=True)
     profile_pic = forms.ImageField(required=False)
     date_of_birth = forms.DateField()
+    gender = forms.ChoiceField(choices=GENDER_CHOICES)
     address1 = forms.CharField(max_length=128,required=True)
     address2 = forms.CharField(max_length=123,required=False)
     city = forms.CharField(max_length=32,required=True)
@@ -109,7 +115,7 @@ class ProfileUpdateForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'first_name','last_name', 'date_of_birth', 'email', 'phone_number', 'profile_pic', 'address1', 'address2', 'city', 'state', 'pincode', 'country']
+        fields = ['username', 'first_name','last_name', 'date_of_birth', 'gender', 'email', 'phone_number', 'profile_pic', 'address1', 'address2', 'city', 'state', 'pincode', 'country']
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
@@ -186,11 +192,31 @@ class ProfileUpdateForm(forms.ModelForm):
 
         return user
     
+# def generate_schedule_for_doctor(doctor, date, end_date, start_time, end_time, duration):
+#         start_date = date
+#         end_date = end_date
+        
+#         current_date = start_date
+#         while current_date <= end_date:
+#             start_time = datetime(start_date.year, start_date.month, start_date.day, start_time.time, start_time.minute)
+#             end_time = datetime(end_date.year, end_date.month, end_date.day, end_time.time, end_time.minute)
+            
+#             while start_time < end_time:
+#                 Schedule.objects.create(
+#                     doctor=doctor,
+#                     date=current_date,
+#                     end_date=end_date,
+#                     start_time=start_time.time(),
+#                     end_time=end_time.time(),
+#                     duration=duration,
+#                 )
+#                 start_time += timedelta(minutes=duration)  # Move to the next slot
+#             current_date += timedelta(days=1)
+
 class SheduleCreatorForm(forms.ModelForm):
-    # end_date = forms.DateInput()
     class Meta:
         model = Schedule
-        fields = ['doctor','date','start_time','duration']
+        fields = ['doctor','date', 'end_date','start_time', 'end_time','duration']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -200,19 +226,19 @@ class SheduleCreatorForm(forms.ModelForm):
             field.widget.attrs['placeholder'] = field.label
             field.help_text = None
 
-            if field_name == 'date':
+            if field_name == 'date' or field_name == 'end_date':
                 field.widget = forms.DateInput(attrs={
                     'type': 'text',
                     'class': 'form-control',
-                    'placeholder': 'Start Date',
-                    'min' : str(timezone.now().date()),
-                    'max' : str(timezone.now().date() + timedelta(days=30)),
+                    'placeholder': 'mm/dd/yyyy',
+                    'min' : str(timezone.now().date() + timedelta(days = 3)),
+                    'max' : str(timezone.now().date() + timedelta(days=33)),
                     'onclick':"(this.type='date')",
                     'onblur':"(this.type='text')",
                 })
 
             
-            if field_name == 'start_time':
+            if field_name == 'start_time' or field_name == 'end_time':
                 field.widget = forms.TimeInput(attrs={
                     'type': 'text',
                     'class': 'form-control',
@@ -222,23 +248,28 @@ class SheduleCreatorForm(forms.ModelForm):
                     'onblur':"(this.type='text')",
                 })
 
-#  def generate_schedule_for_doctor(doctor, duration=30):
-#     start_date = timezone.now().date()
-#     end_date = start_date + timedelta(days=180)  # 6 months from now
-    
-#     current_date = start_date
-#     while current_date <= end_date:
-#         # Generate time slots for each day
-#         start_time = datetime(current_date.year, current_date.month, current_date.day, 9, 0)  # Starting at 9 AM
-#         end_time = datetime(current_date.year, current_date.month, current_date.day, 17, 0)  # Ending at 5 PM
-        
-#         while start_time < end_time:
-#             # Create the time slot for this doctor
-#             Schedule.objects.create(
-#                 doctor=doctor,
-#                 date=current_date,
-#                 start_time=start_time.time(),
-#                 duration=duration
-#             )
-#             start_time += timedelta(minutes=duration)  # Move to the next slot
-#         current_date += timedelta(days=1)
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    old_password = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'class':'form-control',
+            'placeholder' : "Enter Current Passaword",
+            }),
+        label='Current Password'
+    )
+
+    new_password1 = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'class':'form-control',
+            'placeholder' : "Enter New Password",
+            }),
+        label='New Password'
+    )
+
+    new_password2 = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'class':'form-control',
+            'placeholder' : "Confirm New Password",
+            }),
+        label='Confirm New Password'
+    )

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'patient/base.html' %}
 
 {% load static %}
 {% block title %}
@@ -9,137 +9,190 @@ Specialities
 <!-- Main Wrapper -->
 <div class="main-wrapper">
 
-	{% include 'patient/sidebar.html' %}
 
 	<!-- Page Wrapper -->
 	<div class="page-wrapper">
-		<div class="content container-fluid">
-
-			<!-- Page Header -->
-			<div class="page-header">
-				<div class="row">
-					<div class="col-sm-7 col-auto">
-						<h3 class="page-title">Specialities</h3>
-						<ul class="breadcrumb">
-							<li class="breadcrumb-item"><a href="{% url 'patient_dashboard' %}">Dashboard</a></li>
-							<li class="breadcrumb-item active">Specialities</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<!-- /Page Header -->
+		<div class="content container-fluid w-50">
 			<div class="row">
 				<div class="col-sm-12">
-					<div class="row">
-						<div class="col-md-3">
-							<h2 class="table-avatar">
-								<a href="" class="avatar avatar-sm mr-2">
-									<img class="avatar-img" src="{% static 'images/specialities/specialities-01.png' %}"
-										alt="Speciality">
-								</a>
-								<a href="">Urology</a>
+					<div class="card">
+						<div class="card-body">
+							<div class="table-responsive">
+								<table class="datatable table table-hover table-center mb-0">
+									{% if specialities %}
+									<thead>
+										<tr>
+											<th>#</th>
+											<th>Specialities</th>
+											<th>Description</th>
+											<th>Status</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for field in specialities %}
+										<tr>
+											<td>{{ forloop.counter }}</td>
+
+											<td>
+												<h2 class="table-avatar">
+													<a href="" class="avatar avatar-sm mr-2">
+														{% if field.dep_image %}
+														<img class="avatar-img" src="{{ field.dep_image.url }}"
+															alt="Speciality">
+														{% endif %}
+													</a>
+													<a href="{% url 'doc_hosp_specialities' field.id %}">{{ field.name }}</a>
+												</h2>
+											</td>
+
+											<td>{{ field.description }}</td>
+											<td>{% if field.is_active %}
+												<i class="fa-solid fa-house-medical-circle-check text-success"></i>
+												{% else %}
+												<i class="fa-solid fa-shop-slash text-danger"></i>
+												{% endif %}
+											</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+									{% endif %}
+								</table>
+								<table class="datatable table table-hover table-center mb-0">
+									{% if doctors %}
+									<thead>
+										<tr>
+											<th>#</th>
+											<th>Name</th>
+											<th>Degree</th>
+											<th>Smartian Since</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for doctor in doctors %}
+										<tr>
+											<td>{{ forloop.counter }}</td>
+
+											<td>
+												<h2 class="table-avatar">
+													<a href="" class="avatar avatar-sm mr-2">
+														{% if doctor.user.profile_pic %}
+														<img class="avatar-img rounded-circle" src="{{ doctor.user.profile_pic.url }}"
+															alt="User image">
+														{% endif %}
+													</a>
+													<a href="{% url 'pat_doctor_profile' doctor.id %}">{{ doctor.user.first_name }} {{ doctor.user.last_name }}</a>
+												</h2>
+											</td>
+
+											<td>{{ doctor.qualification }}</td>
+											<td>{{ doctor.user.created_at.date }}</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+									{% endif %}
+								</table>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
-<!-- /Page Wrapper -->
+	<!-- /Page Wrapper -->
 
 
-<!-- Add Modal -->
-<div class="modal fade" id="Add_Specialities_details" aria-hidden="true" role="dialog">
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Add Specialities</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<form>
-					<div class="row form-row">
-						<div class="col-12 col-sm-6">
-							<div class="form-group">
-								<label>Specialities</label>
-								<input type="text" class="form-control">
+	<!-- Add Modal -->
+	<div class="modal fade" id="Add_Specialities_details" aria-hidden="true" role="dialog">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Add Specialities</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="row form-row">
+							<div class="col-12 col-sm-6">
+								<div class="form-group">
+									<label>Specialities</label>
+									<input type="text" class="form-control">
+								</div>
 							</div>
-						</div>
-						<div class="col-12 col-sm-6">
-							<div class="form-group">
-								<label>Image</label>
-								<input type="file" class="form-control">
+							<div class="col-12 col-sm-6">
+								<div class="form-group">
+									<label>Image</label>
+									<input type="file" class="form-control">
+								</div>
 							</div>
-						</div>
 
-					</div>
-					<button type="submit" class="btn btn-primary btn-block">Save Changes</button>
-				</form>
-			</div>
-		</div>
-	</div>
-</div>
-<!-- /ADD Modal -->
-
-<!-- Edit Details Modal -->
-<div class="modal fade" id="edit_specialities_details" aria-hidden="true" role="dialog">
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title">Edit Specialities</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<form>
-					<div class="row form-row">
-						<div class="col-12 col-sm-6">
-							<div class="form-group">
-								<label>Specialities</label>
-								<input type="text" class="form-control" value="Cardiology">
-							</div>
 						</div>
-						<div class="col-12 col-sm-6">
-							<div class="form-group">
-								<label>Image</label>
-								<input type="file" class="form-control">
-							</div>
-						</div>
-
-					</div>
-					<button type="submit" class="btn btn-primary btn-block">Save Changes</button>
-				</form>
+						<button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
-<!-- /Edit Details Modal -->
+	<!-- /ADD Modal -->
 
-<!-- Delete Modal -->
-<div class="modal fade" id="delete_modal" aria-hidden="true" role="dialog">
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<!--	<div class="modal-header">
+	<!-- Edit Details Modal -->
+	<div class="modal fade" id="edit_specialities_details" aria-hidden="true" role="dialog">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Edit Specialities</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="row form-row">
+							<div class="col-12 col-sm-6">
+								<div class="form-group">
+									<label>Specialities</label>
+									<input type="text" class="form-control" value="Cardiology">
+								</div>
+							</div>
+							<div class="col-12 col-sm-6">
+								<div class="form-group">
+									<label>Image</label>
+									<input type="file" class="form-control">
+								</div>
+							</div>
+
+						</div>
+						<button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Edit Details Modal -->
+
+	<!-- Delete Modal -->
+	<div class="modal fade" id="delete_modal" aria-hidden="true" role="dialog">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<!--	<div class="modal-header">
 							<h5 class="modal-title">Delete</h5>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
 						</div>-->
-			<div class="modal-body">
-				<div class="form-content p-2">
-					<h4 class="modal-title">Delete</h4>
-					<p class="mb-4">Are you sure want to delete?</p>
-					<button type="button" class="btn btn-primary">Save </button>
-					<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+				<div class="modal-body">
+					<div class="form-content p-2">
+						<h4 class="modal-title">Delete</h4>
+						<p class="mb-4">Are you sure want to delete?</p>
+						<button type="button" class="btn btn-primary">Save </button>
+						<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
-<!-- /Delete Modal -->
+	<!-- /Delete Modal -->
 </div>
 <!-- /Main Wrapper -->
 {% endblock %}

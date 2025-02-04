@@ -1,8 +1,10 @@
-from django.shortcuts import render
-from django.contrib.auth import login, logout
-from django.contrib.auth.decorators import login_required,permission_required
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required, permission_required
 from datetime import datetime
+from django.utils import timezone
 import calendar
+from administration.models import Schedule
 
 def doctorLogin(request):
     return render(request, 'doctor/login.html')
@@ -15,12 +17,12 @@ def doctorHome(request):
     return render(request, 'doctor/index.html')
 
 def doctorProfile(request):
-    today = datetime.date.today()
+    today = timezone.now()
     today = str(today)
     return render(request, 'doctor/profile.html', {'today':today})
 
 def schedules(request):
-    today = datetime.today()
+    today = timezone.now()
     year = today.year
     month = today.month
     todate = today.day

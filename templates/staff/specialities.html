@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block title %}
+Specialities
+{% endblock %}
+{% block content %}
+
+<!-- Main Wrapper -->
+<div class="main-wrapper">
+
+	{% include 'staff/sidebar.html' %}
+
+	<!-- Page Wrapper -->
+	<div class="page-wrapper">
+		<div class="content container-fluid">
+
+			<!-- Page Header -->
+			<div class="page-header">
+				<div class="row">
+					<div class="col-sm-7 col-auto">
+						<h3 class="page-title">Specialities</h3>
+						<ul class="breadcrumb">
+							<li class="breadcrumb-item"><a href="{% url 'staff_dashboard' %}">Dashboard</a></li>
+							<li class="breadcrumb-item active">Specialities</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- /Page Header -->
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="card">
+						<div class="card-body">
+							<div class="table-responsive">
+								<table class="datatable table table-hover table-center mb-0">
+									<thead>
+										<tr>
+											<th>#</th>
+											<th>Specialities</th>
+											<th>Description</th>
+											<th>Status</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for field in specialities %}
+										<tr>
+											<td>{{ field.id }}</td>
+
+											<td>
+												<h2 class="table-avatar">
+													<a href="" class="avatar avatar-sm mr-2">
+														{% if field.dep_image %}
+														<img class="avatar-img" src="{{ field.dep_image.url }}"
+															alt="Speciality">
+														{% endif %}
+													</a>
+													<a href="">{{ field.name }}</a>
+												</h2>
+											</td>
+
+											<td>{{ field.description }}</td>
+											<td>{% if field.is_active %}
+												<i class="fa-solid fa-house-medical-circle-check text-success"></i>
+												{% else %}
+												<i class="fa-solid fa-shop-slash text-danger"></i>
+												{% endif %}
+											</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Page Wrapper -->
+</div>
+<!-- /Main Wrapper -->
+{% endblock %}

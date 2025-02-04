@@ -1,0 +1,118 @@
+{% extends 'patient/base.html' %}
+{% load static %}
+{% block title %} {{ user.first_name }}'s: Settings{% endblock %}
+{% block content %}
+
+<!-- Page Content -->
+<div class="content">
+	<div class="container-fluid">
+		<div class="row">
+
+			<div class="col-md-12 col-lg-4 col-xl-3 theiaStickySidebar">
+				<!-- Search Filter -->
+				<div class="card search-filter">
+					<form role="search" method="post">
+						{% csrf_token %}
+						<div class="card-header">
+							<h4 class="card-title mb-0">Search Filter</h4>
+						</div>
+						<div class="card-body">
+							<div class="filter-widget">
+								<div class="cal-icon">
+									{% for field in form %}
+									<div class="form-group">
+										<h4>{{ field.label }}</h4>
+										{{ field }}
+										{% if field.errors %}
+										<div class="text-warning small  mt-1">
+											{{ field.errors|join:", " }}
+										</div>
+										{% endif %}
+										{% if field.help_text and not field.errors %}
+										<div class="form-text text-muted">
+											{{ field.help_text }}
+										</div>
+										{% endif %}
+									</div>
+									{% endfor %}
+								</div>
+							</div>
+							<div class="btn-search">
+								<button type="submit" class="btn btn-block">Search</button>
+							</div>
+						</div>
+					</form>
+				</div>
+				<!-- /Search Filter -->
+			</div>
+			<div class="col-md-12 col-lg-8 col-xl-9">
+				{% if not deprtments %}
+				{% for doctor in doctors %}
+				<div class="card">
+					<div class="card-body">
+						<div class="doctor-widget">
+							<div class="doc-info-left">
+								<div class="doctor-img">
+									{% if doctor.user.profile_pic %}
+									<img src="{{ doctor.user.profile_pic.url }}" class="img-fluid" alt="User Image">
+									{% else %}
+									<img src="{% static 'images/doctors/doc.png' %}" class="img-fluid" alt="User Image">
+									{% endif %}
+								</div>
+								<div class="doc-info-cont">
+									<h4 class="doc-name"><a href="{% url 'pat_doctor_profile' doctor.id %}">
+										{{doctor.user.first_name }} {{ doctor.user.last_name }}</a></h4>
+									<p class="doc-speciality">{{ doctor.qualification }}</p>
+									<h5 class="doc-department">
+										{% if doctor.department.dep_image %}
+										<img src="{{ doctor.department.dep_image.url }}" class="img-fluid"
+											alt="Speciality">
+										{% endif %}
+										{{ doctor.department.name }}
+									</h5>
+
+									<div class="clinic-details">
+										<p class="doc-location"><i class="fas fa-map-marker-alt"></i>
+											{{doctor.user.city }}, {{ doctor.user.state }}</p>
+									</div>
+								</div>
+							</div>
+							<div class="doc-info-right">
+								<div class="clini-infos">
+									<ul>
+										<li><i class="far fa-money-bill-alt"></i> ₹ {{ doctor.consult_fees }} <i
+												class="fas fa-info-circle" data-toggle="tooltip" title="fees"></i> </li>
+									</ul>
+								</div>
+								<div class="clinic-booking">
+									<a class="apt-btn" href="{% url 'appointment_doc' doctor.id %}">
+										Book Appointment
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				{% empty %}
+				<div class="card">
+					<div class="card-body">
+						<div class="doctor-widget">
+							<div class="doc-info-left">
+								<h4>No Schedules</h4>
+							</div>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+				{% endif %}
+					<!-- <div class="load-more text-center">
+								<a class="btn btn-primary btn-sm" href="javascript:void(0);">Load More</a>	
+							</div>	 -->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /Page Content -->
+
+{% endblock %}

@@ -36,6 +36,27 @@ Specialities
 				<div class="col-sm-12">
 					<div class="card">
 						<div class="card-body">
+							{% for message in messages %}
+								<div class="container container-fluid w-min">
+								{% if message.tags == 'error' %}
+								<!-- bootstrap alert -->
+								<div class="text-center alert alert-warning alert-dismissible fade show" role="alert">
+									<strong>{{ message }}</strong>
+									<a class="close" href="#" data-dismiss="alert">×</a>
+									<!-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> -->
+								</div>
+								{% endif %}
+								{% if message.tags == 'success' %}
+									<!-- bootstrap alert -->
+									<div class="text-center alert alert-success alert-dismissible fade show" role="alert">
+										<strong>{{ message }}</strong>
+									<a class="close" href="#" data-dismiss="alert">×</a>
+
+										<!-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> -->
+									</div>
+								{% endif %}
+								</div>
+							{% endfor %}
 							<div class="table-responsive">
 								<table class="datatable table table-hover table-center mb-0">
 									<thead>
@@ -75,10 +96,10 @@ Specialities
 											<td class="text-right">
 												<div class="actions">
 													<a class="btn btn-sm bg-success-light" data-toggle="modal"
-														href="#edit_{{ field.name }}_details">
+														href="#edit_{{ field.id }}_details">
 														<i class="fe fe-pencil"></i> Edit
 													</a>
-													<a data-toggle="modal" href="#delete_{{ field.name }}"
+													<a data-toggle="modal" href="#delete_{{ field.id }}"
 														class="btn btn-sm bg-danger-light">
 														<i class="fe fe-trash"></i> Delete
 													</a>
@@ -86,7 +107,7 @@ Specialities
 											</td>
 										</tr>
 										<!-- EDIT SPECIALITY DETAILS -->
-										<div class="modal fade" id="edit_{{ field.name }}_details"
+										<div class="modal fade" id="edit_{{ field.id }}_details"
 											aria-labelledby="editModalLabel-{{ field.id }}" aria-hidden="true"
 											role="dialog">
 											<div class="modal-dialog modal-dialog-centered" role="document">
@@ -149,7 +170,7 @@ Specialities
 										<!-- Edit -->
 
 										<!-- Delete Modal -->
-										<div class="modal fade" id="delete_{{ field.name }}" aria-hidden="true" role="dialog">
+										<div class="modal fade" id="delete_{{ field.id }}" aria-hidden="true" role="dialog">
 											<div class="modal-dialog modal-dialog-centered" role="document">
 												<div class="modal-content">
 													<div class="modal-body">
@@ -174,10 +195,36 @@ Specialities
 										{% endfor %}
 									</tbody>
 								</table>
+									<nav>
+										<ul class="pagination">
+											{% if specialities.has_previous %}
+												<li class="page-item">
+													<a class="page-link" href="?page=1">First</a>
+												</li>
+												<li class="page-item">
+													<a class="page-link" href="?page={{ specialities.previous_page_number }}">Previous</a>
+												</li>
+											{% endif %}
+									
+											<li class="page-item active">
+												<span class="page-link">Page {{ specialities.number }} of {{ specialities.paginator.num_pages }}</span>
+											</li>
+									
+											{% if specialities.has_next %}
+												<li class="page-item">
+													<a class="page-link" href="?page={{ specialities.next_page_number }}">Next</a>
+												</li>
+												<li class="page-item">
+													<a class="page-link" href="?page={{ specialities.paginator.num_pages }}">Last</a>
+												</li>
+											{% endif %}
+										</ul>
+									</nav>
 							</div>
 						</div>
 					</div>
 				</div>
+				
 			</div>
 		</div>
 	</div>

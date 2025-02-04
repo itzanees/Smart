@@ -1,32 +1,49 @@
-{% extends 'base.html' %}
-
+{% extends 'patient/base.html' %}
 {% load static %}
-{% block title %}
-My Schedule
-{% endblock %}
+{% block title %} {{ user.first_name }}'s: Settings{% endblock %}
 {% block content %}
 
-<!-- Main Wrapper -->
-<div class="main-wrapper">
-
-    {% include 'doctor/sidebar.html' %}
-
-    <!-- Page Wrapper -->
-    <div class="page-wrapper">
-        <div class="content container-fluid">
-            <div class="container mt-4">
-                <h2>Book Appointment</h2>
-                <p><strong>Doctor:</strong> {{ slot.doctor.user.first_name}}</p>
-                <p><strong>Date:</strong> {{ slot.date }}</p>
-                <p><strong>Time:</strong> {{ slot.start_time }}</p>
-                <p><strong>Duration:</strong> {{ slot.duration }} minutes</p>
-                <form method="POST">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-success">Confirm Booking</button>
-                </form>
+<!-- Page Content -->
+<div class="content">
+   
+    <div class="container-fluid">
+        
+        <div class="row">
+            
+            {% include 'patient/sidebar.html' %}
+            <div class="col-md-12 col-lg-8 col-xl-9">
+                <div class="container mt-4">
+                    {% if error %}
+                <div aria-live="polite" aria-atomic="true" class="d-flex justify-content-center align-items-center w-100">
+        
+                    <!-- Then put toasts within -->
+                    <div class="toast fade show bg-warning" role="alert" aria-live="assertive" aria-atomic="true">
+                      <div class="toast-header">
+                        <strong class="me-auto">Not allowed</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"> </button>
+                      </div>
+                      <div class="toast-body">
+                        {{ error }}
+                      </div>
+                    </div>
+                  </div>
+                  {% endif %}
+                    <h2>Book Appointment</h2>
+                    <p><strong>Doctor:</strong> Dr. {{ slot.doctor.user.first_name}} {{ slot.doctor.user.last_name}}</p>
+                    <p><strong>Date:</strong> {{ slot.date }}</p>
+                    <p><strong>Time:</strong> {{ slot.start_time }}</p>
+                    <p><strong>Duration:</strong> {{ slot.duration }} minutes</p>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success">Confirm Booking</button>
+                    </form>
+                </div>
             </div>
         </div>
+
+            
     </div>
 </div>
+<!-- /Page Content -->
 
 {% endblock %}

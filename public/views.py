@@ -33,9 +33,6 @@ def webAppointment(request):
     today = str(today)
     return render(request, 'public/search-appointment.html', {'today':today})
 
-def intranet(request):
-    return render(request, 'staff/intranet.html')
-
 def tos(request):
     return render(request, 'public/tos.html')
 

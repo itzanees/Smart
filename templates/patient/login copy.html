@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block title %}
+Login : Patient Portal
+{% endblock %}
+{% block content %}
+
+<!-- Main Wrapper -->
+<div class="main-wrapper login-body">
+	<div class="login-wrapper">
+		<div class="container">
+			<div class="loginbox">
+				<div class="login-left">
+					<h1>Patient Login</h1>
+					<img class="img-fluid" src="{% static 'images/logo-white.png' %}" alt="Logo">
+					<p class="account-subtitle">Access Patient Services</p>
+				</div>
+				<div class="login-right">
+					<div class="login-right-wrap">
+
+						<!-- Form -->
+						<form method="post" action="{% url 'patient_login' %}">
+							{% csrf_token %}
+							{{ form.non_field_errors }}
+
+							<div class="mb-3">
+								{{ form.username.errors }}
+								{{ form.username }}
+							</div>
+							<div class="mb-3">
+								{{ form.password.errors }}
+								{{ form.password }}
+							</div>
+							<div class="form-group">
+								<button class="btn btn-primary btn-block" type="submit">Login</button>
+							</div>
+						</form>
+						<!-- /Form -->
+
+						<div class="text-center forgotpass"><a href="{% url 'pat_forgot_password' %}" 
+								class="text-white">Forgot
+								Password?</a></div>
+						<div class="login-or">
+							<span class="or-line"></span>
+							<!-- <span class="span-or">or</span> -->
+						</div>
+
+						<div class="text-center dont-have text-white">
+							Don’t have an account? <a href="{% url 'patient_registration' %}"
+								class="text-warning">Register</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /Main Wrapper -->
+
+{% endblock %}

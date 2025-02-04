@@ -1,0 +1,140 @@
+{% extends 'patient/base.html' %}
+
+{% load static %}
+{% block title %}
+Invoice
+{% endblock %}
+{% block content %}
+
+			<!-- Page Content -->
+			<div class="content">
+				<div class="container-fluid">
+
+					<div class="row">
+						<div class="col-lg-8 offset-lg-2">
+							<div class="invoice-content">
+								<div class="invoice-item">
+									<div class="row">
+										<div class="col-md-6">
+											<div class="invoice-logo">
+												<img src="{% static 'images/logo.png' %}" alt="logo">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<p class="invoice-details">
+												<strong>Order:</strong> #00124 <br>
+												<strong>Issued:</strong> 20/07/2019
+											</p>
+										</div>
+									</div>
+								</div>
+								
+								<!-- Invoice Item -->
+								<div class="invoice-item">
+									<div class="row">
+										<div class="col-md-6">
+											<div class="invoice-info">
+												<strong class="customer-text">Invoice From</strong>
+												<p class="invoice-details invoice-details-two">
+													Smart Hospital<br>
+													Trivandrum<br>
+													Kerala, India <br>
+												</p>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="invoice-info invoice-info2">
+												<strong class="customer-text">Invoice To</strong>
+												<p class="invoice-details">
+													{{ user.first_name }} {{ user.last_name }}<br>
+													{{ user.address1 }} {% if user.address2 %}, {{ user.address2 }} {% endif %}<br>
+													{{ user.city }},{{ user.state }} {{ user.pincode }}, {{ user.country }} <br>
+												</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- /Invoice Item -->
+								
+								<!-- Invoice Item -->
+								<div class="invoice-item">
+									<div class="row">
+										<div class="col-md-12">
+											<div class="invoice-info">
+												<strong class="customer-text">Payment Method</strong>
+												<p class="invoice-details invoice-details-two">
+													Debit Card <br>
+													XXXXXXXXXXXX-2541 <br>
+													HDFC Bank<br>
+												</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- /Invoice Item -->
+								
+								<!-- Invoice Item -->
+								<div class="invoice-item invoice-table-wrap">
+									<div class="row">
+										<div class="col-md-12">
+											<div class="table-responsive">
+												<table class="invoice-table table table-bordered">
+													<thead>
+														<tr>
+															<th>Description</th>
+															<th class="text-center">Quantity</th>
+															<th class="text-center">VAT</th>
+															<th class="text-right">Total</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td>General Consultation</td>
+															<td class="text-center">1</td>
+															<td class="text-center">₹ 0</td>
+															<td class="text-right">₹ 100</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+										<div class="col-md-6 col-xl-4 ml-auto">
+											<div class="table-responsive">
+												<table class="invoice-table-two table">
+													<tbody>
+													<tr>
+														<th>Subtotal:</th>
+														<td><span>₹ 100</span></td>
+													</tr>
+													<tr>
+														<th>Discount:</th>
+														<td><span>-5%</span></td>
+													</tr>
+													<tr>
+														<th>Total Amount:</th>
+														<td><span>₹ 95</span></td>
+													</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- /Invoice Item -->
+								
+								<!-- Invoice Information -->
+								<div class="other-info">
+									<h4>Other information</h4>
+									<p class="text-muted mb-0">Please come with this reciept (printed / digital) to the appointments counter on the day of appointment, at least 30 minutes prior to the booking time to avoid further delays.</p>
+								</div>
+								<!-- /Invoice Information -->
+								
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+			</div>		
+			<!-- /Page Content -->
+			{% endblock %}

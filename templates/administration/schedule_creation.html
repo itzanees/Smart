@@ -1,0 +1,39 @@
+<div class="container mt-5">
+    <h2>Automate Doctor Schedules</h2>
+    <button id="start-button" class="btn btn-success">Start Schedule Creation</button>
+    <div class="progress mt-3" style="height: 30px; display: none;">
+        <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+    <div id="status-message" class="mt-3"></div>
+</div>
+
+<script>
+    document.getElementById('start-button').addEventListener('click', function () {
+        fetch("{% url 'start_schedule_creation' %}", { method: 'POST', headers: { 'X-CSRFToken': '{{ csrf_token }}' } })
+            .then(response => response.json())
+            .then(data => {
+                const taskId = data.task_id;
+                document.querySelector('.progress').style.display = 'block';
+                const progressBar = document.getElementById('progress-bar');
+                const statusMessage = document.getElementById('status-message');
+
+                const checkProgress = setInterval(() => {
+                    fetch(`/task-status/${taskId}/`)
+                        .then(response => response.json())
+                        .then(statusData => {
+                            if (statusData.state === 'PROGRESS') {
+                                progressBar.style.width = `${statusData.progress}%`;
+                                progressBar.setAttribute('aria-valuenow', statusData.progress);
+                                progressBar.innerText = `${statusData.progress}%`;
+                            } else if (statusData.state === 'SUCCESS') {
+                                clearInterval(checkProgress);
+                                progressBar.style.width = '100%';
+                                progressBar.setAttribute('aria-valuenow', 100);
+                                progressBar.innerText = '100%';
+                                statusMessage.innerHTML = `<div class="alert alert-success">${statusData.status}</div>`;
+                            }
+                        });
+                }, 1000);
+            });
+    });
+</script>

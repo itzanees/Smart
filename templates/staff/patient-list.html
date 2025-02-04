@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block title %}
+Patients
+{% endblock %}
+{% block content %}
+
+<!-- Main Wrapper -->
+<div class="main-wrapper">
+
+	{% include 'staff/sidebar.html' %}
+
+	<!-- Page Wrapper -->
+	<div class="page-wrapper">
+		<div class="content container-fluid">
+
+			<!-- Page Header -->
+			<div class="page-header">
+				<div class="row">
+					<div class="col-sm-12">
+						<h3 class="page-title">List of Patient</h3>
+						<ul class="breadcrumb">
+							<li class="breadcrumb-item"><a href="{% url 'staff_dashboard' %}">Dashboard</a></li>
+							<li class="breadcrumb-item"><a href="javascript:(0);">Users</a></li>
+							<li class="breadcrumb-item active">Patient</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!-- /Page Header -->
+
+			<div class="container container-fluid">
+				{% if modal %}
+				<div class="row">
+					<div class="col-md-12">
+					<div class="form-content p-2">
+						<h4 class="modal-title">Edit {{ patient.user.username }}</h4>
+						<form method="post" enctype="multipart/form-data">
+							{% csrf_token %}
+							{{ profileform }}
+							<input type="hidden" name="edit" value="edit">
+							<button type="submit" class="btn btn-primary btn-block mt-3">Save Changes</button>
+						</form>
+					</div>
+				</div></div>
+					{% else %}
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+			
+					<div class="card">
+						<div class="card-body">
+							<div class="table-responsive">
+								<div class="table-responsive">
+									<table class="datatable table table-hover table-center mb-0">
+										<thead>
+											<tr>
+												<th>Patient ID</th>
+												<th>Patient Name</th>
+												<th>Age</th>
+												<th>Address</th>
+												<th>Phone</th>
+												<!-- <th>Last Visit</th> -->
+												<th>Member Since</th>
+												<th>Action</th>
+											</tr>
+										</thead>
+										<tbody>
+											{% for patient in patients %}
+											<tr>
+												<td>{{ patient.pat_mrd_no }}</td>
+												<td>
+													<h2 class="table-avatar">
+														<a href="" class="avatar avatar-sm mr-2">
+															{% if patient.user.profile_pic %}
+															<img class="avatar-img rounded-circle"
+																src="{{ patient.user.profile_pic.url }}"
+																alt="User Image">
+															{% else %}
+															<img class="avatar-img rounded-circle"
+																src="{% static 'images/profiles/male.jpg' %}"
+																alt="User Image">
+															{% endif %}
+														</a>
+														<a href="">{{ patient.user.first_name }} {{ patient.user.last_name }}</a>
+													</h2>
+												</td>
+												<td>{{ patient.user.date_of_birth }}</td>
+												<td>{{ patient.user.address1 }}, {{ patient.user.city }},
+													{{ patient.user.state }}</td>
+												<td>{{ patient.user.phone_number }}</td>
+												<td>{{ patient.user.created_at.date }} <br></td>
+												<td>
+													<div class="actions">
+														<form method="post">
+															{% csrf_token %}
+															<input type="hidden" name="pat_id"
+																value="{{ patient.user.id }}">
+															<button type="submit" class="btn btn-sm bg-success-light"
+																data-toggle="modal"><i
+																	class="fe fe-pencil"></i> Edit</button>
+															<!-- <a class="btn btn-sm bg-success-light" data-toggle="modal" href="#edit_{{ patient.user.id }}_details"> -->
+															<!-- <i class="fe fe-pencil"></i> Edit -->
+															</a>
+														</form>
+														<!-- <a data-toggle="modal" href="#delete_{{ patient.id }}"
+															class="btn btn-sm bg-danger-light">
+															<i class="fe fe-trash"></i> Delete
+														</a> -->
+													</div>
+												</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+					{% endif %}
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<!-- /Page Wrapper -->
+
+</div>
+<!-- /Main Wrapper -->
+
+{% endblock %}

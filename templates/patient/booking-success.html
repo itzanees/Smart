@@ -1,0 +1,31 @@
+{% extends 'patient/base.html' %}
+{% load static %}
+{% block title %} {{ user.first_name }} Appointment{% endblock %}
+{% block content %}
+
+<!-- Page Content -->
+<div class="content">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+
+				<div class="card">
+					<div class="card-body">
+						<div class="success-cont">
+							<i class="fas fa-check"></i>
+							<h3>{{ mesasge.success }}</h3>
+							<p>Appointment booked with <strong>Dr. Darren Elder</strong><br> on <strong>12 Nov 2019
+									5:00PM to 6:00PM</strong></p>
+							<a href="invoice-view.html" class="btn btn-primary view-inv-btn">View Invoice</a>
+						</div>
+					</div>
+				</div>
+				<!-- /Success Card -->
+
+			</div>
+		</div>
+
+	</div>
+</div>
+<!-- /Page Content -->
+{% endblock %}

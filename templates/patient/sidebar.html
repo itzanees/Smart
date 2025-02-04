@@ -1,272 +1,72 @@
 {% load static %}
-<!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-inner slimscroll">
-        <div id="sidebar-menu" class="sidebar-menu">
-            <ul>
-                <li class="menu-title">
-                    <span>Main</span>
-                </li>
-                <li {% if request.path == '/patient/' %} class="active" {% endif %}>
-                    <a href="{% url 'patient_dashboard' %}"><i class="fe fe-home"></i> <span>Dashboard</span></a>
-                </li>
-                <li {% if request.path == '/patient/appointment/' %} class="active" {% endif %}>
-                    <a href="{% url 'appointment' %}"><i class="fe fe-layout"></i> <span>My Appointments</span></a>
-                </li>
-                <li {% if request.path == '/patient/specialities/' %} class="active" {% endif %}>
-                    <a href="{% url 'hosp_specialities' %}"><i class="fe fe-users"></i> <span>Specialities</span></a>
-                </li>
-                <li {% if request.path == '/patient/doctors/' %} class="active" {% endif %}>
-                    <a href="{% url 'hos_doctors_list' %}"><i class="fe fe-user-plus"></i> <span>Doctors</span></a>
-                </li>
-                <li {% if request.path == '/patient/services/' %} class="active" {% endif %}>
-                    <a href="{% url 'hosp_services' %}"><i class="fe fe-activity"></i> <span>Services</span></a>
-                </li>
-                <li {% if request.path == '/patient/transaction/' %} class="active" {% endif %}>
-                    <a href="{% url 'pat_transaction' %}"><i class="fe fe-activity"></i> <span>My Transactions</span></a>
-                </li>
-                <li {% if request.path == '/patient/profile/' %} class="active" {% endif %}>
-                    <a href="{% url 'patient_profile' %}"><i class="fe fe-user-plus"></i> <span>Profile</span></a>
-                </li>
-                <!-- <li>
-                    <a href="reviews.html"><i class="fe fe-star-o"></i> <span>Reviews</span></a>
-                </li> -->
-                <!-- <li>
-                    <a href=""><i class="fe fe-vector"></i> <span>Settings</span></a>
-                </li> -->
-                <!-- <li class="submenu">
-                    <a href="#"><i class="fe fe-document"></i> <span> Reports</span> <span
-                            class="menu-arrow"></span></a>
-                    <ul style="display: none;">
-                        <li><a href="invoice-report.html">Invoice Reports</a></li>
-                    </ul>
-                </li> -->
-                <!-- <li class="menu-title">
-                    <span>Pages</span>
-                </li>
-                <li class="submenu">
-                    <a href="#"><i class="fe fe-document"></i> <span> Authentication </span> <span
-                            class="menu-arrow"></span></a>
-                    <ul style="display: none;">
-                        <li><a href="login.html"> Login </a></li>
-                        <li><a href="register.html"> Register </a></li>
-                        <li><a href="forgot-password.html"> Forgot Password </a></li>
-                        <li><a href="lock-screen.html"> Lock Screen </a></li>
-                    </ul>
-                </li>
-                <li class="submenu">
-                    <a href="#"><i class="fe fe-warning"></i> <span> Error Pages </span> <span
-                            class="menu-arrow"></span></a>
-                    <ul style="display: none;">
-                        <li><a href="error-404.html">404 Error </a></li>
-                        <li><a href="error-500.html">500 Error </a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="blank-page.html"><i class="fe fe-file"></i> <span>Blank Page</span></a>
-                </li>
-                <li class="menu-title">
-                    <span>UI Interface</span>
-                </li>
-                <li>
-                    <a href="components.html"><i class="fe fe-vector"></i> <span>Components</span></a>
-                </li>
-                <li class="submenu">
-                    <a href="#"><i class="fe fe-layout"></i> <span> Forms </span> <span class="menu-arrow"></span></a>
-                    <ul style="display: none;">
-                        <li><a href="form-basic-inputs.html">Basic Inputs </a></li>
-                        <li><a href="form-input-groups.html">Input Groups </a></li>
-                        <li><a href="form-horizontal.html">Horizontal Form </a></li>
-                        <li><a href="form-vertical.html"> Vertical Form </a></li>
-                        <li><a href="form-mask.html"> Form Mask </a></li>
-                        <li><a href="form-validation.html"> Form Validation </a></li>
-                    </ul>
-                </li>
-                <li class="submenu">
-                    <a href="#"><i class="fe fe-table"></i> <span> Tables </span> <span class="menu-arrow"></span></a>
-                    <ul style="display: none;">
-                        <li><a href="tables-basic.html">Basic Tables </a></li>
-                        <li><a href="data-tables.html">Data Table </a></li>
-                    </ul>
-                </li>
-                <li class="submenu">
-                    <a href="javascript:void(0);"><i class="fe fe-code"></i> <span>Multi Level</span> <span
-                            class="menu-arrow"></span></a>
-                    <ul style="display: none;">
-                        <li class="submenu">
-                            <a href="javascript:void(0);"> <span>Level 1</span> <span class="menu-arrow"></span></a>
-                            <ul style="display: none;">
-                                <li><a href="javascript:void(0);"><span>Level 2</span></a></li>
-                                <li class="submenu">
-                                    <a href="javascript:void(0);"> <span> Level 2</span> <span
-                                            class="menu-arrow"></span></a>
-                                    <ul style="display: none;">
-                                        <li><a href="javascript:void(0);">Level 3</a></li>
-                                        <li><a href="javascript:void(0);">Level 3</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="javascript:void(0);"> <span>Level 2</span></a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0);"> <span>Level 1</span></a>
-                        </li>
-                    </ul>
-                </li> -->
-            </ul>
+<!-- Profile Sidebar -->
+<div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar">
+    <div class="profile-sidebar">
+        <div class="widget-profile pro-widget-content">
+            <div class="profile-info-widget">
+                <a href="#" class="booking-doc-img">
+                    {% if user.profile_pic %}
+                    <img src="{{ user.profile_pic.url }}" alt="user image">
+                    {% else %}
+                    {% if user.gender == 'M' %}
+                    <img src="{% static 'images/profiles/male.jpg' %}" alt="User Image">
+                    {% else %}
+                    <img src="{% static 'images/profiles/female.jpg' %}" alt="User Image">
+                    {% endif %}
+                    {% endif %}
+                </a>
+                <div class="profile-det-info">
+                    <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+                    <div class="patient-details">
+                        <h5><i class="fas fa-birthday-cake"></i> {{ user.date_of_birth }}</h5>
+                        <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> {{ user.city }}, {{ user.state }}</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="dashboard-widget">
+            <nav class="dashboard-menu">
+                <ul>
+                    <li {% if request.path == '/patient/' %} class="active" {% endif %}>
+                        <a href="{% url 'patient_dashboard' %}">
+                            <i class="fas fa-columns"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <!-- <li>
+                <a href="favourites.html">
+                    <i class="fas fa-bookmark"></i>
+                    <span>Favourites</span>
+                </a>
+            </li> -->
+                    <!-- <li>
+                <a href="chat.html">
+                    <i class="fas fa-comments"></i>
+                    <span>Message</span>
+                    <small class="unread-msg">23</small>
+                </a>
+            </li> -->
+                    <li {% if request.path == '/patient/profile/' %} class="active" {% endif %}>
+                        <a href="{% url 'patient_profile' %}">
+                            <i class="fas fa-user-cog"></i>
+                            <span>Profile Settings</span>
+                        </a>
+                    </li>
+                    <li {% if request.path == '/patient/reset_password/' %} class="active" {% endif %}>
+                        <a href="{% url 'pat_change_password' %}">
+                            <i class="fas fa-lock"></i>
+                            <span>Change Password</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'logout' %}">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 </div>
-<!-- /Sidebar -->
-<!-- Header -->
-<div class="header">
-
-    <!-- Logo -->
-    <div class="header-left ">
-        <a href="{% url 'admin_home' %}" class="logo">
-            <img src="{% static 'images/logo.png' %}" alt="Logo">
-        </a>
-        <!-- <a href="{% url 'admin_home' %}" class="logo logo-small">
-            <img src="{% static 'images/logo-small.png' %}" alt="Logo" width="30" height="30">
-        </a> -->
-    </div>
-    <!-- /Logo -->
-
-    <!-- <a href="javascript:void(0);" id="toggle_btn">
-        <i class="fe fe-text-align-left"></i>
-    </a> -->
-
-    <!-- <div class="top-nav-search">
-        <form>
-            <input type="text" class="form-control" placeholder="Search here">
-            <button class="btn" type="submit"><i class="fa fa-search"></i></button>
-        </form>
-    </div> -->
-
-    <!-- Mobile Menu Toggle -->
-    <a class="mobile_btn" id="mobile_btn">
-        <i class="fa fa-bars"></i>
-    </a>
-    <!-- /Mobile Menu Toggle -->
-
-    <!-- Header Right Menu -->
-    <ul class="nav user-menu">
-
-        <!-- Notifications -->
-        <!-- <li class="nav-item dropdown noti-dropdown">
-                <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-                    <i class="fe fe-bell"></i> <span class="badge badge-pill">3</span>
-                </a>
-                <div class="dropdown-menu notifications">
-                    <div class="topnav-dropdown-header">
-                        <span class="notification-title">Notifications</span>
-                        <a href="javascript:void(0)" class="clear-noti"> Clear All </a>
-                    </div>
-                    <div class="noti-content">
-                        <ul class="notification-list">
-                            <li class="notification-message">
-                                <a href="#">
-                                    <div class="media">
-                                        <span class="avatar avatar-sm">
-                                            <img class="avatar-img rounded-circle" alt="User Image"
-                                                src="{% static 'images/doctors/doctor-thumb-01.jpg' %}">
-                                        </span>
-                                        <div class="media-body">
-                                            <p class="noti-details"><span class="noti-title">Dr. Ruby Perrin</span>
-                                                Schedule
-                                                <span class="noti-title">her appointment</span>
-                                            </p>
-                                            <p class="noti-time"><span class="notification-time">4 mins ago</span></p>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="notification-message">
-                                <a href="#">
-                                    <div class="media">
-                                        <span class="avatar avatar-sm">
-                                            <img class="avatar-img rounded-circle" alt="User Image"
-                                                src="{% static 'images/patients/patient1.jpg' %}">
-                                        </span>
-                                        <div class="media-body">
-                                            <p class="noti-details"><span class="noti-title">Charlene Reed</span> has
-                                                booked
-                                                her appointment to <span class="noti-title">Dr. Ruby Perrin</span></p>
-                                            <p class="noti-time"><span class="notification-time">6 mins ago</span></p>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="notification-message">
-                                <a href="#">
-                                    <div class="media">
-                                        <span class="avatar avatar-sm">
-                                            <img class="avatar-img rounded-circle" alt="User Image"
-                                                src="{% static 'images/patients/patient2.jpg' %}">
-                                        </span>
-                                        <div class="media-body">
-                                            <p class="noti-details"><span class="noti-title">Travis Trimble</span> sent
-                                                a
-                                                amount of $210 for his <span class="noti-title">appointment</span></p>
-                                            <p class="noti-time"><span class="notification-time">8 mins ago</span></p>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="notification-message">
-                                <a href="#">
-                                    <div class="media">
-                                        <span class="avatar avatar-sm">
-                                            <img class="avatar-img rounded-circle" alt="User Image"
-                                                src="{% static 'images/patients/patient3.jpg' %}">
-                                        </span>
-                                        <div class="media-body">
-                                            <p class="noti-details"><span class="noti-title">Carl Kelly</span> send a
-                                                message <span class="noti-title"> to his doctor</span></p>
-                                            <p class="noti-time"><span class="notification-time">12 mins ago</span></p>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="topnav-dropdown-footer">
-                        <a href="#">View all Notifications</a>
-                    </div>
-                </div>
-            </li> -->
-        <!-- /Notifications -->
-
-        <!-- User Menu -->
-        <li class="nav-item dropdown has-arrow">
-            <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-                <span class="user-img"><img class="rounded-circle"
-                        src="{% static 'images/profiles/avatar-01.jpg' %}" width="31" alt="Anees Sulaiman"></span>
-            </a>
-            <div class="dropdown-menu">
-                <div class="user-header">
-                    <div class="avatar avatar-sm">
-                        <img src="{% static 'images/profiles/avatar-01.jpg' %}" alt="User Image"
-                            class="avatar-img rounded-circle">
-                    </div>
-                    <div class="user-text">
-                        <h6>Anees Sulaiman</h6>
-                        <p class="text-muted mb-0">Administrator</p>
-                    </div>
-                </div>
-                <a class="dropdown-item" href="{% url 'patient_profile' %}">My Profile</a>
-                <form action="{% url 'logout' %}" method="post">
-                    {% csrf_token %}
-                    <!-- <button class="dropdown-item">Logout</button> -->
-                    <input class="dropdown-item" type="submit" value="Logout">
-
-                </form>
-            </div>
-        </li>
-        <!-- /User Menu -->
-
-    </ul>
-    <!-- /Header Right Menu -->
-
-</div>
-<!-- /Header -->
+<!-- / Profile Sidebar -->
