@@ -5,7 +5,6 @@ from . forms import DepartmentCreationForm, UserRegistrationForm, PatientProfile
 from . models import CustomUser, Department, Staff, Doctor, Patient, Schedule, Appointment
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.utils.text import slugify
 
 from datetime import datetime, timedelta
 from django.utils import timezone
@@ -27,8 +26,29 @@ def adminForgotPassword(request):
     return render(request, 'administration/forgot-password.html')
 
 @login_required(login_url='admin_login')
-def adminHome(request):
-    return render(request, 'administration/index.html')
+def admin_home(request):
+    doctors = Doctor.objects.all()
+    patients = Patient.objects.all()
+    appointments = Appointment.objects.all()
+    num_doc = doctors.count()
+    num_pat = patients.count()
+    num_app = appointments.count()
+    revenue = 0
+    # for r in appointments.appointment_fees:
+    #     revenue+=r
+    #     print(r)
+    print(revenue)
+    print(num_doc, num_pat)
+    context = {
+        'doctors' : doctors,
+        'num_doc': num_doc,
+        'patients' : patients,
+        'num_pat': num_pat,
+        'appointments' : appointments,
+        'num_app': num_app,
+    }
+    
+    return render(request, 'administration/index.html', context)
 
 def adminProfile(request):
     today = datetime.today()
@@ -96,7 +116,7 @@ def specialities(request):
                 return redirect('specialities')
 
     form = DepartmentCreationForm()
-    return render(request, 'administration/specialities.html', {'form':form, 'specialities': spe_page_obj})
+    return render(request, 'administration/departments.html', {'form':form, 'specialities': spe_page_obj})
 
 def users(request):
     users = CustomUser.objects.all()
@@ -237,8 +257,7 @@ def generate_schedule_for_all_doctors():
                             doctor=doctor,
                             date=current_date,
                             start_time=start_time.time(),
-                            duration=15,
-                            slug=slugify(f"{doctor.user.username}-{current_date}-{start_time.time()}")
+                            duration=15
                         )
                     )
                 start_time += timedelta(minutes=15)

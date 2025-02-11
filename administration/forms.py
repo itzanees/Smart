@@ -115,7 +115,9 @@ class ProfileUpdateForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'first_name','last_name', 'date_of_birth', 'gender', 'email', 'phone_number', 'profile_pic', 'address1', 'address2', 'city', 'state', 'pincode', 'country']
+        fields = ['username', 'first_name','last_name', 'date_of_birth', 'gender', 'email',
+                  'phone_number', 'profile_pic', 'address1', 'address2', 'city', 'state', 
+                  'pincode', 'country']
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')

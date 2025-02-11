@@ -105,7 +105,8 @@ Specialities
 													</a>
 												</div>
 											</td>
-										</tr>
+										</tr>										
+
 										<!-- EDIT SPECIALITY DETAILS -->
 										<div class="modal fade" id="edit_{{ field.id }}_details"
 											aria-labelledby="editModalLabel-{{ field.id }}" aria-hidden="true"
@@ -191,7 +192,12 @@ Specialities
 											</div>
 										</div>
 										<!-- /Delete Modal -->
-
+										{% empty %}
+										<tr class="bg-warning text-center fw-bold">
+											<td colspan="5">
+												No Departments
+											</td>
+										</tr>
 										{% endfor %}
 									</tbody>
 								</table>

@@ -13,7 +13,6 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.utils.text import slugify
 
 from django.utils import timezone
 from datetime import datetime, timedelta
@@ -129,19 +128,9 @@ def staff_appointment_list(request):
                 date=date,
                 start_time=start_time,
                 duration=15,
-                is_booked=True,
-                slug=slugify(f"{doctor.user.username}-{date}-{start_time}")
+                is_booked=True
                 )
         schedule.save()
-        # schedule = Schedule.objects.create(
-        #     doctor=doctor,
-        #     date=date,
-        #     start_time=start_time,
-        #     duration=15,
-        #     slug=slugify(f"{doctor}-{date}-{start_time}")
-        # )
-        # schedule = Schedule.objects.latest()
-        # print(schedule)
         appointment = Appointment.objects.create(
             patient=patient,
             doctor=doctor,

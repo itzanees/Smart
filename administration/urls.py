@@ -4,7 +4,7 @@ from django.contrib.auth.views import PasswordChangeDoneView
 
 
 urlpatterns = [
-    path('', views.adminHome, name='admin_home'),
+    path('', views.admin_home, name='admin_home'),
     path('profile/', views.adminProfile, name='admin_profile'),
     path('appointment_list/', views.appointmentList, name='appointment_list'),
     path('appointment_list/all', views.all_appointment_list, name='all_appointment_list'),

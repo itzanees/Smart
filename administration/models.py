@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from datetime import datetime, timedelta
 from django.utils import timezone
-from django.utils.text import slugify
 
 class CustomUser(AbstractUser):
     GENDER_CHOICES = [
@@ -38,14 +37,9 @@ class Department(models.Model):
     dep_image = models.ImageField(upload_to='department/', null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     is_active = models.BooleanField(default=False)
-    slug = models.SlugField(max_length=32,default='')
 
     def __str__(self):
          return self.name
-    
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.id,self.name)
 
 class Patient(models.Model):
     BLOOD_GROUP_CHOICES = [
@@ -62,15 +56,12 @@ class Patient(models.Model):
     blood_group = models.CharField(max_length=3, choices=BLOOD_GROUP_CHOICES)
     pat_mrd_no = models.CharField(max_length=32,unique=True)
     profile_updated = models.BooleanField(default=False)
-    slug = models.SlugField(max_length=32,default='')
     
     def save(self, *args, **kwargs):
         if not self.pat_mrd_no:
             last_profile = Patient.objects.last()
             last_id = int(last_profile.pat_mrd_no.split('-')[1]) if last_profile else 12500001
             self.pat_mrd_no = f"SPT-{last_id + 1}"
-        if not self.slug:
-            self.slug = slugify(self.pat_mrd_no)
 
         super().save(*args, **kwargs)
 
@@ -91,15 +82,13 @@ class Doctor(models.Model):
     qualification = models.CharField(max_length=64)
     license_number  = models.CharField(max_length=32, unique=True, null=True, blank=True)
     consult_fees = models.DecimalField(max_digits=6, decimal_places=2, default=100, null=True, blank=True)
-    slug = models.SlugField(max_length=32,default='')
+    profile_updated = models.BooleanField(default=False)
     # experience_years = models.IntegerField()
     def save(self, *args, **kwargs):
         if not self.employ_code:
             last_profile = Doctor.objects.last()
             last_id = int(last_profile.employ_code.split('-')[1]) if last_profile else 250001
             self.employ_code = f"SDC-{last_id + 1}"
-        if not self.slug:
-            self.slug = slugify(self.employ_code)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -112,7 +101,6 @@ class Schedule(models.Model):
     duration = models.PositiveIntegerField(help_text='Slot Duration in Minutes')
     is_booked = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    slug = models.SlugField(max_length=32, default='')
 
     class Meta:
         unique_together = ['doctor', 'date', 'start_time']
@@ -120,10 +108,6 @@ class Schedule(models.Model):
 
     def __str__(self):
         return f'Schedule of {self.doctor} - {self.date} {self.start_time}'
-    
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.date,self.start_time)
 
 
 def generate_schedule_for_doctor():
@@ -159,6 +143,7 @@ class Staff(models.Model):
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
     employee_code = models.CharField(max_length=32, unique=True)
     hire_date = models.DateField(auto_now_add=True)
+    profile_updated = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
@@ -186,7 +171,6 @@ class Appointment(models.Model):
     appointment_fees = models.DecimalField(max_digits=6,decimal_places=2, default='100')
     status = models.CharField(max_length=2, choices=STATUS, default='SH')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
-    slug = models.SlugField(max_length=32 ,default='')
     
     def save(self, *args, **kwargs):
         if not self.appointment_number:
@@ -195,10 +179,6 @@ class Appointment(models.Model):
             last_id = int(last_appt.appointment_number.split('-')[2]) if last_appt else 0
             self.appointment_number = f"SAPT-{today}-{last_id + 1}"
         
-        if not self.slug:
-            self.slug = slugify(self.appointment_number)
-        super().save(*args, **kwargs)
-
     def __str__(self):
         return f"{self.patient.user.username}'s booking with {self.doctor}"
     

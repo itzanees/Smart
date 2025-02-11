@@ -8,7 +8,11 @@ from django.contrib import messages
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.db.models import Q
-
+# FOR PASSWORD CHANGE
+from django.contrib.auth.views import PasswordChangeView
+from django.urls import reverse_lazy
+from .forms import CustomPasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 
 def patient_registration(request):
     form = PatientRegistrationForm()
@@ -44,12 +48,6 @@ def patient_login(request):
 
 def pat_forgot_password(request):
     return render(request, 'patient/forgot-password.html')
-
-# # FOR PASSWORD CHANGE
-from django.contrib.auth.views import PasswordChangeView
-from django.urls import reverse_lazy
-from .forms import CustomPasswordChangeForm
-from django.contrib.auth import update_session_auth_hash
 
 @login_required(login_url='patient_login')
 class CustomPasswordChangeView(PasswordChangeView):
@@ -103,6 +101,7 @@ def patient_profile(request):
                     patient.blood_group = form.cleaned_data['blood_group']
                     patient.profile_updated = True
                     patient.save()
+                    messages.success(request, f"{user.username}'s profile updated")
                     return redirect('patient_profile') 
             except Exception as e:
                 print(e)
@@ -129,16 +128,16 @@ def patient_profile(request):
 #     }
 #     return render(request, 'patient/booking.html', context)
 
-def appointment_dep(request, department_slug):
+def appointment_dep(request, pk):
     path = request.path
     dep_id = int(path.split('/')[3])
     doctors = Doctor.objects.filter(department_id = dep_id)
     return render(request, 'patient/appointment.html', {'doctors':doctors})
 
-def appointment_doc(request, doctor_slug):
+def appointment_doc(request, pk):
     path = request.path
     doc_id = int(path.split('/')[4])
-    doctor = Doctor.objects.get(id = doctor_slug)
+    doctor = Doctor.objects.get(id = pk)
     today = timezone.now()
     # bookable_day = today+timedelta(days=3)
     bookable_day = today
@@ -149,7 +148,7 @@ def appointment_doc(request, doctor_slug):
     }
     return render(request, 'patient/booking.html', context)
 
-def appointment_sch(request, schedule_slug):
+def appointment_sch(request, pk):
     path = request.path
     schedule_id = int(path.split('/')[4])
     today = start_date = timezone.now().date()
@@ -179,8 +178,8 @@ def hosp_specialities(request):
     specialities = Department.objects.all()
     return render(request, 'patient/specialities.html',{'specialities':specialities})
 
-def doc_hosp_specialities(request, department_slug):
-    department = Department.objects.get(id = department_slug)
+def doc_hosp_specialities(request, pk):
+    department = Department.objects.get(id = pk)
     doctors = Doctor.objects.filter(department = department)
     return render (request, 'patient/specialities.html',{'doctors':doctors})
 
@@ -193,8 +192,8 @@ def hos_doctors_list(request):
 
     return render(request, 'patient/doctor-list.html', context)
 
-def pat_doctor_profile(request, slug):
-    doctor = Doctor.objects.get(id=slug)
+def pat_doctor_profile(request, pk):
+    doctor = Doctor.objects.get(id=pk)
     context = {
         'doctor':doctor,
     }

@@ -7,7 +7,6 @@ from administration.forms import CustomPasswordChangeForm, ProfileUpdateForm
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.contrib import messages
-import calendar
 from django.core.paginator import Paginator
 from administration.models import Schedule
 
@@ -47,7 +46,11 @@ def doctor_dashboard(request):
     today = timezone.now()
     appointments = Appointment.objects.filter(doctor=doctor, appointment_on__date__gt=today)
     appointments_today = Appointment.objects.filter(doctor=doctor, appointment_on__date=today)
-    return render(request, 'doctor/doctor-dashboard.html', {'doctor': doctor, 'appointments':appointments, 'appointments_today':appointments_today})
+    if doctor.profile_updated:
+        return render(request, 'doctor/doctor-dashboard.html', {'doctor': doctor, 'appointments':appointments, 'appointments_today':appointments_today})
+    else:
+        messages.warning(request,"Please Update your profile!!")
+        return redirect('doctor_profile')
 
 @login_required(login_url='doctor_login')
 def doctor_profile(request):
@@ -56,7 +59,10 @@ def doctor_profile(request):
         form = ProfileUpdateForm(request.POST, request.FILES, instance=user, user=user)
         if form.is_valid():
             form.save()
-            messages.success(request, f"{user.username}'s profile updated")
+            doctor, created = Doctor.objects.get_or_create(user=user)
+            doctor.profile_updated = True
+            doctor.save()
+            messages.success(request, f"Dr. {user.username}'s profile updated.")
             return redirect('doctor_profile')
         else:
             messages.error(request,"Profile is not uptaded!!!")
@@ -125,15 +131,15 @@ def doc_pat_profile(request, pk):
 
     # schedule_id = int(path.split('/')[4])
 
-def doc_pat_records(request, patient_slug):
-    print(patient_slug)
-    pat = get_object_or_404(get_user_model(), id=2)
+def doc_pat_records(request, pk):
+    pat = get_object_or_404(get_user_model(), id=pk)
     if request.method == 'POST':
-        form = MedicalRecordForm(request.POST)
+        form = MedicalRecordForm(request.POST, request.FILES)
         if form.is_valid():
             doctor = get_object_or_404(get_user_model(), id=request.user.id)
             # user = get_object_or_404(CustomUser, id=user_id)
             dep = doctor.department
+            print(dep)
             
 
             form.save()

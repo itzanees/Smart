@@ -47,8 +47,8 @@ class MedicalRecordForm(forms.ModelForm):
 
      class Meta:
          model = MedicalRecord
-         fields = '__all__'
-     #     fields = ['notes', 'diagnosis', 'treatment', 'prescription', 'attachments',]
+     #     fields = '__all__'
+         fields = ['notes', 'diagnosis', 'treatment', 'prescription', 'attachments']
 
      
      def __init__(self, *args, **kwargs):
@@ -57,7 +57,6 @@ class MedicalRecordForm(forms.ModelForm):
           
           if hasattr(user, 'patient'):
                self.fields['pat_mrd_no'].initial = user.patient.pat_mrd_no
-               
           else:
                self.fields.pop('pat_mrd_no', None)
           if hasattr(user, 'doctor'):
