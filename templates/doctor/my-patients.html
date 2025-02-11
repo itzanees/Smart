@@ -1,0 +1,58 @@
+{% extends 'doctor/base.html' %}
+{% load static  %}
+{% block title %}
+Doctor Home 
+{% endblock %}
+{% block content %}
+			<!-- Page Content -->
+			<div class="content">
+				<div class="container-fluid">
+
+					<div class="row">
+						{% include 'doctor/sidebar.html' %}
+						
+						<div class="col-md-7 col-lg-8 col-xl-9">
+						
+							<div class="row row-grid">
+							{% for pat in patients %}
+								<div class="col-md-6 col-lg-4 col-xl-3">
+									<div class="card widget-profile pat-widget-profile">
+										<div class="card-body">
+											<div class="pro-widget-content">
+												<div class="profile-info-widget">
+													<a href="{% url 'doc_pat_profile' pat.id %}" class="booking-doc-img">
+														<img src="{{ pat.user.profile_pic.url }}" alt="User Image"> 
+														
+													</a>
+													<h1>{{ pat.id }}</h1>
+													<div class="profile-det-info">
+														<h3><a href="{% url 'doc_pat_profile' pat.id %}">{{ pat.user.first_name }} {{ pat.user.last_name }}</a></h3>
+														
+														<div class="patient-details">
+															<h5><b>Patient ID :</b> {{ pat.pat_mrd_no }}</h5>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="patient-info">
+												<ul>
+													<li>Gender <span>{{ pat.user.gender }}</span></li>
+													<li>Date of birth <span>{{ pat.user.date_of_birth }}</span></li>
+													<li>Blood Group <span>{{ pat.blood_group }}</span></li>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>
+								{% endfor %}
+								
+							</div>
+
+						</div>
+					</div>
+
+				</div>
+
+			</div>		
+			<!-- /Page Content -->
+   {% endblock %}

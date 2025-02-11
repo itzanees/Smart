@@ -1,0 +1,95 @@
+{% extends 'doctor/base.html' %}
+{% load static %}
+{% block title %}
+Profile Settings
+{% endblock %}
+{% block content %}
+<!-- Page Content -->
+<div class="content">
+	<div class="container-fluid">
+		{% for message in messages %}
+			<div class="container container-fluid w-min">
+			{% if message.tags == 'error' %}
+            <div class="text-center alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>{{ message }}</strong>
+				<a class="close" href="#" data-dismiss="alert">×</a>
+            </div>
+			{% endif %}
+			{% if message.tags == 'success' %}
+				<div class="text-center alert alert-success alert-dismissible fade show" role="alert">
+					<strong>{{ message }}</strong>
+				<a class="close" href="#" data-dismiss="alert">×</a>
+				</div>
+			{% endif %}
+			</div>
+			{% endfor %}
+		<div class="row">
+			{% include 'doctor/sidebar.html' %}
+			<div class="col-md-7 col-lg-8 col-xl-9">
+				<div class="card">
+					<div class="card-body">
+						<!-- Profile Settings Form -->
+						<form method="post" enctype="multipart/form-data">
+							{% csrf_token %}
+							<div class="row form-row">{% for field in profileform %}
+								{% if field.name == 'profile_pic' %}
+								<div class="col-12 col-md-12">
+									<div class="form-group">
+										<div class="change-avatar">
+											<div class="profile-img">
+												{% if user.profile_pic %}
+												<img src="{{ user.profile_pic.url }}" alt="user image">
+												{% else %}
+												{% if user.gender == 'M' %}
+												<img src="{% static 'images/profiles/male.jpg' %}" alt="User Image">
+												{% else %}
+												<img src="{% static 'images/profiles/female.jpg' %}" alt="User Image">
+												{% endif %}
+												{% endif %}
+											</div>
+											<div class="upload-img">
+												<div class="change-photo-btn">
+													<span><i class="fa fa-upload"></i> Upload Photo</span>
+													<input type="file" name="profile_pic" accept="image/*"
+														placeholder="None" id="id_profile_pic" class="upload">
+												</div>
+												<small class="form-text text-muted">Allowed JPG, GIF or PNG. Max size of
+													2MB</small>
+											</div>
+										</div>
+									</div>
+								</div>
+								{% else %}
+								<div class="col-12 col-md-6">
+									<div class="form-group">
+										<label for="{{ field.name }}" class="ml-2">
+											{{ field.label }}
+										</label>
+										{{ field }}
+										{% if field.errors %}
+										<div class="text-warning small  mt-1">
+											{{ field.errors|join:", " }}
+										</div>
+										{% endif %}
+										{% if field.help_text and not field.errors %}
+										<div class="form-text text-muted">
+											{{ field.help_text }}
+										</div>
+										{% endif %}
+									</div>
+								</div>
+								{% endif %}
+								{% endfor %}
+								<div class="submit-section">
+									<button type="submit" class="btn btn-primary submit-btn">Save Changes</button>
+								</div>
+						</form>
+						<!-- /Profile Settings Form -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /Page Content -->
+{% endblock %}

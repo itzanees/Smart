@@ -1,0 +1,296 @@
+{% extends 'doctor/base.html' %}
+{% block title %}
+Doctor Home 
+{% endblock %}
+{% block content %}
+			<!-- Page Content -->
+			<div class="content">
+				<div class="container-fluid">
+
+					<div class="row">
+						{% include 'doctor/sidebar.html' %}
+						
+						<div class="col-md-7 col-lg-8 col-xl-9">
+
+							<!-- <div class="row">
+								<div class="col-md-12">
+									<div class="card dash-card">
+										<div class="card-body">
+											<div class="row">
+												<div class="col-md-12 col-lg-4">
+													<div class="dash-widget dct-border-rht">
+														<div class="circle-bar circle-bar1">
+															<div class="circle-graph1" data-percent="75">
+																<img src="assets/img/icon-01.png" class="img-fluid" alt="patient">
+															</div>
+														</div>
+														<div class="dash-widget-info">
+															<h6>Total Patient</h6>
+															<h3>1500</h3>
+															<p class="text-muted">Till Today</p>
+														</div>
+													</div>
+												</div>
+												
+												<div class="col-md-12 col-lg-4">
+													<div class="dash-widget dct-border-rht">
+														<div class="circle-bar circle-bar2">
+															<div class="circle-graph2" data-percent="65">
+																<img src="assets/img/icon-02.png" class="img-fluid" alt="Patient">
+															</div>
+														</div>
+														<div class="dash-widget-info">
+															<h6>Today Patient</h6>
+															<h3>160</h3>
+															<p class="text-muted">06, Nov 2019</p>
+														</div>
+													</div>
+												</div>
+												
+												<div class="col-md-12 col-lg-4">
+													<div class="dash-widget">
+														<div class="circle-bar circle-bar3">
+															<div class="circle-graph3" data-percent="50">
+																<img src="assets/img/icon-03.png" class="img-fluid" alt="Patient">
+															</div>
+														</div>
+														<div class="dash-widget-info">
+															<h6>Appoinments</h6>
+															<h3>85</h3>
+															<p class="text-muted">06, Apr 2019</p>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div> -->
+							
+							<div class="row">
+								<div class="col-md-12">
+									<div class="appointment-tab">
+										<!-- Appointment Tab -->
+										<ul class="nav nav-tabs nav-tabs-solid nav-tabs-rounded">
+											<li class="nav-item">
+												<a class="nav-link active" href="#today-appointments" data-toggle="tab">Today</a>
+											</li>
+											<li class="nav-item">
+												<a class="nav-link" href="#upcoming-appointments" data-toggle="tab">Upcoming</a>
+											</li> 
+										</ul>
+										<!-- /Appointment Tab -->
+										
+										<div class="tab-content">
+										
+											<!-- today Appointment Tab -->
+											<div class="tab-pane show active" id="today-appointments">
+												<div class="card card-table mb-0">
+													<div class="card-body">
+														<div class="table-responsive">
+															<table class="table table-hover table-center mb-0">
+																<thead>
+																	<tr>
+																		<th>Patient Name</th>
+																		<th>Appt Number</th>
+																		<th>Appt Date</th>
+																		<th>Status</th>
+																		<th></th>
+																	</tr>
+																</thead>
+																<tbody>
+																	{% for appointment in appointments_today %}
+																	<tr>
+																		<td>
+																			<h2 class="table-avatar">
+																				<a href="" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{ appointment.patient.user.profile_pic.url }}" alt="User Image"></a>
+																				<a href="">
+																					{{ appointment.patient.user.first_name }} {{ appointment.patient.user.last_name }}
+																					<span>{{ appointment.patient.pat_mrd_no }}</span>
+																				</a>
+																			</h2>
+																		</td>
+																		<td>
+																			{{ appointment.appointment_number }}
+																		</td>
+																		<td>{{ appointment.appointment_on.date }} <span class="d-block text-info">{{ appointment.appointment_on.start_time }}</span></td>
+																		<td>
+																			{% if appointment.status == 'SH' %}
+																			<i class="fa-solid fa-calendar-day text-info"></i> Scheduled 
+																			{% elif appointment.status == 'RP' %}
+																			<i class="fa-solid fa-file-medical text-warning"></i> Reported
+																			{% elif appointment.status == 'CO' %}
+																			<i class="fa-solid fa-calendar-check text-success"></i> Completed
+																			{% endif %}
+																		</td>
+																		<td class="text-right">
+																			<div class="table-action">
+																				<a href="#" class="btn btn-sm bg-info-light" data-toggle="modal" data-target="#appt_details_{{ appointment.id }}">
+																					<i class="far fa-eye"></i> View
+																				</a>
+																				
+																				<a href="javascript:void(0);" class="btn btn-sm bg-success-light">
+																					<i class="fas fa-check"></i> Open
+																				</a>
+																				<a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
+																					<i class="fas fa-times"></i> Mark as done
+																				</a>
+																			</div>
+																		</td>
+																	</tr>
+																	{% empty %}
+																	<tr>
+																		<td colspan="5" class="text-center"> No appointments for today</td>
+																	</tr>
+																	{% endfor %}
+																</tbody>
+															</table>		
+														</div>
+													</div>
+												</div>
+											</div>
+											<!-- /Today Appointment Tab -->
+											
+											<!-- Upcoming Appointment Tab -->
+											<div class="tab-pane" id="upcoming-appointments">
+												<div class="card card-table mb-0">
+													<div class="card-body">
+														<div class="table-responsive">
+															<table class="table table-hover table-center mb-0">
+																<thead>
+																	<tr>
+																		<th>Patient Name</th>
+																		<th>Appt Date</th>
+																		<th>Purpose</th>
+																		<th>Type</th>
+																		<th class="text-center">Paid Amount</th>
+																		<th></th>
+																	</tr>
+																</thead>
+																<tbody>
+																	{% for appointment in appointments %}
+																	<tr>
+																		<td>
+																			<h2 class="table-avatar">
+																				<a href="patient-profile.html" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="assets/img/patients/patient.jpg" alt="User Image"></a>
+																				<a href="patient-profile.html">
+																					{{ appointment.patient.user.first_name }} {{ appointment.patient.user.last_name }}
+																					<span>{{ appointment.patient.pat_mrd_no }}</span>
+																				</a>
+																			</h2>
+																		</td>
+																		<td>
+																			{{ appointment.appointment_number }}
+																		</td>
+																		<td>{{ appointment.appointment_on.date }} <span class="d-block text-info">{{ appointment.appointment_on.start_time }}</span></td>
+																		<td>
+																			{% if appointment.status == 'SH' %}
+																			<i class="fa-solid fa-calendar-day text-info"></i> Scheduled 
+																			{% elif appointment.status == 'RP' %}
+																			<i class="fa-solid fa-file-medical text-warning"></i> Reported
+																			{% elif appointment.status == 'CO' %}
+																			<i class="fa-solid fa-calendar-check text-success"></i> Completed
+																			{% endif %}
+																		</td>
+																		<td class="text-right">
+																			<div class="table-action">
+																				<a href="#" class="btn btn-sm bg-info-light" data-toggle="modal" data-target="#appt_details_{{ appointment.id }}">
+																					<i class="far fa-eye"></i> View
+																				</a>
+																				
+																				<a href="javascript:void(0);" class="btn btn-sm bg-success-light">
+																					<i class="fas fa-check"></i> Open
+																				</a>
+																				<a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
+																					<i class="fas fa-times"></i> Mark as done
+																				</a>
+																			</div>
+																		</td>
+																	</tr>
+																	{% empty %}
+																	<tr>
+																		<td colspan="5" class="text-center"> No upcoming appointments </td>
+																	</tr>
+																	{% endfor %}
+																</tbody>
+															</table>		
+														</div>	
+													</div>	
+												</div>	
+											</div>
+											<!-- /Upcoming Appointment Tab -->
+											
+										</div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+				</div>
+
+			</div>		
+			<!-- /Page Content -->
+			 
+{% endblock %}
+{% block popup %}
+{% for appointment in appointments_today %}
+<div class="modal fade custom-modal" id="appt_details_{{ appointment.id }}">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Appointment Details - {{ appointment.patient.user.first_name }}</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<ul class="info-details">
+					<li>
+						<div class="details-header">
+							<div class="row">
+								<div class="col-md-6">
+									<span class="title">{{ appointment.appointment_number }}<span>
+									<span class="text">{{ appointment.appointment_on.date }} {{ appointment.appointment_on.start_time }}</span>
+								</div>
+								<div class="col-md-6">
+									<div class="text-right">
+										{% if appointment.status == 'SH' %}
+										<button type="button" class="btn bg-warning-light btn-sm" id="topup_status">Scheduled</button>
+										{% elif appointment.status == 'RP' %}
+										<button type="button" class="btn bg-primary-light btn-sm" id="topup_status">Reported</button>
+										{% elif appointment.status == 'CO' %}
+										<button type="button" class="btn bg-success-light btn-sm" id="topup_status">Completed</button>
+										{% endif %}
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+					<li>
+						<span class="title">Status:</span>
+						{% if appointment.status == 'SH' %}
+						<i class="fa-solid fa-calendar-day text-info"></i> Scheduled 
+						{% elif appointment.status == 'RP' %}
+						<i class="fa-solid fa-file-medical text-warning"></i> Reported
+						{% elif appointment.status == 'CO' %}
+						<i class="fa-solid fa-calendar-check text-success"></i> Completed
+						{% endif %}
+
+					</li>
+					<li>
+						<span class="title">Confirm Date:</span>
+						<span class="text">{{ appointment.created_at }}</span>
+					</li>
+					<li>
+						<span class="title">Amount</span>
+						<span class="text">₹ {{ appointment.appointment_fees }}</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+{% endfor %}
+{% endblock %}

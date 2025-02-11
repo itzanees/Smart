@@ -48,13 +48,13 @@
 								<span></span>
 							</span>
 						</a>
-						<a href="{% url 'home' %}" class="navbar-brand logo">
+						<a href="{% url 'patient_dashboard' %}" class="navbar-brand logo">
 							<img src="{% static 'images/logo.png' %}" class="img-fluid" alt="Logo">
 						</a>
 					</div>
 					<div class="main-menu-wrapper">
 						<div class="menu-header">
-							<a href="{% url 'home' %}" class="menu-logo">
+							<a href="{% url 'patient_dashboard' %}" class="menu-logo">
 								<img src="{% static 'images/logo.png' %}" class="img-fluid" alt="Logo">
 							</a>
 							<a id="menu_close" class="menu-close" href="javascript:void(0);">
@@ -62,9 +62,15 @@
 							</a>
 						</div>
 						<ul class="main-nav">
-							<li {% if request.path == '/patient/' %} class="active" {% endif %}><a href="{% url 'patient_dashboard' %}">Dashboard</a></li>
-							<li {% if request.path == '/patient/search/' %} class="active" {% endif %}><a href="{% url 'doc_search' %}">Search Doctor</a></li>
-							<li {% if request.path == '/patient/specialities' %} class="active" {% endif %}><a href="{% url 'hosp_specialities' %}">Specialities</a></li>
+							<li {% if request.path == '/patient/' %} class="active" {% endif %}>
+								<a href="{% url 'patient_dashboard' %}">Dashboard</a>
+							</li>
+							<li {% if request.path == '/patient/search/' %} class="active" {% endif %}>
+								<a href="{% url 'doc_search' %}">Search Doctor</a>
+							</li>
+							<li {% if request.path == '/patient/specialities' %} class="active" {% endif %}>
+								<a href="{% url 'hosp_specialities' %}">Specialities</a>
+							</li>
 							<!-- <li><a href="doctor-profile.html">Doctor Profile</a></li> -->
 							<!-- <li><a href="booking.html">Booking</a></li> -->
 							<!-- <li><a href="checkout.html">Checkout</a></li> -->
@@ -75,8 +81,16 @@
 							<!-- <li><a href="change-password.html">Change Password</a></li> -->
 							
 						</ul>
-					</div>		 
-					 <ul class="nav header-navbar-rht">
+					</div> 
+					<ul class="nav header-navbar-rht">
+						<li class="nav-item dropdown has-arrow logged-item">
+							<div class="top-nav-search">
+								<form method="get" action="{% url 'pat_search' %}">
+									<input type="text" name='q' value="{{ query|default:'' }}" class="form-control" placeholder="Search here">
+									<button class="btn" type="submit"><i class="fa fa-search"></i></button>
+								</form>
+							</div>
+						</li>
 						<!-- User Menu -->
 						<li class="nav-item dropdown has-arrow logged-item">
 							<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
@@ -107,12 +121,10 @@
                                 <form action="{% url 'logout' %}" method="post">
                                     {% csrf_token %}
                                     <button class="dropdown-item">Logout</button>
-                
                                 </form>
 							</div>
 						</li>
 						<!-- /User Menu -->
-						
 					</ul>
 				</nav>
 			</header>

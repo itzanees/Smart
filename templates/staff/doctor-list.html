@@ -63,7 +63,7 @@ Doctors
 											<td>{{ doctor.department }}</td>
 											<td>{{ doctor.user.created_at.date }} <br></td>
 											<td >
-												<a href="{% url 'schedule_view' doctor.user.id %}" class="px-1"><i class="fa-solid fa-eye text-info"></i> View Schedules</a>
+												<a href="{% url 'st_schedule_view' doctor.user.id %}" class="px-1"><i class="fa-solid fa-eye text-info"></i> View Schedules</a>
 											</td>
 
 											<!-- <td>
@@ -97,6 +97,31 @@ Doctors
 										{% endfor %}
 									</tbody>
 								</table>
+								<nav>
+									<ul class="pagination">
+										{% if doctors.has_previous %}
+											<li class="page-item">
+												<a class="page-link" href="?page=1">First</a>
+											</li>
+											<li class="page-item">
+												<a class="page-link" href="?page={{ doctors.previous_page_number }}">Previous</a>
+											</li>
+										{% endif %}
+								
+										<li class="page-item active">
+											<span class="page-link">Page {{ doctors.number }} of {{ doctors.paginator.num_pages }}</span>
+										</li>
+								
+										{% if doctors.has_next %}
+											<li class="page-item">
+												<a class="page-link" href="?page={{ doctors.next_page_number }}">Next</a>
+											</li>
+											<li class="page-item">
+												<a class="page-link" href="?page={{ doctors.paginator.num_pages }}">Last</a>
+											</li>
+										{% endif %}
+									</ul>
+								</nav>
 							</div>
 						</div>
 					</div>

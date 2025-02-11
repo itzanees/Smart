@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, logout, authenticate, get_user_model
+from django.contrib.auth import login, authenticate, get_user_model
 # from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
@@ -10,8 +10,13 @@ from administration.forms import CustomPasswordChangeForm
 from django.contrib.auth.views import PasswordChangeView
 from django.urls import reverse_lazy
 from django.contrib.auth import update_session_auth_hash
+from django.contrib import messages
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.utils.text import slugify
 
-import datetime
+from django.utils import timezone
+from datetime import datetime, timedelta
 
 def staffLogin(request):
     if request.method == 'POST':
@@ -63,7 +68,7 @@ def staff_change_password(request):
 def staff_dashboard(request):
     doctors = Doctor.objects.all()[:4]
     patients = Patient.objects.all()[:4]
-    appointments = Appointment.objects.filter(appointment_on__date__gte = (datetime.date.today()))[:4]
+    appointments = Appointment.objects.filter(appointment_on__date__gte = (datetime.today()))[:4]
     context = {
         'appointments':appointments,
         'doctors':doctors,
@@ -71,24 +76,20 @@ def staff_dashboard(request):
     }
     return render(request, 'staff/index.html', context)
 
-def appointmentList(request):
-    appointments = Appointment.objects.filter(appointment_on__date__gte = (datetime.date.today()))
-    return render(request, 'staff/appointment-list.html', {'appointments':appointments})
-
-def staff_transaction(request):
-    appointments = Appointment.objects.filter(appointment_on__date__gte = (datetime.date.today()))
-    return render(request, 'staff/transactions-list.html', {'appointments': appointments})
-
-def staff_specialities(request):
-    specialities = Department.objects.all()
-    return render(request, 'staff/specialities.html', {'specialities':specialities})
-
+@login_required(login_url='staff_login')
 def staff_doctors(request):
     doctors = Doctor.objects.all()
-    return render(request, 'staff/doctor-list.html', {'doctors':doctors})
+    doc_paginator = Paginator(doctors,8)
+    doc_page_num = request.GET.get('page')
+    doc_pag_obj = doc_paginator.get_page(doc_page_num)
+    return render(request, 'staff/doctor-list.html', {'doctors':doc_pag_obj})
 
+@login_required(login_url='staff_login')
 def staff_patients(request):
     patients = Patient.objects.all()
+    pat_paginator = Paginator(patients, 8)
+    pat_page_num = request.GET.get('page')
+    pat_page_obj = pat_paginator.get_page(pat_page_num)
     if request.method=='POST':
         pat_id = request.POST.get('pat_id')
         pat_id = int(pat_id)
@@ -96,4 +97,126 @@ def staff_patients(request):
         modal_class = 'show'
         form = ProfileUpdateForm(instance=pat_user, user=pat_user)
         return render(request, 'staff/patient-list.html', {'patients':patients, 'profileform':form, 'modal':modal_class, 'pat_id':pat_id})
-    return render(request, 'staff/patient-list.html', {'patients':patients})
+    return render(request, 'staff/patient-list.html', {'patients':pat_page_obj})
+
+@login_required(login_url='staff_login')
+def staff_specialities(request):
+    specialities = Department.objects.all()
+    spec_paginator = Paginator(specialities, 8)
+    spec_page_num = request.GET.get('page')
+    spec_page_obj = spec_paginator.get_page(spec_page_num)
+    return render(request, 'staff/specialities.html', {'specialities':spec_page_obj})
+
+@login_required(login_url='staff_login')
+def staff_appointment_list(request):
+    appointments = Appointment.objects.filter(appointment_on__date__gte = (datetime.today()))
+
+    patients = Patient.objects.all()
+    departments = Department.objects.all()
+    doctors = Doctor.objects.all()
+
+    if request.method == "POST":
+        date = timezone.now().date()
+        start_time = timezone.now().time()
+        pat_id = request.POST.get('pat_id')
+        doc_id = request.POST.get('doc_id')
+        fees = request.POST.get('fees')
+        print(pat_id, doc_id, date, start_time, fees)
+        doctor = Doctor.objects.get(id=doc_id)
+        patient = Patient.objects.get(id=pat_id)
+        schedule = Schedule(
+                doctor=doctor,
+                date=date,
+                start_time=start_time,
+                duration=15,
+                is_booked=True,
+                slug=slugify(f"{doctor.user.username}-{date}-{start_time}")
+                )
+        schedule.save()
+        # schedule = Schedule.objects.create(
+        #     doctor=doctor,
+        #     date=date,
+        #     start_time=start_time,
+        #     duration=15,
+        #     slug=slugify(f"{doctor}-{date}-{start_time}")
+        # )
+        # schedule = Schedule.objects.latest()
+        # print(schedule)
+        appointment = Appointment.objects.create(
+            patient=patient,
+            doctor=doctor,
+            appointment_on=schedule,
+            appointment_fees=fees
+        )
+
+        appointment.save()
+        messages.success(request, f"Created appointment for {patient.first_name}.")
+        return redirect('staff_appointment_list')
+    context = {
+        'appointments':appointments,
+        'patients' : patients,
+        'departments' : departments,
+        'doctors' : doctors,
+    }
+    return render(request, 'staff/appointment-list.html', context)
+
+@login_required(login_url='staff_login')
+def staff_transaction(request):
+    appointments = Appointment.objects.filter(appointment_on__date__gte = (datetime.today()))
+    return render(request, 'staff/transactions-list.html', {'appointments': appointments})
+
+@login_required(login_url='staff_login')
+def st_schedule_view(request, doctor_id):
+    user = CustomUser.objects.get(id= doctor_id)
+    doctor = Doctor.objects.get(user= user)
+    
+    start_date = timezone.now().date()
+    end_date = start_date + timedelta(days=30)
+
+    available_slots = Schedule.objects.filter(doctor=doctor, date__range=[start_date, end_date], is_booked=False).order_by("date")
+    av_slot_paginator = Paginator(available_slots, 8)
+    av_slot_page_num = request.GET.get('page')
+    av_slot_page_obj = av_slot_paginator.get_page(av_slot_page_num)
+
+    booked_slots = Schedule.objects.filter(doctor=doctor, date__range=[start_date, end_date], is_booked=True)
+    book_slot_paginator = Paginator(booked_slots, 8)
+    book_slot_page_num = request.GET.get('page')
+    book_slot_page_obj = book_slot_paginator.get_page(book_slot_page_num)
+    context = {
+        'doctor': user,
+        'available_slots': av_slot_page_obj,
+        'booked_slots': book_slot_page_obj,
+    }
+    return render(request, 'staff/schedule.html', context)
+
+
+@login_required(login_url='staff_login')
+def staff_search(request):
+    query = request.GET.get('q', '')
+    results = {
+        'patients':[],
+        'doctors':[],
+        'departments':[],
+        'appointments':[],
+        }
+
+    if query:
+        patients = Patient.objects.filter(Q(user__first_name__icontains = query) | Q(user__username__icontains = query))
+        doctors = Doctor.objects.filter(Q(user__username__icontains = query) | Q(department__name__icontains = query))
+        departments = Department.objects.filter(Q(name__icontains=query))
+        appointments = Appointment.objects.filter(
+            Q(patient__user__username__icontains = query)|
+            Q(doctor__user__username__icontains = query)|
+            Q(doctor__department__name__icontains = query)
+        ).select_related('doctor', 'patient', 'doctor__department')
+
+        results['patients'] = patients
+        results['doctors'] = doctors
+        results['departments'] = departments
+        results['appointments'] = appointments
+
+        # res_paginator = Paginator(results, 10)
+        # res_page_num = request.GET.get('page')
+        # res_page_obj = res_paginator.get_page(res_page_num)
+
+    return render(request, 'staff/search_result.html', {'results': results, 'query': query})

@@ -1,0 +1,132 @@
+{% extends 'doctor/base.html' %}
+{% load static %}
+{% block title %}
+Appoinments
+{% endblock %}
+{% block content %}
+<!-- Page Content -->
+<div class="content">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-5 col-lg-4 col-xl-3 theiaStickySidebar dct-dashbd-lft">
+
+				<!-- Profile Widget -->
+				<div class="card widget-profile pat-widget-profile">
+					<div class="card-body">
+						<div class="pro-widget-content">
+							<div class="profile-info-widget">
+								<a href="#" class="booking-doc-img">
+									<img src="{{ patient.user.profile_pic.url }}" alt="User Image">
+								</a>
+								<div class="profile-det-info">
+									<h3>{{ patient.user.first_name }} {{ patient.user.last_name }}</h3>
+
+									<div class="patient-details">
+										<h5><b>Patient MRD No :</b>{{patient.pat_mrd_no}}</h5>
+										<h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> {{ patient.user.city }},
+											{{ patient.user.state }}</h5>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="patient-info">
+							<ul>
+								<li>Gender <span>{{ patient.user.gender }}</span></li>
+								<li>DOB <span>{{ patient.user.date_of_birth }}</span></li>
+								<li>Blood Group <span>{{ patient.blood_group }}</span></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!-- /Profile Widget -->
+			</div>
+
+			<div class="col-md-7 col-lg-8 col-xl-9 dct-appoinment">
+				<div class="card">
+					<div class="card-body pt-0">
+						<div class="user-tabs">
+							<ul class="nav nav-tabs nav-tabs-bottom nav-justified flex-wrap">
+								<li class="nav-item">
+									<a class="nav-link active" href="#pat_appointments"
+										data-toggle="tab">Appointments</a>
+								</li>
+							</ul>
+						</div>
+						<div class="tab-content">
+
+							<!-- Appointment Tab -->
+							<div id="pat_appointments" class="tab-pane fade show active">
+								<div class="card card-table mb-0">
+									<div class="card-body">
+										<div class="table-responsive">
+											<table class="table table-hover table-center mb-0">
+												<thead>
+													<tr>
+														<th>Doctor</th>
+														<th>Appt Date</th>
+														<th>Appt Number</th>
+														<th>Booking Date</th>
+														<!-- <th>Amount</th> -->
+														<th>Follow Up</th>
+														<th>Status</th>
+														<th></th>
+													</tr>
+												</thead>
+												<tbody>
+													{% for app in appointments %}
+													<tr>
+														<td>
+															<h2 class="table-avatar">
+																<!-- <a href="doctor-profile.html"
+																	class="avatar avatar-sm mr-2">
+																	<img class="avatar-img rounded-circle"
+																		src="assets/img/doctors/doctor-thumb-02.jpg"
+																		alt="User Image">
+																</a> -->
+																<a href="">{{ app.doctor.user.first_name }} {{ app.doctor.user.last_name }}
+																	<span>{{ app.doctor.department.name }}</span></a>
+															</h2>
+														</td>
+														<td>{{ app.appointment_on.date }} <span class="d-block text-info">{{ app.appointment_on.start_time }}</span>
+														</td>
+														<td>{{ app.appointment_number }}</td>
+														<td>{{ app.created_at.date }}</td>
+														<td>NA</td>
+														<td><span
+																class="badge badge-pill bg-success-light">Confirm</span>
+														</td>
+														<td class="text-right">
+															<div class="table-action">
+																<!-- <a href="{% url 'doc_pat_records' app.appointment_number %}" -->
+																<a href="{% url 'doc_pat_records' app.patient.id %}"
+																	class="btn btn-sm bg-success-light">
+																	<i class="far fa-edit"></i> Open
+																</a>
+															</div>
+														</td>
+													</tr>
+													<!-- Prescription Tab -->
+							
+							<!-- /Prescription Tab -->
+													{% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- /Appointment Tab -->
+
+							<!-- Medical Records Tab -->
+							<!-- /Medical Records Tab -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+</div>
+<!-- /Page Content -->
+{% endblock %}

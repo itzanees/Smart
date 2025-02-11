@@ -18,7 +18,22 @@ Login : Patient Portal
 				</div>
 				<div class="login-right">
 					<div class="login-right-wrap">
-
+						{% for message in messages %}
+						<div class="container container-fluid w-min">
+						{% if message.tags == 'error' %}
+						<div class="text-center alert alert-warning alert-dismissible fade show" role="alert">
+							<strong>{{ message }}</strong>
+							<a class="close" href="#" data-dismiss="alert">×</a>
+						</div>
+						{% endif %}
+						{% if message.tags == 'success' %}
+							<div class="text-center alert alert-success alert-dismissible fade show" role="alert">
+								<strong>{{ message }}</strong>
+							<a class="close" href="#" data-dismiss="alert">×</a>
+							</div>
+						{% endif %}
+						</div>
+						{% endfor %}
 						<!-- Form -->
 						<form method="post" action="{% url 'patient_login' %}">
 							{% csrf_token %}

@@ -14,9 +14,9 @@
 						<div class="success-cont">
 							<i class="fas fa-check"></i>
 							<h3>{{ mesasge.success }}</h3>
-							<p>Appointment booked with <strong>Dr. Darren Elder</strong><br> on <strong>12 Nov 2019
-									5:00PM to 6:00PM</strong></p>
-							<a href="invoice-view.html" class="btn btn-primary view-inv-btn">View Invoice</a>
+							<p>Appointment booked with <strong>Dr. {{ appointment.doctor.user.first_name }} {{ appointment.doctor.user.last_name }}</strong><br> on <strong>{{ appointment.appointment_on.date }} {{ appointment.appointment_on.start_time }}</strong></p>
+							<!-- <a href="" class="btn btn-primary view-inv-btn">View Invoice</a> -->
+							<!-- invoice-view.html -->
 						</div>
 					</div>
 				</div>

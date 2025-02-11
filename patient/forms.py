@@ -77,12 +77,22 @@ class UserProfileUpdateForm(forms.ModelForm):
     
 
     # Fields from Patient
+    BLOOD_GROUP_CHOICES = [
+        ('A+','A+'),
+        ('A-','A-'),
+        ('AB+','AB+'),
+        ('AB-','AB-'),
+        ('B+','B+'),
+        ('B-','B-'),
+        ('O+','O+'),
+        ('O-','O-'),
+    ]
     pat_mrd_no = forms.CharField(disabled=True)
-
+    blood_group =forms.ChoiceField(choices=BLOOD_GROUP_CHOICES)
 
     class Meta:
         model = CustomUser
-        fields = [ 'profile_pic', 'username', 'first_name','last_name', 'date_of_birth', 'email', 'phone_number', 'address1', 'address2', 'city', 'state', 'pincode', 'country']
+        fields = [ 'profile_pic', 'username', 'first_name','last_name', 'date_of_birth', 'blood_group', 'email', 'phone_number', 'address1', 'address2', 'city', 'state', 'pincode', 'country']
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
@@ -90,9 +100,11 @@ class UserProfileUpdateForm(forms.ModelForm):
 
         if hasattr(user, 'patient'):
             self.fields['pat_mrd_no'].initial = user.patient.pat_mrd_no
+            self.fields['blood_group'].initial = user.patient.blood_group
         else:
             self.fields.pop('pat_mrd_no', None)
-
+            self.fields.pop('blood_group', None)
+    
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
             field.widget.attrs['placeholder'] = field.label

@@ -1,0 +1,41 @@
+{% extends 'doctor/base.html' %}
+{% load static %}
+{% block title %}
+Doctor Home
+{% endblock %}
+{% block content %}
+<!-- Page Content -->
+<div class="content">
+    <div class="container-fluid">
+
+        <div class="row">
+            {% include 'doctor/sidebar.html' %}
+
+            <div class="col-md-7 col-lg-8 col-xl-9">
+
+                <div class="row row-grid">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Medical Records {{ pat.username }}</h3>
+                    </div>
+                    <form action="" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            {{ form }}
+                        </div>
+                        <div class="submit-section text-center">
+                            <button type="submit" class="btn btn-primary submit-btn">Submit</button>
+                            <button type="button" class="btn btn-secondary submit-btn"
+                                data-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<!-- /Page Content -->
+{% endblock %}

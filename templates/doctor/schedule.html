@@ -1,188 +1,125 @@
-{% extends 'base.html' %}
-
-{% load static %}
+{% extends 'doctor/base.html' %}
 {% block title %}
-My Schedule
+Appoinments
 {% endblock %}
 {% block content %}
+<!-- Page Content -->
+<div class="content">
+	<div class="container-fluid">
+		<div class="row">
+			{% include 'doctor/sidebar.html' %}
+						<div class="col-md-7 col-lg-8 col-xl-9">
+						 
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="card">
+										<div class="card-body">
+											<h4 class="card-title">Schedule Timings</h4>
+											<div class="profile-box">
+												<div class="row">
 
-<!-- Main Wrapper -->
-<div class="main-wrapper">
+													<!-- <div class="col-lg-4">
+														<div class="form-group">               
+															<label>Timing Slot Duration</label>
+															<select class="select form-control">
+																<option>-</option>
+																<option>15 mins</option>
+																<option selected="selected">30 mins</option>  
+																<option>45 mins</option>
+																<option>1 Hour</option>
+															</select>
+														</div>
+													</div> -->
 
-	{% include 'doctor/sidebar.html' %}
-
-	<!-- Page Wrapper -->
-	<div class="page-wrapper">
-		<div class="content container-fluid">
-
-			<!-- Page Header -->
-			<div class="page-header">
-				<div class="row">
-					<div class="col-sm-12">
-						<h3 class="page-title">My Schedules</h3>
-						<ul class="breadcrumb">
-							<li class="breadcrumb-item"><a href="{% url 'doctor_dashboard' %}">Dashboard</a></li>
-							<li class="breadcrumb-item"><a href="javascript:(0);">Doctor</a></li>
-							<li class="breadcrumb-item active">Schedule</li>
-						</ul>
+												</div>     
+												<div class="row">
+													<div class="col-md-12">
+														<div class="card schedule-widget mb-0">
+														
+															<!-- Schedule Header -->
+															<div class="schedule-header">
+																<ul class="nav nav-tabs" id="scheduleTab" role="tablist">
+																	<li class="nav-item bg-primary" role="presentation">
+																		<a class="nav-link active" id="available-tab" data-bs-toggle="tab" href="#available" role="tab"
+																			aria-controls="available" aria-selected="true">Available Slots</a>
+																	</li>
+																</ul>
+																<div class="tab-content mt-3" id="scheduleTabContent">
+																	<!-- Available Slots Tab -->
+																	<div class="tab-pane fade show active" id="available" role="tabpanel"
+																		aria-labelledby="available-tab">
+																		<h4>Available Slots</h4>
+																		{% if schedules %}
+																		<table class="table table-striped">
+																			<thead>
+																				<tr>
+																					<th>Date</th>
+																					<th>Time</th>
+																					<th>Duration (mins)</th>
+																					<!-- <th>Action</th> -->
+																				</tr>
+																			</thead>
+																			<tbody>
+																				{% for slot in schedules %}
+																				<tr>
+																					<td>{{ slot.date }}</td>
+																					<td>{{ slot.start_time }}</td>
+																					<td>{{ slot.duration }}</td>
+																					<!-- <td>
+																						<a href="{% url 'book_slot' slot.id %}" class="btn btn-success">Book</a>
+																					</td> -->
+																				</tr>
+																				{% endfor %}
+																			</tbody>
+																		</table>
+																		<nav>
+																			<ul class="pagination">
+																				{% if schedules.has_previous %}
+																					<li class="page-item">
+																						<a class="page-link" href="?page=1">First</a>
+																					</li>
+																					<li class="page-item">
+																						<a class="page-link" href="?page={{ schedules.previous_page_number }}">Previous</a>
+																					</li>
+																				{% endif %}
+																		
+																				<li class="page-item active">
+																					<span class="page-link">Page {{ schedules.number }} of {{ schedules.paginator.num_pages }}</span>
+																				</li>
+																		
+																				{% if schedules.has_next %}
+																					<li class="page-item">
+																						<a class="page-link" href="?page={{ schedules.next_page_number }}">Next</a>
+																					</li>
+																					<li class="page-item">
+																						<a class="page-link" href="?page={{ schedules.paginator.num_pages }}">Last</a>
+																					</li>
+																				{% endif %}
+																			</ul>
+																		</nav>
+																		{% else %}
+																		<p>No available slots at the moment.</p>
+																		{% endif %}
+																	</div>
+																<!-- /Schedule Nav -->
+																
+															</div>
+															<!-- /Schedule Header -->
+															
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+								
+						</div>
 					</div>
-				</div>
-			</div>
-			<!-- /Page Header -->
-			<ul class="nav nav-tabs" id="myTab" role="tablist">
-				<li class="nav-item" role="presentation">
-				  <button class="nav-link active" id="booking-tab" data-bs-toggle="tab" data-bs-target="#booking-pane"
-					type="button" role="tab" aria-controls="booking-pane" aria-selected="true">day</button>
-				</li>
-				<li class="nav-item" role="presentation">
-				  <button class="nav-link" id="prescription-tab" data-bs-toggle="tab" data-bs-target="#prescription-tab-pane"
-					type="button" role="tab" aria-controls="prescription-tab-pane" aria-selected="false">Prescription</button>
-				</li>
-				<li class="nav-item" role="presentation">
-				  <button class="nav-link" id="mrd-tab" data-bs-toggle="tab" data-bs-target="#mrd-tab-pane" type="button"
-					role="tab" aria-controls="mrd-tab-pane" aria-selected="false">Medical Records</button>
-				</li>
-				<li class="nav-item" role="presentation">
-				  <button class="nav-link" id="bill-tab" data-bs-toggle="tab" data-bs-target="#bill-tab-pane" type="button"
-					role="tab" aria-controls="bill-tab-pane" aria-selected="false">Bill</button>
-				</li>
-			  </ul>
-<div class="border bg-success-subtle">
-	{{ days.weekdays }}
-</div>
 
-			  <div class="tab-content" id="myTabContent">
-				<div class="tab-pane fade show active" id="booking-pane" role="tabpanel" aria-labelledby="booking-tab"
-				  tabindex="0">
-				  <table class="table">
-					<thead>
-					  <tr>
-						<th scope="col">Appt Date</th>
-						<th scope="col">Booking Date</th>
-						<th scope="col">Doctor</th>
-						<th scope="col">Status</th>
-						<th scope="col">Amount</th>
-					  </tr>
-					</thead>
-					<tbody>
-					  <tr>
-						<th>1</th>
-						<td>Mark</td>
-						<td>Otto</td>
-						<td>@mdo</td>
-						<td>@mdo</td>
-					  </tr>
-					  <tr>
-						<th>2</th>
-						<td>Jacob</td>
-						<td>Thornton</td>
-						<td>@fat</td>
-						<td>@fat</td>
-					  </tr>
-					  <tr>
-						<th>3</th>
-						<td>Larry the Bird</td>
-						<td>@twitter</td>
-						<td>@twitter</td>
-						<td>@twitter</td>
-					  </tr>
-					</tbody>
-				  </table>
 				</div>
-				<div class="tab-pane fade" id="prescription-tab-pane" role="tabpanel" aria-labelledby="prescription-tab"
-				  tabindex="0">
-				  <table class="table">
-					<thead>
-					  <tr>
-						<th scope="col">Appt Date</th>
-						<th scope="col">Doctor</th>
-					  </tr>
-					</thead>
-					<tbody>
-					  <tr>
-						<th>1</th>
-						<td>Mark</td>
-					  </tr>
-					  <tr>
-						<th>2</th>
-						<td>Jacob</td>
-					  </tr>
-					  <tr>
-						<th>3</th>
-						<td>Larry the Bird</td>
-					  </tr>
-					</tbody>
-				  </table>
-				</div>
-				<div class="tab-pane fade" id="mrd-tab-pane" role="tabpanel" aria-labelledby="mrd-tab" tabindex="0">
-				  <table class="table">
-					<thead>
-					  <tr>
-						<th scope="col">ID</th>
-						<th scope="col">Date</th>
-						<th scope="col">Description</th>
-						<th scope="col">Attachment</th>
-						<th scope="col">Created By</th>
-					  </tr>
-					</thead>
-					<tbody>
-					  <tr>
-						<th>1</th>
-						<td>Mark</td>
-						<td>Otto</td>
-						<td>@mdo</td>
-						<td>@mdo</td>
-					  </tr>
-					  <tr>
-						<th>2</th>
-						<td>Jacob</td>
-						<td>Thornton</td>
-						<td>@fat</td>
-						<td>@fat</td>
-					  </tr>
-					  <tr>
-						<th>3</th>
-						<td colspan="2">Larry the Bird</td>
-						<td>@twitter</td>
-						<td>@twitter</td>
-					  </tr>
-					</tbody>
-				  </table>
-				</div>
-				<div class="tab-pane fade" id="bill-tab-pane" role="tabpanel" aria-labelledby="bill-tab" tabindex="0">
-		
-				  <table class="table">
-					<thead>
-					  <tr>
-						<th scope="col">Invoice No</th>
-						<th scope="col">Doctor</th>
-						<th scope="col">Amount</th>
-						<th scope="col">Paid On</th>
-					  </tr>
-					</thead>
-					<tbody>
-					  <tr>
-						<th>1</th>
-						<td>Mark</td>
-						<td>Otto</td>
-						<td>@mdo</td>
-					  </tr>
-					  <tr>
-						<th>2</th>
-						<td>Jacob</td>
-						<td>Thornton</td>
-						<td>@fat</td>
-					  </tr>
-					</tbody>
-				  </table>
-				</div>
-			  </div>
-		</div>
-	</div>
 
-	<!-- /Page Wrapper -->
-
-</div>
-<!-- /Main Wrapper -->
-
-{% endblock %}
+			</div>		
+			<!-- /Page Content -->
+   {% endblock %}

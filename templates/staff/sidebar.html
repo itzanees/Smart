@@ -57,13 +57,6 @@
         <i class="fe fe-text-align-left"></i>
     </a> -->
 
-    <!-- <div class="top-nav-search">
-        <form>
-            <input type="text" class="form-control" placeholder="Search here">
-            <button class="btn" type="submit"><i class="fa fa-search"></i></button>
-        </form>
-    </div> -->
-
     <!-- Mobile Menu Toggle -->
     <a class="mobile_btn" id="mobile_btn">
         <i class="fa fa-bars"></i>
@@ -94,9 +87,14 @@
             </div>
         </li>
         <!-- /User Menu -->
-
     </ul>
     <!-- /Header Right Menu -->
+    <div class="top-nav-search">
+        <form method="get" action="{% url 'staff_search' %}">
+            <input type="text" name='q' value="{{ query|default:'' }}" class="form-control" placeholder="Search here">
+            <button class="btn" type="submit"><i class="fa fa-search"></i></button>
+        </form>
+    </div>
 
 </div>
 <!-- /Header -->

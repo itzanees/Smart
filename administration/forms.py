@@ -165,14 +165,12 @@ class ProfileUpdateForm(forms.ModelForm):
     def save(self, commit=True):
         user = super().save(commit=commit)
 
-        # Save UserProfile fields
         if hasattr(user, 'patient'):
             profile = user.patient
             profile.pat_mrd_no = self.cleaned_data['pat_mrd_no']
             if commit:
                 profile.save()
-
-        # Save StaffProfile fields
+                
         if hasattr(user, 'staff'):
             staff_profile = user.staff
             staff_profile.role = self.cleaned_data['role']
@@ -189,34 +187,12 @@ class ProfileUpdateForm(forms.ModelForm):
             doctor_profile.consult_fees = self.cleaned_data['consult_fees']
             if commit:
                 doctor_profile.save()
-
         return user
     
-# def generate_schedule_for_doctor(doctor, date, end_date, start_time, end_time, duration):
-#         start_date = date
-#         end_date = end_date
-        
-#         current_date = start_date
-#         while current_date <= end_date:
-#             start_time = datetime(start_date.year, start_date.month, start_date.day, start_time.time, start_time.minute)
-#             end_time = datetime(end_date.year, end_date.month, end_date.day, end_time.time, end_time.minute)
-            
-#             while start_time < end_time:
-#                 Schedule.objects.create(
-#                     doctor=doctor,
-#                     date=current_date,
-#                     end_date=end_date,
-#                     start_time=start_time.time(),
-#                     end_time=end_time.time(),
-#                     duration=duration,
-#                 )
-#                 start_time += timedelta(minutes=duration)  # Move to the next slot
-#             current_date += timedelta(days=1)
-
 class SheduleCreatorForm(forms.ModelForm):
     class Meta:
         model = Schedule
-        fields = ['doctor','date', 'end_date','start_time', 'end_time','duration']
+        fields = ['doctor','date','start_time','duration']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -226,19 +202,17 @@ class SheduleCreatorForm(forms.ModelForm):
             field.widget.attrs['placeholder'] = field.label
             field.help_text = None
 
-            if field_name == 'date' or field_name == 'end_date':
+            if field_name == 'date':
                 field.widget = forms.DateInput(attrs={
                     'type': 'text',
                     'class': 'form-control',
                     'placeholder': 'mm/dd/yyyy',
                     'min' : str(timezone.now().date() + timedelta(days = 3)),
-                    'max' : str(timezone.now().date() + timedelta(days=33)),
                     'onclick':"(this.type='date')",
                     'onblur':"(this.type='text')",
                 })
 
-            
-            if field_name == 'start_time' or field_name == 'end_time':
+            if field_name == 'start_time':
                 field.widget = forms.TimeInput(attrs={
                     'type': 'text',
                     'class': 'form-control',
@@ -247,7 +221,6 @@ class SheduleCreatorForm(forms.ModelForm):
                     'onclick':"(this.type='time')",
                     'onblur':"(this.type='text')",
                 })
-
 
 class CustomPasswordChangeForm(PasswordChangeForm):
     old_password = forms.CharField(

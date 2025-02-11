@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from datetime import datetime, timedelta
 from django.utils import timezone
+from django.utils.text import slugify
 
 class CustomUser(AbstractUser):
     GENDER_CHOICES = [
@@ -41,18 +42,38 @@ class Department(models.Model):
 
     def __str__(self):
          return self.name
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.id,self.name)
 
 class Patient(models.Model):
+    BLOOD_GROUP_CHOICES = [
+        ('A+','A+'),
+        ('A-','A-'),
+        ('AB+','AB+'),
+        ('AB-','AB-'),
+        ('B+','B+'),
+        ('B-','B-'),
+        ('O+','O+'),
+        ('O-','O-'),
+    ]
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='patient')
+    blood_group = models.CharField(max_length=3, choices=BLOOD_GROUP_CHOICES)
     pat_mrd_no = models.CharField(max_length=32,unique=True)
+    profile_updated = models.BooleanField(default=False)
+    slug = models.SlugField(max_length=32,default='')
     
     def save(self, *args, **kwargs):
         if not self.pat_mrd_no:
             last_profile = Patient.objects.last()
             last_id = int(last_profile.pat_mrd_no.split('-')[1]) if last_profile else 12500001
             self.pat_mrd_no = f"SPT-{last_id + 1}"
+        if not self.slug:
+            self.slug = slugify(self.pat_mrd_no)
+
         super().save(*args, **kwargs)
-    
+
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
 
@@ -63,7 +84,7 @@ class Patient(models.Model):
 #     is_available = models.BooleanField(default=True)
 
 
-class   Doctor(models.Model):
+class Doctor(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='doctor')
     department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
     employ_code = models.CharField(max_length=32, unique=True)
@@ -77,6 +98,8 @@ class   Doctor(models.Model):
             last_profile = Doctor.objects.last()
             last_id = int(last_profile.employ_code.split('-')[1]) if last_profile else 250001
             self.employ_code = f"SDC-{last_id + 1}"
+        if not self.slug:
+            self.slug = slugify(self.employ_code)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -85,20 +108,46 @@ class   Doctor(models.Model):
 class Schedule(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='schedule')
     date = models.DateField()
-    end_date = models.DateField(null=True,blank=True)
     start_time = models.TimeField()
-    end_time = models.TimeField(null=True,blank=True)
     duration = models.PositiveIntegerField(help_text='Slot Duration in Minutes')
     is_booked = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
     slug = models.SlugField(max_length=32, default='')
 
     class Meta:
         unique_together = ['doctor', 'date', 'start_time']
-    
-    
+        get_latest_by = ['created_at']
+
     def __str__(self):
         return f'Schedule of {self.doctor} - {self.date} {self.start_time}'
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.date,self.start_time)
 
+
+def generate_schedule_for_doctor():
+    today = datetime.today()
+    date_to = today + timedelta(days=10)
+    for doctor in Doctor.objects.all():
+        current_date = today
+        while current_date <= date_to:
+            start_time = datetime.combine(current_date, datetime.min.time()).replace(hour=9) 
+            end_time = datetime.combine(current_date, datetime.min.time()).replace(hour=13)  
+
+            while start_time < end_time:
+                if not Schedule.objects.filter(doctor=doctor, date=current_date).exists():
+                    Schedule.objects.create(
+                        doctor=doctor,
+                        date=current_date,
+                        start_time=start_time.time(),
+                        duration=15
+                    )
+                    print(doctor)
+                start_time += timedelta(minutes=15)
+
+            current_date += timedelta(days=1)
+            
 class Staff(models.Model):
     ROLE_CHOICES = [
         ('Receptionist', 'Receptionist'),
@@ -117,6 +166,7 @@ class Staff(models.Model):
             last_profile = Staff.objects.last()
             last_id = int(last_profile.employee_code.split('-')[1]) if last_profile else 20250000
             self.employee_code = f"STF-{last_id + 1}"
+
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -144,6 +194,9 @@ class Appointment(models.Model):
             today = f"{datetime.today().year}{datetime.today().month}{datetime.today().day}"
             last_id = int(last_appt.appointment_number.split('-')[2]) if last_appt else 0
             self.appointment_number = f"SAPT-{today}-{last_id + 1}"
+        
+        if not self.slug:
+            self.slug = slugify(self.appointment_number)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -151,15 +204,16 @@ class Appointment(models.Model):
     
 
 class MedicalRecord(models.Model):
-    TYPES = [
-         ('CN', 'Consultaion Note'),
-         ('LR', 'Lab Report'),
-         ('PR', 'Prescription')
-    ]
+    # TYPES = [
+    #      ('CN', 'Consultaion Note'),
+    #      ('LR', 'Lab Report'),
+    #      ('PR', 'Prescription')
+    # ]
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE) 
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    appointment = models.OneToOneField(Appointment, on_delete=models.CASCADE, null=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
-    record_type = models.CharField(max_length=2, choices=TYPES)
+    # record_type = models.CharField(max_length=2, choices=TYPES)
     record_date = models.DateTimeField(auto_now_add=True)
     notes = models.TextField()
     diagnosis = models.TextField()

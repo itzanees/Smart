@@ -18,15 +18,35 @@ Doctor Login
 				</div>
 				<div class="login-right">
 					<div class="login-right-wrap">
-
 						<h1 class="text-white pb-3">Login</h1>
-						<!-- Form -->
-						<form action="">
-							<div class="form-group">
-								<input class="form-control" type="text" placeholder="Email">
+						{% for message in messages %}
+						<div class="container container-fluid w-min">
+						{% if message.tags == 'error' %}
+						<div class="text-center alert alert-warning alert-dismissible fade show" role="alert">
+							<strong>{{ message }}</strong>
+							<a class="close" href="#" data-dismiss="alert">×</a>
+						</div>
+						{% endif %}
+						{% if message.tags == 'success' %}
+							<div class="text-center alert alert-success alert-dismissible fade show" role="alert">
+								<strong>{{ message }}</strong>
+							<a class="close" href="#" data-dismiss="alert">×</a>
 							</div>
-							<div class="form-group">
-								<input class="form-control" type="text" placeholder="Password">
+						{% endif %}
+						</div>
+						{% endfor %}
+						<!-- Form -->
+						<form method="post" action="{% url 'doctor_login' %}">
+							{% csrf_token %}
+							{{ form.non_field_errors }}
+
+							<div class="mb-3">
+								{{ form.username.errors }}
+								{{ form.username }}
+							</div>
+							<div class="mb-3">
+								{{ form.password.errors }}
+								{{ form.password }}
 							</div>
 							<div class="form-group">
 								<button class="btn btn-primary btn-block" type="submit">Login</button>

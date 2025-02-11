@@ -19,6 +19,7 @@ def patient_registration(request):
             patient.user_type = 'Patient'
             patient.save()
             Patient.objects.create(user = patient)
+            messages.success(request, "Account created, Now you can Login to patient portal")
             return redirect('patient_login')
         else:
             return render(request, 'patient/register.html', {'form' : form})
@@ -34,6 +35,9 @@ def patient_login(request):
             if user is not None and user.user_type == 'Patient' or user.is_superuser:
                 login(request, user)
                 return redirect('patient_dashboard')
+            else:
+                messages.error(request, 'Unauthorized!!!')
+                return redirect('patient_login')
     else:
         form = PatientLoginForm()
     return render(request, 'patient/login.html', {'form':form})
@@ -73,32 +77,44 @@ def pat_change_password(request):
 
 @login_required(login_url='patient_login')
 def patient_dashboard(request):
-    if request.user.username != 'admin':
+    if request.user.user_type != 'patient':
+        patient = Patient.objects.get(user=request.user)
+        if patient.profile_updated:
+            return render(request, 'patient/patient-dashboard.html')
+        else:
+            return redirect('patient_profile')
+    else:
         user = CustomUser.objects.get(id = request.user.id)
         patient = Patient.objects.get(user = request.user)      # getting user from request
         appointments = Appointment.objects.filter(patient = patient).order_by('appointment_on')
         return render(request, 'patient/patient-dashboard.html', {'user':user, 'appointments':appointments})
-    else:
-        return render(request, 'patient/patient-dashboard.html')
 
-
-@login_required
+@login_required(login_url='patient_login')
 def patient_profile(request):
-    user = get_object_or_404(get_user_model(), id=request.user.id)
-    if request.method == 'POST':
-        form = UserProfileUpdateForm(request.POST, request.FILES, instance=user, user=user)
-        if form.is_valid():
-            form.save()
-            return redirect('patient_profile') 
-    profileform = UserProfileUpdateForm(user=user, instance=user)
-    today = datetime.today
-    today = str(today)
     try:
-        profile = Patient.objects.get(user=request.user)
-        for p in profile:
-            print(p)
+        user = get_object_or_404(get_user_model(), id=request.user.id)
+        if request.method == 'POST':
+            form = UserProfileUpdateForm(request.POST, request.FILES, instance=user, user=user)
+            try:
+                if form.is_valid():
+                    form.save()
+                    patient, created = Patient.objects.get_or_create(user=user)
+                    patient.pat_mrd_no = form.cleaned_data['pat_mrd_no']
+                    patient.blood_group = form.cleaned_data['blood_group']
+                    patient.profile_updated = True
+                    patient.save()
+                    return redirect('patient_profile') 
+            except Exception as e:
+                print(e)
+        profileform = UserProfileUpdateForm(user=user, instance=user)
+        today = datetime.today
+        today = str(today)
+    # try:
+    #     profile = Patient.objects.get(user=request.user)
+    #     for p in profile:
+    #         print(p)
     except Exception as e:
-        print("No Profiles - ")
+        print("No Profiles - ", e)
     
     return render(request, 'patient/profile-settings.html', {'today':today, 'profileform':profileform })
 
@@ -124,7 +140,9 @@ def appointment_doc(request, doctor_slug):
     doc_id = int(path.split('/')[4])
     doctor = Doctor.objects.get(id = doctor_slug)
     today = timezone.now()
-    schedules = Schedule.objects.filter(doctor_id = doc_id, is_booked = False, date__gte = today  ).order_by('date', 'start_time')  # Ensure data is ordered
+    # bookable_day = today+timedelta(days=3)
+    bookable_day = today
+    schedules = Schedule.objects.filter(doctor_id = doc_id, is_booked = False, date__gte = bookable_day  ).order_by('date')
     context = {
         'schedules':schedules,
         'doctor':doctor,
@@ -238,12 +256,27 @@ def doc_search(request):
 
     return render (request, 'patient/search.html', context)
 
-def searchq(request):
-    
-    return render(request, 'patient/search.html')
+@login_required(login_url='patient_login')
+def pat_search(request):
+    query = request.GET.get('q', '')
+    results = {
+        'doctors':[],
+        'departments':[],
+        }
+
+    if query:
+        doctors = Doctor.objects.filter(Q(user__username__icontains = query) | Q(department__name__icontains = query))
+        departments = Department.objects.filter(Q(name__icontains=query))
+
+        results['doctors'] = doctors
+        results['departments'] = departments
+
+
+    return render(request, 'patient/search_result.html', {'results': results, 'query': query})
 
 
 
+@login_required(login_url='patient_login')
 def pat_schedule_view(request, doctor_id):
     user = CustomUser.objects.get(id= doctor_id)
     doctor = Doctor.objects.get(user= user)
@@ -261,7 +294,7 @@ def pat_schedule_view(request, doctor_id):
     }
     return render(request, 'administration/schedule.html', context)
 
-@login_required
+@login_required(login_url='patient_login')
 def pat_book_slot(request, slot_id):
     slot = Schedule.objects.get(id=slot_id)
     if request.method == 'POST':
@@ -292,7 +325,9 @@ def pat_book_slot(request, slot_id):
     return render(request, 'patient/book-slot.html', {'slot': slot})
 
 def pat_book_success(request):
-    return render(request, 'patient/booking-success.html')
+    appointment = Appointment.objects.all().order_by('created_at').last()
+    print(appointment)
+    return render(request, 'patient/booking-success.html', {'appointment':appointment})
 
 
 def view_pat_bill(request):

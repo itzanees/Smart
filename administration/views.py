@@ -5,6 +5,7 @@ from . forms import DepartmentCreationForm, UserRegistrationForm, PatientProfile
 from . models import CustomUser, Department, Staff, Doctor, Patient, Schedule, Appointment
 from django.contrib import messages
 from django.core.paginator import Paginator
+from django.utils.text import slugify
 
 from datetime import datetime, timedelta
 from django.utils import timezone
@@ -135,13 +136,17 @@ def users(request):
             return render(request, 'administration/users.html', context)    
     return render(request, 'administration/users.html', context)
 
-def usersProfile(request, pk):
+def users_profile(request, pk):
     user = get_object_or_404(get_user_model(), id=pk)
     if request.method == 'POST':
         form = ProfileUpdateForm(request.POST, request.FILES, instance=user, user=user)
         if form.is_valid():
             form.save()
+            messages.success(request, f"{user.username}'s profile updated")
             return redirect('users_profile', pk) 
+        else:
+            messages.error(request,"Profile is not uptaded!!!")
+            return redirect('users_profile', pk)
     profileform = ProfileUpdateForm(user=user, instance=user)
     return render (request, 'administration/profile.html', {'user':user, 'profileform':profileform})
 
@@ -194,11 +199,9 @@ def patients(request):
     patient_profile_form = PatientProfileForm()
     context = {
             'patients':pat_page_obj,
-              'pat_prof':patient_profile_form,
+            'pat_prof':patient_profile_form,
             }    
     return render(request, 'administration/patient-list.html', context)
-
-
 
 @login_required
 def Logout(request):
@@ -214,73 +217,44 @@ def Logout(request):
     else:
         logout(request)
         return redirect('admin_home')
+    
+def generate_schedule_for_all_doctors():
+    today = timezone.now().date()
+    date_to = today + timedelta(days=12)
 
-def generate_schedule_for_doctor():
-    today = datetime.today()
-    six_months_later = today + timedelta(days=30)
+    schedules_to_create = []
 
     for doctor in Doctor.objects.all():
         current_date = today
-        while current_date <= six_months_later:
-            start_time = datetime.combine(current_date, datetime.min.time()).replace(hour=9) 
-            end_time = datetime.combine(current_date, datetime.min.time()).replace(hour=17)  
+        while current_date <= date_to:
+            start_time = timezone.datetime.combine(current_date, timezone.datetime.min.time()).replace(hour=9, minute=0)
+            end_time = timezone.datetime.combine(current_date, timezone.datetime.min.time()).replace(hour=17, minute=0)
 
             while start_time < end_time:
                 if not Schedule.objects.filter(doctor=doctor, date=current_date, start_time=start_time.time()).exists():
-                    Schedule.objects.create(
-                        doctor=doctor,
-                        date=current_date,
-                        start_time=start_time.time(),
-                        duration=30 
+                    schedules_to_create.append(
+                        Schedule(
+                            doctor=doctor,
+                            date=current_date,
+                            start_time=start_time.time(),
+                            duration=15,
+                            slug=slugify(f"{doctor.user.username}-{current_date}-{start_time.time()}")
+                        )
                     )
-                start_time += timedelta(minutes=30)
+                start_time += timedelta(minutes=15)
 
             current_date += timedelta(days=1)
 
+    Schedule.objects.bulk_create(schedules_to_create)
+
 @login_required
 def createschedule(request):
-    generate_schedule_for_doctor()
+    generate_schedule_for_all_doctors()
     messages.success(request, 'Slots generated')
     return redirect('doctors_list')
  
 
-
-
-
-
-# MANUAL SCHEDULE CREATION
-# def createschedule(request, doctor_id):
-#     form = SheduleCreatorForm()
-#     doctor = CustomUser.objects.get(id= doctor_id)
-#     doctor_profile = Doctor.objects.get(user= doctor)
-
-#     if request.method == "POST":
-#         form = SheduleCreatorForm(request.POST)
-#         if 'create_schedule' in request.POST:
-#             date = request.POST.get('date')
-#             end_date = request.POST.get('end_date')
-#             start_time = request.POST.get('start_time')
-#             end_time = request.POST.get('end_time')
-#             duration = request.POST.get('duration')
-
-#             start_time_obj = datetime.strptime(start_time, "%H:%M").time()
-#             end_time_obj = datetime.strptime(end_time, "%H:%M").time()
-
-#             if not Schedule.objects.filter(
-#                                             doctor=doctor_profile,
-#                                             date__range=[date, end_date],
-#                                             start_time__lte=end_time_obj,
-#                                             end_time__gte=start_time_obj
-#                                             ).exists():
-#                 generate_schedule_for_doctor(doctor_profile, date, end_date, start_time, end_time, duration)
-#             else:
-#                 print("Same data Exists")
-#                 error = 'Schedule date or time already exists..!!!'
-#                 return render(request, 'administration/createschedule.html', {'form':form, 'error':error })
-#             return redirect('schedule_view', doctor_id)
-#     return render(request, 'administration/createschedule.html', {'form':form})
-    
-# @login_required
+@login_required
 def schedule_view(request, doctor_id):
     user = CustomUser.objects.get(id= doctor_id)
     doctor = Doctor.objects.get(user= user)
