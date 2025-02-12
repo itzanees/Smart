@@ -52,17 +52,16 @@ class MedicalRecordForm(forms.ModelForm):
 
      
      def __init__(self, *args, **kwargs):
-          user = kwargs.pop('user')
           super().__init__(*args, **kwargs)
           
-          if hasattr(user, 'patient'):
-               self.fields['pat_mrd_no'].initial = user.patient.pat_mrd_no
-          else:
-               self.fields.pop('pat_mrd_no', None)
-          if hasattr(user, 'doctor'):
-               self.fields['department'].initial = user.doctor.department
-          else:
-               self.fields.pop('department', None)
+          # if hasattr(user, 'patient'):
+          #      self.fields['pat_mrd_no'].initial = user.patient.pat_mrd_no
+          # else:
+          #      self.fields.pop('pat_mrd_no', None)
+          # if hasattr(user, 'doctor'):
+          #      self.fields['department'].initial = user.doctor.department
+          # else:
+          #      self.fields.pop('department', None)
           for field_name, field in self.fields.items():
                field.widget.attrs['class'] = 'form-control'
                field.widget.attrs['placeholder'] = field.label

@@ -136,10 +136,10 @@ def doc_pat_records(request, pk):
     if request.method == 'POST':
         form = MedicalRecordForm(request.POST, request.FILES)
         if form.is_valid():
-            doctor = get_object_or_404(get_user_model(), id=request.user.id)
+            doctor = Doctor.objects.get(user=request.user)
             # user = get_object_or_404(CustomUser, id=user_id)
-            dep = doctor.department
-            print(dep)
+            dep = doctor.department.id
+            pat = Patient.objects.get()
             
 
             form.save()

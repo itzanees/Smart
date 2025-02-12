@@ -49,15 +49,7 @@ def patient_login(request):
 def pat_forgot_password(request):
     return render(request, 'patient/forgot-password.html')
 
-@login_required(login_url='patient_login')
-class CustomPasswordChangeView(PasswordChangeView):
-    form_class = CustomPasswordChangeForm
-    template_name = "patient/change-password.html"
-    success_url = reverse_lazy("password_change_done")
 
-    def form_valid(self, form):
-        messages.success(self.request, "Your password has been changed successfully.")
-        return super().form_valid(form)
 
 @login_required(login_url='patient_login')
 def pat_change_password(request):
@@ -65,8 +57,7 @@ def pat_change_password(request):
         form = CustomPasswordChangeForm(user = request.user, data = request.POST)
         if form.is_valid():
             user = form.save()
-            update_session_auth_hash(request, user) 
-            messages.success(request, "Password Changed Successfully")
+            update_session_auth_hash(request, user)
             return redirect("password_change_done")
     else:
         form = CustomPasswordChangeForm(user=request.user)
@@ -102,6 +93,9 @@ def patient_profile(request):
                     patient.profile_updated = True
                     patient.save()
                     messages.success(request, f"{user.username}'s profile updated")
+                    return redirect('patient_profile') 
+                else:
+                    messages.error(request, f"{user.username}'s please check information and try again")
                     return redirect('patient_profile') 
             except Exception as e:
                 print(e)
