@@ -14,11 +14,17 @@
 							<div class="doctor-widget">
 								<div class="doc-info-left">
 									<div class="doctor-img">
+										<img class="img-fluid" 
 										{% if doctor.user.profile_pic %}
-										<img src="{{ doctor.user.profile_pic.url }}" class="img-fluid" alt="User Image">
+										src="{{ doctor.user.profile_pic.url }}" 
 										{% else %}
-										<img src="{% static 'images/doctors/doc.png' %}" class="img-fluid" alt="User Image">
+										{% if doctor.user.gender == 'M' %}
+										src="{% static 'images/doctor/doc.png' %}"
+										{% else %}
+										src="{% static 'images/doctor/fdoc.png' %}"
 										{% endif %}
+										{% endif %}
+										alt="User Image">
 									</div>
 									<div class="doc-info-cont">
 										<h4 class="doc-name">{{ doctor.user.first_name }} {{ doctor.user.last_name }}</h4>

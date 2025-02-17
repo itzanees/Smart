@@ -1,54 +1,77 @@
 {% extends 'doctor/base.html' %}
 {% block title %}
 Appoinments 
-{% endblock %}
+{% endblock %} 
 {% block content %}
-			<!-- Page Content -->
-			<div class="content">
-				<div class="container-fluid">
-					<div class="row">
-						{% include 'doctor/sidebar.html' %}
-						<div class="col-md-7 col-lg-8 col-xl-9">
-							<div class="appointments">
-							
-								<!-- Appointment List -->
-								 {% for appointment in appointments %}
-								<div class="appointment-list">
-									<div class="profile-info-widget">
-										<a href="patient-profile.html" class="booking-doc-img">
-											<img src="{{ appointment.patient.user.profile_pic.url }}" alt="User Image">
-										</a>
-										<div class="profile-det-info">
-											<h3><a href="">{{ appointment.patient.user.first_name }} {{ appointment.patient.user.last_name }}</a></h3>
-											<div class="patient-details">
-												<h5><i class="far fa-clock"></i> {{ appointment.appointment_on.date }} {{ appointment.appointment_on.start_time}}</h5>
-												<h5><i class="fas fa-map-marker-alt"></i> {{ appointment.patient.user.city }}, {{ appointment.patient.user.state }}</h5>
-												<h5><i class="fa-solid fa-droplet"></i> {{ appointment.patient.blood_group }}</h5>
-											</div>
-										</div>
-									</div>
-									<div class="appointment-action">
-										<a href="#" class="btn btn-sm bg-info-light" data-toggle="modal" data-target="#appt_details">
-											<i class="far fa-eye"></i> View
-										</a>
-										<!-- <a href="javascript:void(0);" class="btn btn-sm bg-success-light">
+<!-- Page Content -->
+<div class="content">
+  <div class="container-fluid">
+    <div class="row">
+      {% include 'doctor/sidebar.html' %}
+      <div class="col-md-7 col-lg-8 col-xl-9">
+        <div class="appointments">
+          <!-- Appointment List -->
+          {% for appointment in appointments %}
+          <div class="appointment-list">
+            <div class="profile-info-widget">
+              <a href="patient-profile.html" class="booking-doc-img">
+                <img 
+                  {% if user.profile_pic %}
+                  src="{{ appointment.patient.user.profile_pic.url }}" 
+                  {% else %}
+                  {% if appointment.patient.user.gender == 'M' %}
+                  src="{% static 'images/profiles/male.jpg' %}"
+                  {% else %}
+                  src="{% static 'images/profiles/female.jpg' %}"
+                  {% endif %}
+                  {% endif %}
+                  alt="User Image" />
+              </a>
+              <div class="profile-det-info">
+                <h3>
+                  <a href="">
+					{{ appointment.patient.user.first_name }}
+					 {{ appointment.patient.user.last_name }}
+					</a>
+                </h3>
+                <div class="patient-details">
+                  <h5>
+                    <i class="far fa-clock"></i> {{ appointment.appointment_on.date }}
+					 {{ appointment.appointment_on.start_time }}
+                  </h5>
+                  <h5>
+                    <i class="fas fa-map-marker-alt"></i> {{ appointment.patient.user.city }}, 
+					{{ appointment.patient.user.state }}
+                  </h5>
+                  <h5>
+                    <i class="fa-solid fa-droplet"></i> {{ appointment.patient.blood_group }}
+                  </h5>
+                </div>
+              </div>
+            </div>
+            <div class="appointment-action">
+              <a href="#" class="btn btn-sm bg-info-light" data-toggle="modal" data-target="#appt_details">
+                <i class="far fa-eye"></i> View
+              </a>
+              <!-- <a href="javascript:void(0);" class="btn btn-sm bg-success-light">
 											<i class="fas fa-check"></i> Accept
 										</a>
 										<a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
 											<i class="fas fa-times"></i> Cancel
 										</a> -->
-									</div>
-								</div>
-								{% endfor %}
-								<!-- /Appointment List -->
-								
-							</div>
-						</div>
-					</div>
+            </div>
+          </div>
+          {% empty %}
+          <div class="appointment-list">
+            <h3>No Appointments</h3>
+          </div>
+          {% endfor %}
+          <!-- /Appointment List -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Page Content -->
 
-				</div>
-
-			</div>		
-			<!-- /Page Content -->
-   
 {% endblock %}

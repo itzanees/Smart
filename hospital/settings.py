@@ -27,6 +27,7 @@ SECRET_KEY = 'django-insecure-95prut3ejr10)x@8p#sik@mow2sbbbr)=)tb=_g=z2z2joriw-
 DEBUG = True
 
 ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -145,3 +146,11 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Kolkata'
 
+
+# Email Settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'itzanees@gmail.com'
+EMAIL_HOST_PASSWORD = 'szim ejhi dcoc xuib'

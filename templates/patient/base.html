@@ -70,16 +70,7 @@
 							</li>
 							<li {% if request.path == '/patient/specialities' %} class="active" {% endif %}>
 								<a href="{% url 'hosp_specialities' %}">Specialities</a>
-							</li>
-							<!-- <li><a href="doctor-profile.html">Doctor Profile</a></li> -->
-							<!-- <li><a href="booking.html">Booking</a></li> -->
-							<!-- <li><a href="checkout.html">Checkout</a></li> -->
-							<!-- <li><a href="booking-success.html">Booking Success</a></li> -->
-							<!-- <li><a href="favourites.html">Favourites</a></li> -->
-							<!-- <li><a href="chat.html">Chat</a></li> -->
-							<!-- <li><a href="profile-settings.html">Profile Settings</a></li> -->
-							<!-- <li><a href="change-password.html">Change Password</a></li> -->
-							
+							</li>							
 						</ul>
 					</div> 
 					<ul class="nav header-navbar-rht">
@@ -95,21 +86,33 @@
 						<li class="nav-item dropdown has-arrow logged-item">
 							<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
 								<span class="user-img">
+									<img class="rounded-circle"
                                     {% if user.profile_pic %}
-                                    <img class="rounded-circle" src="{{ user.profile_pic.url }}" width="31" alt="user image">
+									src="{{ user.profile_pic.url }}"
                                     {% else %}
-                                    <img class="rounded-circle" src="{% static 'images/profiles/male.jpg' %}" width="31" alt="User Image">
+									{% if user.gender == 'M' %}
+									src="{% static 'images/profiles/male.jpg' %}"
+									{% else %}
+									src="{% static 'images/profiles/female.jpg' %}"
+									{% endif %}
                                     {% endif %}
+									width="31" alt="user image">
 								</span>
 							</a>
 							<div class="dropdown-menu dropdown-menu-right">
 								<div class="user-header">
 									<div class="avatar avatar-sm">
                                         {% if user.profile_pic %}
-                                        <img class="avatar-img rounded-circle" src="{{ user.profile_pic.url }}" alt="user image">
+                                        <img class="avatar-img rounded-circle"
+										src="{{ user.profile_pic.url }}"
                                         {% else %}
-                                        <img class="avatar-img rounded-circle" src="{% static 'images/profiles/male.jpg' %}" alt="User Image">
+										{% if user.gender == 'M' %}
+										src="{% static 'images/profiles/male.jpg' %}"
+										{% else %}
+										src="{% static 'images/profiles/female.jpg' %}"
+										{% endif %}
                                         {% endif %}
+										alt="user image">
 									</div>
 									<div class="user-text">
 										<h6>{{ user.username }}</h6>

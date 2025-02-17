@@ -39,7 +39,14 @@
 								{% if doctor.profile_pic %}
 								<a href="#">
 									<img class="rounded-circle" alt="User Image"
-										src="{{ doctor.profile_pic.url }}">
+									{% if doctor.profile_pic %}
+									src="{{ doctor.profile_pic.url }}">
+									{% else %}
+									{% if doctor.gender == 'M' %}
+									src="{% static '/images/doctors/doc.png' %}"
+									{% else %}
+									src="{% static 'images/doctors/fdoc.png' %}"
+									{% endif %}
 								</a>
 								{% else %}
 								<a href="#">

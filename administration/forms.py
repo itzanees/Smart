@@ -97,7 +97,6 @@ class ProfileUpdateForm(forms.ModelForm):
     state = forms.CharField(max_length=32,required=True)
     pincode = forms.CharField(max_length=6,required=True)
     country = forms.CharField(max_length=32,required=True)
-    
 
     # Fields from Patient
     pat_mrd_no = forms.CharField(disabled=True)
@@ -128,7 +127,6 @@ class ProfileUpdateForm(forms.ModelForm):
         else:
             self.fields.pop('pat_mrd_no', None)
 
-
         if hasattr(user, 'doctor'):
             self.fields['department'].initial = user.doctor.department
             self.fields['employ_code'].initial = user.doctor.employ_code
@@ -148,7 +146,6 @@ class ProfileUpdateForm(forms.ModelForm):
         else:
             self.fields.pop('role', None)
             self.fields.pop('employee_code', None)
-
 
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'

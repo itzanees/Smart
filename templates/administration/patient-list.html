@@ -68,14 +68,21 @@ Patients
 										<tbody>
 											{% for patient in patients %}
 											<tr>
-												<td>{{ patient.patient.pat_mrd_no }}, {{ patient.id }}</td>
+												<td>{{ patient.patient.pat_mrd_no }}</td>
 												<td>
 													<h2 class="table-avatar">
-														{% if patient.patient.profile_pic %}
 														<a href="{% url 'users_profile' patient.id %}" class="avatar avatar-sm mr-2">
-															<img class="avatar-img rounded-circle" src="{{ patient.patient.profile_pic.url }}" alt="User Image">
+															<img class="avatar-img rounded-circle" 
+															{% if patient.patient.profile_pic %}
+															src="{{ patient.patient.profile_pic.url }}"
+															{% if patient.patient.gender == 'M' %}
+															src="{% static 'images/profiles/male.jpg' %}"
+															{% else %}
+															 src="{% static 'images/profiles/female.jpg' %}"
+															{% endif %}
+															{% endif %}
+															alt="User Image">
 														</a>
-														{% endif %}
 														<a href="{% url 'users_profile' patient.id %}">{{ patient.username }}</a>
 													</h2>
 												</td>

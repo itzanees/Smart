@@ -1,6 +1,6 @@
 {% extends 'patient/base.html' %}
 {% load static %}
-{% block title %} {{ user.first_name }}'s: Settings{% endblock %}
+{% block title %} Search {% endblock %}
 {% block content %}
 
 <!-- Page Content -->
@@ -53,11 +53,17 @@
 						<div class="doctor-widget">
 							<div class="doc-info-left">
 								<div class="doctor-img">
+									<img class="img-fluid"
 									{% if doctor.user.profile_pic %}
-									<img src="{{ doctor.user.profile_pic.url }}" class="img-fluid" alt="User Image">
+									src="{{ doctor.user.profile_pic.url }}"
 									{% else %}
-									<img src="{% static 'images/doctors/doc.png' %}" class="img-fluid" alt="User Image">
+									{% if user.gender == 'M' %}
+									src="{% static 'images/doctors/doc.png' %}"
+									{% else %}
+									src="{% static 'images/doctors/fdoc.png' %}"
 									{% endif %}
+									{% endif %}
+									alt="User Image">
 								</div>
 								<div class="doc-info-cont">
 									<h4 class="doc-name"><a href="{% url 'pat_doctor_profile' doctor.id %}">

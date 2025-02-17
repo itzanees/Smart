@@ -27,6 +27,7 @@ class CustomUser(AbstractUser):
     state = models.CharField(max_length=20)
     pincode = models.CharField(max_length=6)
     country = models.CharField(max_length=32, default='', null=True, blank=True)
+    is_active = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
 
     def __str__(self):
@@ -66,14 +67,7 @@ class Patient(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.user.first_name} {self.user.last_name}"
-
-# class Schedule(models.Model):
-#     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='schedule')
-#     date = models.DateField()
-#     time_slot = models.TimeField(unique=True)
-#     is_available = models.BooleanField(default=True)
-
+        return f"Patient- {self.user.first_name} {self.user.last_name}."
 
 class Doctor(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='doctor')
@@ -83,7 +77,8 @@ class Doctor(models.Model):
     license_number  = models.CharField(max_length=32, unique=True, null=True, blank=True)
     consult_fees = models.DecimalField(max_digits=6, decimal_places=2, default=100, null=True, blank=True)
     profile_updated = models.BooleanField(default=False)
-    # experience_years = models.IntegerField()
+    password_request = models.BooleanField(default=False, blank=True, null=True)
+    # is_active 
     def save(self, *args, **kwargs):
         if not self.employ_code:
             last_profile = Doctor.objects.last()
@@ -92,7 +87,7 @@ class Doctor(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Dr. {self.user.first_name} {self.user.last_name}"
+        return f"Dr. {self.user.first_name} {self.user.last_name}\' Profile"
 
 class Schedule(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='schedule')
@@ -161,7 +156,9 @@ class Appointment(models.Model):
     STATUS = [
         ('SH', 'Scheduled'),
         ('RP', 'Reported'),
-        ('CO', 'Completed')
+        ('CO', 'Completed'),
+        ('CA', 'Cancelled'),
+        ('NS', 'Noshow'),
     ]
 
     appointment_number = models.CharField(max_length=32, unique=True)    
@@ -170,6 +167,7 @@ class Appointment(models.Model):
     appointment_on = models.OneToOneField(Schedule, on_delete=models.SET_NULL, null=True, blank=True, related_name='schedule')
     appointment_fees = models.DecimalField(max_digits=6,decimal_places=2, default='100')
     status = models.CharField(max_length=2, choices=STATUS, default='SH')
+    follow_up = models.DateTimeField(null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     
     def save(self, *args, **kwargs):
@@ -178,29 +176,26 @@ class Appointment(models.Model):
             today = f"{datetime.today().year}{datetime.today().month}{datetime.today().day}"
             last_id = int(last_appt.appointment_number.split('-')[2]) if last_appt else 0
             self.appointment_number = f"SAPT-{today}-{last_id + 1}"
+
+        super().save(*args, **kwargs)
         
     def __str__(self):
         return f"{self.patient.user.username}'s booking with {self.doctor}"
     
-
 class MedicalRecord(models.Model):
-    # TYPES = [
-    #      ('CN', 'Consultaion Note'),
-    #      ('LR', 'Lab Report'),
-    #      ('PR', 'Prescription')
-    # ]
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE) 
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     appointment = models.OneToOneField(Appointment, on_delete=models.CASCADE, null=True)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE)
-    # record_type = models.CharField(max_length=2, choices=TYPES)
-    record_date = models.DateTimeField(auto_now_add=True)
-    notes = models.TextField()
-    diagnosis = models.TextField()
-    treatment = models.TextField()
-    prescription = models.TextField()
+    notes = models.TextField(null=True, blank=True)
+    diagnosis = models.TextField(null=True, blank=True)
+    treatment = models.TextField(null=True, blank=True)
+    prescription = models.TextField(null=True, blank=True)
     attachments = models.FileField(upload_to='mrd/', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_opened = models.BooleanField(default=False)
+    is_closed = models.BooleanField(default=False, blank=True, null=True)
 
+    def __str__(self):
+        return f"{self.patient.user.username}'s Medical Record."
 
 class Billing(models.Model):
     PSTATUS= [
@@ -218,7 +213,7 @@ class Billing(models.Model):
     medication_charge = models.DecimalField(max_digits=10,decimal_places=2)
     procedure_charge = models.DecimalField(max_digits=10,decimal_places=2)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=2, choices=PSTATUS)
+    status = models.CharField(max_length=2, choices=PSTATUS, default='PE')
 
     def save(self, *args, **kwargs):
         if not self.bill_no:

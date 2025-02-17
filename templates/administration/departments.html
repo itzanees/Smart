@@ -75,10 +75,10 @@ Specialities
 
 											<td>
 												<h2 class="table-avatar">
-													<a href="" class="avatar avatar-sm mr-2">
+													<a href="" class="avatar avatar-sm mr-3">
 														{% if field.dep_image %}
 														<img class="avatar-img" src="{{ field.dep_image.url }}"
-															alt="Speciality">
+															alt="Speciality" style="width: 50px;">
 														{% endif %}
 													</a>
 													<a href="">{{ field.name }}</a>
@@ -146,7 +146,7 @@ Specialities
 																	<div class="form-group">
 																		<label>Image</label>
 																		{% if field.dep_image %}
-																		<img src="{{ field.dep_image.url }}" alt="">
+																		<img src="{{ field.dep_image.url }}" alt="" style="width: 100px;">
 																		{% endif %}
 																		<input type="file" name="dep_image"
 																			class="form-control">
@@ -202,7 +202,7 @@ Specialities
 									</tbody>
 								</table>
 									<nav>
-										<ul class="pagination">
+										<ul class="pagination mt-2">
 											{% if specialities.has_previous %}
 												<li class="page-item">
 													<a class="page-link" href="?page=1">First</a>

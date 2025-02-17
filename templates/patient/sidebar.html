@@ -5,15 +5,17 @@
         <div class="widget-profile pro-widget-content">
             <div class="profile-info-widget">
                 <a href="#" class="booking-doc-img">
+                    <img
                     {% if user.profile_pic %}
-                    <img src="{{ user.profile_pic.url }}" alt="user image">
+                    src="{{ user.profile_pic.url }}"
                     {% else %}
                     {% if user.gender == 'M' %}
-                    <img src="{% static 'images/profiles/male.jpg' %}" alt="User Image">
+                    src="{% static 'images/profiles/male.jpg' %}"
                     {% else %}
-                    <img src="{% static 'images/profiles/female.jpg' %}" alt="User Image">
+                    src="{% static 'images/profiles/female.jpg' %}"
                     {% endif %}
                     {% endif %}
+                    alt="user image">
                 </a>
                 <div class="profile-det-info">
                     <h3>{{ user.first_name }} {{ user.last_name }}</h3>

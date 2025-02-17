@@ -65,7 +65,7 @@
 					<ul class="nav header-navbar-rht">
 						<li class="nav-item contact-item">
 							<div class="top-nav-search">
-								<form method="get" action="{% url 'pat_search' %}">
+								<form method="get" action="{% url 'doc_search' %}">
 									<input type="text" name='q' value="{{ query|default:'' }}" class="form-control" placeholder="Search here">
 									<button class="btn" type="submit"><i class="fa fa-search"></i></button>
 								</form>
@@ -76,14 +76,32 @@
 						<li class="nav-item dropdown has-arrow logged-item">
 							<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
 								<span class="user-img">
-									<img class="rounded-circle" {% if user.profile_pic %} src="{{ user.profile_pic.url }}" {% else %}src="{% static 'images/doctors/doctor-thumb-02.jpg' %}" {% endif %}
+									<img class="rounded-circle"
+									{% if user.profile_pic %}
+									src="{{ user.profile_pic.url }}"
+									{% else %}
+									{% if user.gender == 'M' %}
+									src="{% static 'images/profiles/male.jpg' %}"
+									{% else %}
+									src="{% static 'images/profiles/female.jpg' %}"
+									{% endif %}
+									{% endif %}
                                     width="31" alt="Doc Image">
 								</span>
 							</a>
 							<div class="dropdown-menu dropdown-menu-right">
 								<div class="user-header">
 									<div class="avatar avatar-sm">
-										<img {% if user.profile_pic %} src="{{ user.profile_pic.url }}" {% else %}src="{% static 'images/doctors/doctor-thumb-02.jpg' %}" {% endif %} alt="User Image" class="avatar-img rounded-circle">
+										<img {% if user.profile_pic %}
+										src="{{ user.profile_pic.url }}"
+										{% else %}
+										{% if user.gender == 'M' %}
+										src="{% static 'images/profiles/male.jpg' %}"
+										{% else %}
+										src="{% static 'images/profiles/female.jpg' %}"
+										{% endif %}
+										{% endif %}
+										alt="User Image" class="avatar-img rounded-circle">
 									</div>
 									<div class="user-text">
 										<h6></h6>
@@ -112,7 +130,7 @@
 						<div class="col-md-12 col-12">
 							<nav aria-label="breadcrumb" class="page-breadcrumb">
 								<ol class="breadcrumb">
-									<li class="breadcrumb-item"><a href="index-2.html">Home</a></li>
+									<li class="breadcrumb-item"><a href="">Home</a></li>
 									<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
 								</ol>
 							</nav>

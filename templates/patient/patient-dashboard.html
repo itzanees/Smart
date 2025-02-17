@@ -6,13 +6,27 @@
 			<!-- Page Content -->
 			<div class="content">
 				<div class="container-fluid">
-
 					<div class="row">
 						{% include 'patient/sidebar.html' %}
 						<div class="col-md-7 col-lg-8 col-xl-9">
+							{% for message in messages %}
+						<div class="container container-fluid w-min">
+						{% if message.tags == 'error' %}
+						<div class="text-center alert alert-warning alert-dismissible fade show" role="alert">
+							<strong>{{ message }}</strong>
+							<a class="close" href="#" data-dismiss="alert">×</a>
+						</div>
+						{% endif %}
+						{% if message.tags == 'success' %}
+							<div class="text-center alert alert-success alert-dismissible fade show" role="alert">
+								<strong>{{ message }}</strong>
+							<a class="close" href="#" data-dismiss="alert">×</a>
+							</div>
+						{% endif %}
+						</div>
+						{% endfor %}
 							<div class="card">
 								<div class="card-body pt-0">
-								
 									<!-- Tab Menu -->
 									<nav class="user-tabs mb-4">
 										<ul class="nav nav-tabs nav-tabs-bottom nav-justified">
@@ -20,21 +34,13 @@
 												<a class="nav-link active" href="#pat_appointments" data-toggle="tab">Appointments</a>
 											</li>
 											<li class="nav-item">
-												<a class="nav-link" href="#pat_prescriptions" data-toggle="tab">Prescriptions</a>
-											</li>
-											<li class="nav-item">
 												<a class="nav-link" href="#pat_medical_records" data-toggle="tab"><span class="med-records">Medical Records</span></a>
-											</li>
-											<li class="nav-item">
-												<a class="nav-link" href="#pat_billing" data-toggle="tab">Billing</a>
 											</li>
 										</ul>
 									</nav>
 									<!-- /Tab Menu -->
-									
 									<!-- Tab Content -->
 									<div class="tab-content pt-0">
-										
 										<!-- Appointment Tab -->
 										<div id="pat_appointments" class="tab-pane fade show active">
 											<div class="card card-table mb-0">
@@ -58,16 +64,39 @@
 																	<td>
 																		<h2 class="table-avatar">
 																			<a href="" class="avatar avatar-sm mr-2">
-																				<img class="avatar-img rounded-circle" {% if app.doctor.user.profile_pic %} src="{{ app.doctor.user.profile_pic.url }}" {% endif %}alt="User Image">
+																				<img class="avatar-img rounded-circle"
+																				{% if app.doctor.user.profile_pic %}
+																				src="{{ app.doctor.user.profile_pic.url }}"
+																				{% else %}
+																				{% if app.doctor.user.gender == 'M' %}
+																				src="{% static 'images/doctors/doc.png' %}"
+																				{% else %}
+																				src="{% static 'images/profiles/fdoc.png' %}"
+																				{% endif %}
+																				{% endif %}
+																				alt="User Image">
 																			</a>
 																			<a href="">{{ app.doctor }} <span>{{ app.doctor.department }}</span></a>
 																		</h2>
 																	</td>
-																	<td>{{ app.appointment_on.date }}<span class="d-block text-info">{{ app.appointment_on.start_time }}</span></td>
+																	<td>{{ app.appointment_on.date }}<span class="d-block text-info">
+																		{{ app.appointment_on.start_time }}</span></td>
 																	<td>{{ app.created_at.date }} <span class="small">{{ app.created_at.time }}</span> </td>
 																	<td>₹ {{ app.appointment_fees }}</td>
 																	<!-- <td>16 Nov 2019</td> -->
-																	<td><span class="badge badge-pill bg-success-light">{{ app.status }}</span></td>
+																	<td>
+																		{% if app.status == 'SH' %}
+																		<i class="fa-solid fa-calendar-day text-info"></i> Scheduled 
+																		{% elif app.status == 'RP' %}
+																		<i class="fa-solid fa-file-medical text-warning"></i> Reported
+																		{% elif app.status == 'CO' %}
+																		<i class="fa-solid fa-calendar-check text-success"></i> Completed
+																		{% elif app.status == 'CA' %}
+																		<i class="fa-solid fa-calendar-check text-danger"></i> Cancelled
+																		{% elif app.status == 'NS' %}
+																		<i class="fa-solid fa-calendar-check text-muted"></i> No Show
+																		{% endif %}
+																	</td>
 																	<td class="text-right">
 																		<div class="table-action">
 																			<a href="" class="btn btn-sm bg-primary-light">
@@ -91,52 +120,6 @@
 											</div>
 										</div>
 										<!-- /Appointment Tab -->
-										
-										<!-- Prescription Tab -->
-										<div class="tab-pane fade" id="pat_prescriptions">
-											<div class="card card-table mb-0">
-												<div class="card-body">
-													<div class="table-responsive">
-														<table class="table table-hover table-center mb-0">
-															<thead>
-																<tr>
-																	<th>Date </th>
-																	<th>Name</th>									
-																	<th>Created by </th>
-																	<th></th>
-																</tr>     
-															</thead>
-															<tbody>
-																<tr>
-																	<td>14 Nov 2019</td>
-																	<td>Prescription 1</td>
-																	<td>
-																		<h2 class="table-avatar">
-																			<a href="doctor-profile.html" class="avatar avatar-sm mr-2">
-																				<img class="avatar-img rounded-circle" src="assets/img/doctors/doctor-thumb-01.jpg" alt="User Image">
-																			</a>
-																			<a href="doctor-profile.html">Dr. Ruby Perrin <span>Dental</span></a>
-																		</h2>
-																	</td>
-																	<td class="text-right">
-																		<div class="table-action">
-																			<a href="javascript:void(0);" class="btn btn-sm bg-primary-light">
-																				<i class="fas fa-print"></i> Print
-																			</a>
-																			<a href="javascript:void(0);" class="btn btn-sm bg-info-light">
-																				<i class="far fa-eye"></i> View
-																			</a>
-																		</div>
-																	</td>
-																</tr>
-															</tbody>	
-														</table>
-													</div>
-												</div>
-											</div>
-										</div>
-										<!-- /Prescription Tab -->
-											
 										<!-- Medical Records Tab -->
 										<div id="pat_medical_records" class="tab-pane fade">
 											<div class="card card-table mb-0">
@@ -145,26 +128,25 @@
 														<table class="table table-hover table-center mb-0">
 															<thead>
 																<tr>
-																	<th>ID</th>
+																	<th>Appointment Number</th>
 																	<th>Date </th>
-																	<th>Description</th>
-																	<th>Attachment</th>
+																	<th>Department</th>
 																	<th>Created</th>
 																	<th></th>
 																</tr>     
 															</thead>
 															<tbody>
+																{% for record in mrecords %}
 																<tr>
-																	<td><a href="javascript:void(0);">#MR-0010</a></td>
-																	<td>14 Nov 2019</td>
-																	<td>Dental Filling</td>
-																	<td><a href="#">dental-test.pdf</a></td>
+																	<td><a href="javascript:void(0);">{{ record.appointment.appointment_number }}</a></td>
+																	<td>{{ record.appointment.appointment_on.date }}</td>
+																	<td>{{ record.appointment.doctor.department.name }}</td>
 																	<td>
 																		<h2 class="table-avatar">
-																			<a href="doctor-profile.html" class="avatar avatar-sm mr-2">
-																				<img class="avatar-img rounded-circle" src="assets/img/doctors/doctor-thumb-01.jpg" alt="User Image">
+																			<a href="doctor-profile.html">
+																				Dr. {{ record.appointment.doctor.user.first_name }}
+																				 {{ record.appointment.doctor.user.last_name }}
 																			</a>
-																			<a href="doctor-profile.html">Dr. Ruby Perrin <span>Dental</span></a>
 																		</h2>
 																	</td>
 																	<td class="text-right">
@@ -178,6 +160,11 @@
 																		</div>
 																	</td>
 																</tr>
+																{% empty %}
+																<tr>
+																	<td colspan="5" class="text-center text-muted">No Medical Records</td>
+																</tr>
+																{% endfor %}
 															</tbody>  	
 														</table>
 													</div>
@@ -185,66 +172,13 @@
 											</div>
 										</div>
 										<!-- /Medical Records Tab -->
-										
-										<!-- Billing Tab -->
-										<div id="pat_billing" class="tab-pane fade">
-											<div class="card card-table mb-0">
-												<div class="card-body">
-													<div class="table-responsive">
-														<table class="table table-hover table-center mb-0">
-															<thead>
-																<tr>
-																	<th>Invoice No</th>
-																	<th>Doctor</th>
-																	<th>Amount</th>
-																	<th>Paid On</th>
-																	<th></th>
-																</tr>
-															</thead>
-															<tbody>
-																<tr>
-																	<td>
-																		<a href="invoice-view.html">#INV-0010</a>
-																	</td>
-																	<td>
-																		<h2 class="table-avatar">
-																			<a href="doctor-profile.html" class="avatar avatar-sm mr-2">
-																				<img class="avatar-img rounded-circle" src="assets/img/doctors/doctor-thumb-01.jpg" alt="User Image">
-																			</a>
-																			<a href="doctor-profile.html">Ruby Perrin <span>Dental</span></a>
-																		</h2>
-																	</td>
-																	<td>$450</td>
-																	<td>14 Nov 2019</td>
-																	<td class="text-right">
-																		<div class="table-action">
-																			<a href="invoice-view.html" class="btn btn-sm bg-info-light">
-																				<i class="far fa-eye"></i> View
-																			</a>
-																			<a href="javascript:void(0);" class="btn btn-sm bg-primary-light">
-																				<i class="fas fa-print"></i> Print
-																			</a>
-																		</div>
-																	</td>
-																</tr>
-															</tbody>
-														</table>
-													</div>
-												</div>
-											</div>
-										</div>
-										<!-- /Billing Tab -->
-										
 									</div>
 									<!-- Tab Content -->
-									
 								</div>
 							</div>
 						</div>
 					</div>
-
 				</div>
-
 			</div>		
 			<!-- /Page Content -->
 {% endblock %}

@@ -57,6 +57,34 @@ Specialities
 									</tbody>
 									{% endif %}
 								</table>
+								{% if specialities %}
+									<nav>
+										<ul class="pagination mt-2">
+											{% if specialities.has_previous %}
+											<li class="page-item">
+												<a class="page-link" href="?page=1">First</a>
+											</li>
+											<li class="page-item">
+												<a class="page-link" href="?page={{ specialities.previous_page_number }}">Previous</a>
+											</li>
+											{% endif %}
+
+											<li class="page-item active">
+												<span class="page-link">Page {{ specialities.number }} of 
+													{{ specialities.paginator.num_pages }}</span>
+											</li>
+
+											{% if specialities.has_next %}
+											<li class="page-item">
+												<a class="page-link" href="?page={{ specialities.next_page_number }}">Next</a>
+											</li>
+											<li class="page-item">
+												<a class="page-link" href="?page={{ specialities.paginator.num_pages }}">Last</a>
+											</li>
+											{% endif %}
+										</ul>
+									</nav>
+									{% endif %}
 								<table class="datatable table table-hover table-center mb-0">
 									{% if doctors %}
 									<thead>
@@ -76,7 +104,17 @@ Specialities
 												<h2 class="table-avatar">
 													<a href="" class="avatar avatar-sm mr-2">
 														{% if doctor.user.profile_pic %}
-														<img class="avatar-img rounded-circle" src="{{ doctor.user.profile_pic.url }}"
+														<img class="avatar-img rounded-circle"
+														{% if doctor.user.profile_pic %}
+														src="{{ doctor.user.profile_pic.url }}"
+														{% else %}
+														{% if user.gender == 'M' %}
+														src="{% static 'images/doctor/doc.png' %}"
+														{% else %}
+														src="{% static 'images/doctor/fdoc.png' %}"
+														{% endif %}
+														{% endif %}
+														
 															alt="User image">
 														{% endif %}
 													</a>
@@ -91,6 +129,34 @@ Specialities
 									</tbody>
 									{% endif %}
 								</table>
+								{% if doctors %}
+									<nav>
+										<ul class="pagination mt-2">
+											{% if doctors.has_previous %}
+											<li class="page-item">
+												<a class="page-link" href="?page=1">First</a>
+											</li>
+											<li class="page-item">
+												<a class="page-link" href="?page={{ doctors.previous_page_number }}">Previous</a>
+											</li>
+											{% endif %}
+
+											<li class="page-item active">
+												<span class="page-link">Page {{ doctors.number }} of 
+													{{ doctors.paginator.num_pages }}</span>
+											</li>
+
+											{% if doctors.has_next %}
+											<li class="page-item">
+												<a class="page-link" href="?page={{ doctors.next_page_number }}">Next</a>
+											</li>
+											<li class="page-item">
+												<a class="page-link" href="?page={{ doctors.paginator.num_pages }}">Last</a>
+											</li>
+										</ul>
+									</nav>
+									{% endif %}
+								{% endif %}
 							</div>
 						</div>
 					</div>

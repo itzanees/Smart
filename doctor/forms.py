@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import authenticate
-from administration.models import Appointment, Department, Doctor, Schedule, Patient, CustomUser, MedicalRecord
-from django.utils import timezone
+from administration.models import CustomUser, MedicalRecord, Doctor
+from django.forms.widgets import DateInput
 
 class DoctorLoginForm(forms.Form):
     username = forms.CharField(
@@ -33,46 +33,47 @@ class DoctorLoginForm(forms.Form):
             raise forms.ValidationError("Invalid username or password")
         return cleaned_data
 
+class DoctorPasswordResetRequestForm(forms.Form):
+    username = forms.CharField(
+         widget=forms.TextInput(
+              attrs= {
+                   'class' : 'form-control',
+                   'placeholder' : 'Username',
+              }
+         ),
+         label=''
+    )
+
+    def clean(self):
+     cleaned_data = super().clean()
+     username = cleaned_data.get("username")
+     user = CustomUser.objects.get(username=username)
+     try:
+         doctor = Doctor.objects.get(user=user)
+         return cleaned_data
+     except Exception as e:
+         raise forms.ValidationError("Invalid username.")
+
 class MedicalRecordForm(forms.ModelForm):
-     # patient = 
-     # doctor
-     # appointment
-     # department
-     # record_date
-     notes = forms.Textarea()
-     diagnosis = forms.Textarea()
-     treatment = forms.Textarea()
-     prescription = forms.Textarea()
-     attachments = forms.FileInput()
+    next_appointment = forms.DateTimeField(
+    required=False,
+    widget=DateInput(attrs={
+        'class': 'form-control',
+        'type': 'date',
+        'placeholder': 'Select next appointment date'
+    })
+    )
+    class Meta:
+        model = MedicalRecord
+        fields = ['notes', 'diagnosis', 'treatment', 'prescription', 'attachments']
+        
+        widgets = {
+            'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Enter notes'}),
+            'diagnosis': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Enter diagnosis'}),
+            'treatment': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Enter treatment'}),
+            'prescription': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Enter prescription'}),
+        }
 
-     class Meta:
-         model = MedicalRecord
-     #     fields = '__all__'
-         fields = ['notes', 'diagnosis', 'treatment', 'prescription', 'attachments']
-
-     
-     def __init__(self, *args, **kwargs):
-          super().__init__(*args, **kwargs)
-          
-          # if hasattr(user, 'patient'):
-          #      self.fields['pat_mrd_no'].initial = user.patient.pat_mrd_no
-          # else:
-          #      self.fields.pop('pat_mrd_no', None)
-          # if hasattr(user, 'doctor'):
-          #      self.fields['department'].initial = user.doctor.department
-          # else:
-          #      self.fields.pop('department', None)
-          for field_name, field in self.fields.items():
-               field.widget.attrs['class'] = 'form-control'
-               field.widget.attrs['placeholder'] = field.label
-               field.help_text = None
-               
-               if field_name == 'date' or field_name == 'end_date':
-                    field.widget = forms.DateInput(attrs={
-                         'type': 'text',
-                         'class': 'form-control',
-                         'disabled': True,
-                         'min' : str(timezone.now().date()),
-                         'max' : str(timezone.now().date()),
-                         })
-
+    def __init__(self, *args, **kwargs):
+        super(MedicalRecordForm, self).__init__(*args, **kwargs)
+        self.fields['attachments'].widget.attrs.update({'class': 'form-control'})

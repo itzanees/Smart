@@ -57,11 +57,17 @@ Transactions
 											<td>
 												<h2 class="table-avatar">
 													<a href="" class="avatar avatar-sm mr-2">
+														<img class="avatar-img rounded-circle" 
 														{% if appointment.patient.user.profile_pic %}
-														<img class="avatar-img rounded-circle" src="{{ appointment.patient.user.profile_pic.url }}" alt="User Image">
+														src="{{ appointment.patient.user.profile_pic.url }}" 
 														{% else %}
-														<img class="avatar-img rounded-circle" src="{% static 'images/patients/patient1.jpg' %}" alt="User Image">
+														{% if appointment.patient.user.gender == 'M' %}
+														src="{% static 'images/profiles/male.jpg' %}"
+														{% else %}
+														src="{% static 'images/profiles/female.jpg' %}"
 														{% endif %}
+														{% endif %}
+														alt="User Image">
 													</a>
 													<a href="">{{ appointment.patient.user.first_name }} {{ appointment.patient.user.last_name }}</a>
 												</h2>

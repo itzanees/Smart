@@ -1,4 +1,5 @@
 {% extends 'doctor/base.html' %}
+{% load static %}
 {% block title %}
 Doctor Home 
 {% endblock %}
@@ -17,6 +18,9 @@ Doctor Home
 										<!-- Appointment Tab -->
 										<ul class="nav nav-tabs nav-tabs-solid nav-tabs-rounded">
 											<li class="nav-item">
+												<a class="nav-link" href="#prev-appointments" data-toggle="tab">Previous</a>
+											</li>
+											<li class="nav-item">
 												<a class="nav-link active" href="#today-appointments" data-toggle="tab">Today</a>
 											</li>
 											<li class="nav-item">
@@ -26,7 +30,89 @@ Doctor Home
 										<!-- /Appointment Tab -->
 										
 										<div class="tab-content">
-										
+											<!-- prev appointments -->
+											<div class="tab-pane" id="prev-appointments">
+												<div class="card card-table mb-0">
+													<div class="card-body">
+														<div class="table-responsive">
+															<table class="table table-hover table-center mb-0">
+																<thead>
+																	<tr>
+																		<th>Patient Name</th>
+																		<th>Appt Number</th>
+																		<th>Appt Date</th>
+																		<th>Status</th>
+																		<th></th>
+																	</tr>
+																</thead>
+																<tbody>
+																	{% for appointment in appointments_prev %}
+																	<tr>
+																		<td>
+																			<h2 class="table-avatar">
+																				<a href="{% url 'doc_pat_profile' appointment.patient.id %}" class="avatar avatar-sm mr-2">
+																					<img class="avatar-img rounded-circle"
+																					{% if appointment.patient.user.profile_pic %}
+																					src="{{ appointment.patient.user.profile_pic.url }}"
+																					{% else %}
+																					{% if appointment.patient.user.gender == 'M' %}
+																					<img src="{% static 'images/profiles/male.jpg' %}" alt="User Image">
+																					{% else %}
+																					<img src="{% static 'images/profiles/female.jpg' %}" alt="User Image">
+																					{% endif %}
+																					{% endif %}
+																					alt="User Image">
+																				</a>
+																				<a href="{% url 'doc_pat_profile' appointment.patient.id %}">
+																					{{ appointment.patient.user.first_name }} {{ appointment.patient.user.last_name }}
+																					<span>{{ appointment.patient.pat_mrd_no }}</span>
+																				</a>
+																			</h2>
+																		</td>
+																		<td>
+																			{{ appointment.appointment_number }}
+																		</td>
+																		<td>{{ appointment.appointment_on.date }} <span class="d-block text-info">{{ appointment.appointment_on.start_time }}</span></td>
+																		<td>
+																			{% if appointment.status == 'SH' %}
+																			<i class="fa-solid fa-calendar-day text-info"></i> Scheduled 
+																			{% elif appointment.status == 'RP' %}
+																			<i class="fa-solid fa-file-medical text-warning"></i> Reported
+																			{% elif appointment.status == 'CO' %}
+																			<i class="fa-solid fa-calendar-check text-success"></i> Completed
+																			{% elif appointment.status == 'CA' %}
+																			<i class="fa-solid fa-calendar-check text-danger"></i> Cancelled
+																			{% elif appointment.status == 'NS' %}
+																			<i class="fa-solid fa-calendar-check text-muted"></i> No Show
+																			{% endif %}
+																		</td>
+																		<td class="text-right">
+																			<div class="table-action">
+																				<a href="#" class="btn btn-sm bg-info-light" data-toggle="modal" data-target="#appt_details_{{ appointment.id }}">
+																					<i class="far fa-eye"></i> View
+																				</a>
+																				
+																				<a href="{% url 'doc_pat_profile' appointment.patient.id %}" class="btn btn-sm bg-success-light">
+																					<i class="fas fa-check"></i> Open
+																				</a>
+																				<a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
+																					<i class="fas fa-times"></i> Mark as done
+																				</a>
+																			</div>
+																		</td>
+																	</tr>
+																	{% empty %}
+																	<tr>
+																		<td colspan="5" class="text-center"> No appointments for today</td>
+																	</tr>
+																	{% endfor %}
+																</tbody>
+															</table>		
+														</div>
+													</div>
+												</div>
+											</div>
+											<!-- /Prev appointments -->
 											<!-- today Appointment Tab -->
 											<div class="tab-pane show active" id="today-appointments">
 												<div class="card card-table mb-0">
@@ -47,9 +133,23 @@ Doctor Home
 																	<tr>
 																		<td>
 																			<h2 class="table-avatar">
-																				<a href="{% url 'doc_pat_profile' appointment.patient.id %}" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="{{ appointment.patient.user.profile_pic.url }}" alt="User Image"></a>
+																				<a href="{% url 'doc_pat_profile' appointment.patient.id %}"
+																				class="avatar avatar-sm mr-2">
+																				<img class="avatar-img rounded-circle" 
+																					{% if appointment.patient.user.profile_pic %}
+																					src="{{ appointment.patient.user.profile_pic.url }}"
+																					{% else %}
+																					{% if appointment.patient.user.gender == 'M' %}
+																					src="{% static 'images/profiles/male.jpg' %}"
+																					{% else %}
+																					src="{% static 'images/profiles/female.jpg' %}"
+																					{% endif %}
+																					{% endif %}
+																					alt="User Image">
+																				</a>
 																				<a href="{% url 'doc_pat_profile' appointment.patient.id %}">
-																					{{ appointment.patient.user.first_name }} {{ appointment.patient.user.last_name }}
+																					{{ appointment.patient.user.first_name }} 
+																					{{ appointment.patient.user.last_name }}
 																					<span>{{ appointment.patient.pat_mrd_no }}</span>
 																				</a>
 																			</h2>
@@ -57,7 +157,11 @@ Doctor Home
 																		<td>
 																			{{ appointment.appointment_number }}
 																		</td>
-																		<td>{{ appointment.appointment_on.date }} <span class="d-block text-info">{{ appointment.appointment_on.start_time }}</span></td>
+																		<td>{{ appointment.appointment_on.date }} 
+																			<span class="d-block text-info">
+																				{{ appointment.appointment_on.start_time }}
+																			</span>
+																		</td>
 																		<td>
 																			{% if appointment.status == 'SH' %}
 																			<i class="fa-solid fa-calendar-day text-info"></i> Scheduled 
@@ -65,6 +169,10 @@ Doctor Home
 																			<i class="fa-solid fa-file-medical text-warning"></i> Reported
 																			{% elif appointment.status == 'CO' %}
 																			<i class="fa-solid fa-calendar-check text-success"></i> Completed
+																			{% elif appointment.status == 'CA' %}
+																			<i class="fa-solid fa-calendar-check text-danger"></i> Cancelled
+																			{% elif appointment.status == 'NS' %}
+																			<i class="fa-solid fa-calendar-check text-muted"></i> No Show
 																			{% endif %}
 																		</td>
 																		<td class="text-right">
@@ -116,9 +224,23 @@ Doctor Home
 																	<tr>
 																		<td>
 																			<h2 class="table-avatar">
-																				<a href="patient-profile.html" class="avatar avatar-sm mr-2"><img class="avatar-img rounded-circle" src="assets/img/patients/patient.jpg" alt="User Image"></a>
-																				<a href="patient-profile.html">
-																					{{ appointment.patient.user.first_name }} {{ appointment.patient.user.last_name }}
+																				<a href="{% url 'doc_pat_profile' appointment.patient.id %}"
+																				class="avatar avatar-sm mr-2">
+																				<img class="avatar-img rounded-circle" 
+																					{% if appointment.patient.user.profile_pic %}
+																					src="{{ appointment.patient.user.profile_pic.url }}"
+																					{% else %}
+																					{% if appointment.patient.user.gender == 'M' %}
+																					src="{% static 'images/profiles/male.jpg' %}"
+																					{% else %}
+																					src="{% static 'images/profiles/female.jpg' %}"
+																					{% endif %}
+																					{% endif %}
+																					alt="User Image">
+																				</a>
+																				<a href="{% url 'doc_pat_profile' appointment.patient.id %}">
+																					{{ appointment.patient.user.first_name }} 
+																					{{ appointment.patient.user.last_name }}
 																					<span>{{ appointment.patient.pat_mrd_no }}</span>
 																				</a>
 																			</h2>
@@ -126,7 +248,11 @@ Doctor Home
 																		<td>
 																			{{ appointment.appointment_number }}
 																		</td>
-																		<td>{{ appointment.appointment_on.date }} <span class="d-block text-info">{{ appointment.appointment_on.start_time }}</span></td>
+																		<td>{{ appointment.appointment_on.date }}
+																			<span class="d-block text-info">
+																				{{ appointment.appointment_on.start_time }}
+																			</span>
+																		</td>
 																		<td>
 																			{% if appointment.status == 'SH' %}
 																			<i class="fa-solid fa-calendar-day text-info"></i> Scheduled 
@@ -134,6 +260,10 @@ Doctor Home
 																			<i class="fa-solid fa-file-medical text-warning"></i> Reported
 																			{% elif appointment.status == 'CO' %}
 																			<i class="fa-solid fa-calendar-check text-success"></i> Completed
+																			{% elif appointment.status == 'CA' %}
+																			<i class="fa-solid fa-calendar-check text-danger"></i> Cancelled
+																			{% elif appointment.status == 'NS' %}
+																			<i class="fa-solid fa-calendar-check text-muted"></i> No Show
 																			{% endif %}
 																		</td>
 																		<td class="text-right">

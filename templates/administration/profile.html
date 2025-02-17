@@ -38,7 +38,16 @@
 								{% if user.profile_pic %}
 								<a href="#">
 									<img class="rounded-circle" alt="User Image"
-										src="{{ user.profile_pic.url }}" style="height: 110px;">
+									{% if user.profile_pic %}
+									src="{{ user.profile_pic.url }}"
+									{% else %}
+									{% if user.gender == 'M' %}
+									src="{% static 'images/profiles/male.jpg' %}"
+									{% else %}
+									src="{% static 'images/profiles/female.jpg' %}"
+									{% endif %}
+									{% endif %}
+										style="height: 110px;">
 								</a>
 								{% else %}
 								<a href="#">

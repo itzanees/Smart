@@ -8,118 +8,86 @@ Appoinments
 	<div class="container-fluid">
 		<div class="row">
 			{% include 'doctor/sidebar.html' %}
-						<div class="col-md-7 col-lg-8 col-xl-9">
-						 
-							<div class="row">
-								<div class="col-sm-12">
-									<div class="card">
-										<div class="card-body">
-											<h4 class="card-title">Schedule Timings</h4>
-											<div class="profile-box">
-												<div class="row">
+			<div class="col-md-7 col-lg-8 col-xl-9">
 
-													<!-- <div class="col-lg-4">
-														<div class="form-group">               
-															<label>Timing Slot Duration</label>
-															<select class="select form-control">
-																<option>-</option>
-																<option>15 mins</option>
-																<option selected="selected">30 mins</option>  
-																<option>45 mins</option>
-																<option>1 Hour</option>
-															</select>
-														</div>
-													</div> -->
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="card">
+							<div class="card-body">
+								<h4 class="card-title">Dr. {{ request.user.first_name }} {{ request.user.last_name }}'s
+									Schedule Timings</h4>
+								<div class="profile-box">
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="card schedule-widget mb-0">
+											<!-- Schedule Header -->
+											<div class="schedule-header">
+												<!-- Available Slots Tab -->
+												{% if schedules %}
+												<table class="table table-striped">
+													<thead>
+														<tr>
+															<th>Date</th>
+															<th>Time</th>
+															<th>Duration (mins)</th>
+														</tr>
+													</thead>
+													<tbody>
+														{% for slot in schedules %}
+														<tr>
+															<td>{{ slot.date }}</td>
+															<td>{{ slot.start_time }}</td>
+															<td>{{ slot.duration }}</td>
+														</tr>
+														{% endfor %}
+													</tbody>
+												</table>
+												<nav>
+													<ul class="pagination mt-2">
+														{% if schedules.has_previous %}
+														<li class="page-item">
+															<a class="page-link" href="?page=1">First</a>
+														</li>
+														<li class="page-item">
+															<a class="page-link"
+																href="?page={{ schedules.previous_page_number }}">Previous</a>
+														</li>
+														{% endif %}
 
-												</div>     
-												<div class="row">
-													<div class="col-md-12">
-														<div class="card schedule-widget mb-0">
-														
-															<!-- Schedule Header -->
-															<div class="schedule-header">
-																<ul class="nav nav-tabs" id="scheduleTab" role="tablist">
-																	<li class="nav-item bg-primary" role="presentation">
-																		<a class="nav-link active" id="available-tab" data-bs-toggle="tab" href="#available" role="tab"
-																			aria-controls="available" aria-selected="true">Available Slots</a>
-																	</li>
-																</ul>
-																<div class="tab-content mt-3" id="scheduleTabContent">
-																	<!-- Available Slots Tab -->
-																	<div class="tab-pane fade show active" id="available" role="tabpanel"
-																		aria-labelledby="available-tab">
-																		<h4>Available Slots</h4>
-																		{% if schedules %}
-																		<table class="table table-striped">
-																			<thead>
-																				<tr>
-																					<th>Date</th>
-																					<th>Time</th>
-																					<th>Duration (mins)</th>
-																					<!-- <th>Action</th> -->
-																				</tr>
-																			</thead>
-																			<tbody>
-																				{% for slot in schedules %}
-																				<tr>
-																					<td>{{ slot.date }}</td>
-																					<td>{{ slot.start_time }}</td>
-																					<td>{{ slot.duration }}</td>
-																					<!-- <td>
-																						<a href="{% url 'book_slot' slot.id %}" class="btn btn-success">Book</a>
-																					</td> -->
-																				</tr>
-																				{% endfor %}
-																			</tbody>
-																		</table>
-																		<nav>
-																			<ul class="pagination">
-																				{% if schedules.has_previous %}
-																					<li class="page-item">
-																						<a class="page-link" href="?page=1">First</a>
-																					</li>
-																					<li class="page-item">
-																						<a class="page-link" href="?page={{ schedules.previous_page_number }}">Previous</a>
-																					</li>
-																				{% endif %}
-																		
-																				<li class="page-item active">
-																					<span class="page-link">Page {{ schedules.number }} of {{ schedules.paginator.num_pages }}</span>
-																				</li>
-																		
-																				{% if schedules.has_next %}
-																					<li class="page-item">
-																						<a class="page-link" href="?page={{ schedules.next_page_number }}">Next</a>
-																					</li>
-																					<li class="page-item">
-																						<a class="page-link" href="?page={{ schedules.paginator.num_pages }}">Last</a>
-																					</li>
-																				{% endif %}
-																			</ul>
-																		</nav>
-																		{% else %}
-																		<p>No available slots at the moment.</p>
-																		{% endif %}
-																	</div>
-																<!-- /Schedule Nav -->
-																
-															</div>
-															<!-- /Schedule Header -->
-															
-														</div>
-													</div>
-												</div>
+														<li class="page-item active">
+															<span class="page-link">Page {{ schedules.number }}
+																of {{ schedules.paginator.num_pages }}</span>
+														</li>
+
+														{% if schedules.has_next %}
+														<li class="page-item">
+															<a class="page-link"
+																href="?page={{ schedules.next_page_number }}">Next</a>
+														</li>
+														<li class="page-item">
+															<a class="page-link"
+																href="?page={{ schedules.paginator.num_pages }}">Last</a>
+														</li>
+														{% endif %}
+													</ul>
+												</nav>
+												{% else %}
+												<p>No available slots at the moment.</p>
+												{% endif %}
 											</div>
+											<!-- /Schedule Nav -->
 										</div>
+										<!-- /Schedule Header -->
 									</div>
 								</div>
 							</div>
-								
 						</div>
 					</div>
-
 				</div>
-
-			</div>		
-			<!-- /Page Content -->
-   {% endblock %}
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /Page Content -->
+{% endblock %}

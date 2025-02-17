@@ -15,13 +15,12 @@
   <div class="row row-cols-1 row-cols-md-2 g-4 peek">
     <div class="col-lg-3">
       <div class="card shadow bg-dark mb-3">
-        <img src="{% static '/images/doctors/doctor-01.jpg' %}" class="card-img-top" alt="doctorname">
-        <div class="card-header text-success text-center fs-4 fw-bold">doctorname</div>
+        <img src="{% static '/images/doctors/doctor-02.jpg' %}" class="card-img-top" alt="doctorname">
+        <div class="card-header text-success text-center fs-4 fw-bold">Dr. Sarath Kumar</div>
         <div class="card-body">
-          <h5 class="card-title text-secondary">speciality</h5>
-          <p class="text-success text-truncate">Some quick example text to build on the card title and make up the bulk of
-            the card's content.</p>
-          <a href="#" class="btn btn-primary">Check Schedule</a>
+          <h5 class="card-title text-secondary">Cardiology</h5>
+          <p class="text-success text-truncate">Certified doctor specialized in cardiology.</p>
+          <a href="{% url 'pat_search' %}" class="btn btn-primary">Check Schedule</a>
         </div>
       </div>
     </div>

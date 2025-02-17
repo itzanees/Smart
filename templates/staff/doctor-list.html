@@ -50,11 +50,17 @@ Doctors
 											<td>
 												<h2 class="table-avatar">
 													<a href="" class="avatar avatar-sm mr-2">
+														<img class="avatar-img rounded-circle" 
 														{% if doctor.user.profile_pic %}
-														<img class="avatar-img rounded-circle" src="{{ doctor.user.profile_pic.url }}" alt="User Image">
+														src="{{ doctor.user.profile_pic.url }}"
 														{% else %}
-														<img class="avatar-img rounded-circle" src="{% static 'images/doctors/doc.png' %}" alt="User Image">
+														{% if doctor.user.gender == 'M' %}
+														src="{% static 'images/profiles/male.jpg' %}"
+														{% else %}
+														src="{% static 'images/profiles/female.jpg' %}"
 														{% endif %}
+														{% endif %}
+														alt="User Image">
 													</a>
 													<a href="">Dr. {{ doctor.user.first_name }}</a>
 												</h2>

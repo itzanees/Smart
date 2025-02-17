@@ -82,7 +82,15 @@ Staffs
 														class="avatar avatar-sm mr-2">
 														<img
 															class="avatar-img rounded-circle"
+															{% if user.profile_pic %}
 															src="{{ staff.staff.profile_pic.url }}"
+															{% else %}
+															{% if staff.staff.gender == 'M' %}
+															src="{% static 'images/profiles/male.jpg' %}"
+															{% else %}
+															 src="{% static 'images/profiles/female.jpg' %}"
+															{% endif %}
+															{% endif %}
 															alt="User Image">
 														</a>
 														{% endif %}

@@ -58,10 +58,14 @@ Appointments
 												<td>
 													<h2 class="table-avatar">
 														<a href=""
-															class="avatar avatar-sm mr-2">
+															class="avatar avatar-sm mr-3">
 															<img class="avatar-img rounded-circle"
-																src="{% static 'images//doctors/doctor-thumb-01.jpg' %}"
-																alt="User Image">
+																{% if appointment.doctor.user.profile_pic %}
+																src="{{ appointment.doctor.user.profile_pic.url }}"
+																{% else %}
+																src="{% static '/images/doctors/doc.png' %}"
+																{% endif %}
+																alt="User Image" style="width: 50px;">
 															</a>
 														<a href="">{{ appointment.doctor.user.first_name }} {{ appointment.doctor.user.last_name }}</a>
 													</h2>
@@ -70,14 +74,23 @@ Appointments
 												<td>
 													<h2 class="table-avatar">
 														<a href="{% url 'admin_profile' %}"
-															class="avatar avatar-sm mr-2"><img
+															class="avatar avatar-sm mr-3"><img
 																class="avatar-img rounded-circle"
-																src="{% static 'images//patients/patient1.jpg' %}"
-																alt="User Image"></a>
+																{% if appointment.patient.user.profile_pic %}
+																src="{{ appointment.patient.user.profile_pic.url }}"
+																{% else %}
+																{% if appointment.patient.user.gender == 'M' %}
+																src="{% static 'images/profiles/male.jpg' %}"
+																{% else %}
+																 src="{% static 'images/profiles/female.jpg' %}"
+																{% endif %}
+																{% endif %}
+																alt="User Image" style="width: 50px;"></a>
 														<a href="{% url 'admin_profile' %}">{{ appointment.patient.user.first_name }}, {{ appointment.patient.user.last_name }} </a>
 													</h2>
 												</td>
-												<td>{{ appointment.appointment_on.date }} <span class="text-primary d-block">{{ appointment.appointment_on.start_time }} - {{ appointment.appointment_on.end_time }}  </span>
+												<td>{{ appointment.appointment_on.date }} <span class="text-primary d-block">
+													{{ appointment.appointment_on.start_time }} - {{ appointment.appointment_on.end_time }}  </span>
 												</td>
 												<td>
 													{% if appointment.status == 'SH' %}
@@ -164,7 +177,15 @@ Appointments
 															<a href=""
 																class="avatar avatar-sm mr-2">
 																<img class="avatar-img rounded-circle"
-																	src="{% static 'images//doctors/doctor-thumb-01.jpg' %}"
+																{% if appointment.doctor.user.profile_pic %}
+																	src="{{ appointment.doctor.user.profile_pic.url }}"
+																{% else %}
+																{% if user.gender == 'M' %}
+																src="{% static 'images/doctors/doc.png' %}"
+																{% else %}
+																src="{% static 'images/doctors/fdoc.png' %}"
+																{% endif %}
+																{% endif %}
 																	alt="User Image">
 																</a>
 															<a href="">{{ appointment.doctor.user.first_name }} {{ appointment.doctor.user.last_name }}</a>
@@ -176,7 +197,15 @@ Appointments
 															<a href="{% url 'admin_profile' %}"
 																class="avatar avatar-sm mr-2"><img
 																	class="avatar-img rounded-circle"
-																	src="{% static 'images//patients/patient1.jpg' %}"
+																	{% if appointment.patient.user.profile_pic %}
+																	src="{{ appointment.patient.user.profile_pic.url }}"
+																	{% else %}
+																	{% if appointment.user.gender == 'M' %}
+																	src="{% static 'images/patients/male.jpg' %}"
+																	{% else %}
+																	src="{% static 'images/patients/female.jpg' %}"
+																	{% endif %}
+																	{% endif %}
 																	alt="User Image"></a>
 															<a href="{% url 'admin_profile' %}">{{ appointment.patient.user.first_name }}, {{ appointment.patient.user.last_name }} </a>
 														</h2>

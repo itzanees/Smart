@@ -1938,6 +1938,131 @@ button.bg-danger:hover {
 }
 
 
+.check {
+	display: block;
+	margin: 0;
+	padding: 0;
+	width: 0;
+	height: 0;
+	visibility: hidden;
+	opacity: 0;
+	pointer-events: none;
+	position: absolute;
+}
+
+.checktoggle {
+	background-color: #e0001a;
+	border-radius: 12px;
+	cursor: pointer;
+	display: block;
+	font-size: 0;
+	height: 24px;
+	margin-bottom: 0;
+	position: relative;
+	width: 48px;
+}
+
+.checktoggle:after {
+	content: ' ';
+	display: block;
+	position: absolute;
+	top: 50%;
+	left: 0;
+	transform: translate(5px, -50%);
+	width: 16px;
+	height: 16px;
+	background-color: #fff;
+	border-radius: 50%;
+	transition: left 300ms ease, transform 300ms ease;
+}
+
+.check:checked+.checktoggle {
+	background-color: #55ce63;
+}
+
+.check:checked+.checktoggle:after {
+	left: 100%;
+	transform: translate(calc(-100% - 5px), -50%);
+}
+
+.onoffswitch {
+	margin-left: auto;
+	position: relative;
+	width: 73px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+}
+
+.onoffswitch-checkbox {
+	display: none;
+}
+
+.onoffswitch-label {
+	display: block;
+	overflow: hidden;
+	cursor: pointer;
+	border-radius: 20px;
+	margin-bottom: 0;
+}
+
+.onoffswitch-inner {
+	display: block;
+	margin-left: -100%;
+	transition: margin 0.3s ease-in 0s;
+	width: 200%;
+}
+
+.onoffswitch-inner:before,
+.onoffswitch-inner:after {
+	box-sizing: border-box;
+	color: #fff;
+	display: block;
+	float: left;
+	font-size: 16px;
+	height: 30px;
+	line-height: 32px;
+	padding: 0;
+	width: 50%;
+}
+
+.onoffswitch-inner:before {
+	background-color: #55ce63;
+	color: #fff;
+	content: "ON";
+	padding-left: 14px;
+}
+
+.onoffswitch-inner:after {
+	content: "OFF";
+	padding-right: 14px;
+	background-color: #ccc;
+	color: #fff;
+	text-align: right;
+}
+
+.onoffswitch-switch {
+	background: #fff;
+	border-radius: 20px;
+	bottom: 0;
+	display: block;
+	height: 20px;
+	margin: 5px;
+	position: absolute;
+	right: 43px;
+	top: 0;
+	transition: all 0.3s ease-in 0s;
+	width: 20px;
+}
+
+.onoffswitch-checkbox:checked+.onoffswitch-label .onoffswitch-inner {
+	margin-left: 0;
+}
+
+.onoffswitch-checkbox:checked+.onoffswitch-label .onoffswitch-switch {
+	right: 0px;
+}
+
 
 /* Search */
 

@@ -21,10 +21,18 @@ Doctor Home
 											<div class="pro-widget-content">
 												<div class="profile-info-widget">
 													<a href="{% url 'doc_pat_profile' pat.id %}" class="booking-doc-img">
-														<img src="{{ pat.user.profile_pic.url }}" alt="User Image"> 
-														
+														<img 
+														{% if pat.user.profile_pic %}
+														src="{{ pat.user.profile_pic.url }}"
+														{% else %}
+														{% if pat.user.gender == 'M' %}
+														src="{% static 'images/profiles/male.jpg' %}"
+														{% else %}
+														src="{% static 'images/profiles/female.jpg' %}"
+														{% endif %}
+														{% endif %}
+														alt="User Image"> 
 													</a>
-													<h1>{{ pat.id }}</h1>
 													<div class="profile-det-info">
 														<h3><a href="{% url 'doc_pat_profile' pat.id %}">{{ pat.user.first_name }} {{ pat.user.last_name }}</a></h3>
 														
