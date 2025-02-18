@@ -67,12 +67,20 @@ def staff_change_password(request):
 def staff_dashboard(request):
     doctors = Doctor.objects.all()[:4]
     patients = Patient.objects.all()[:4]
-    appointments = Appointment.objects.filter(appointment_on__date__gte = (datetime.today()))[:4]
+    appointments = Appointment.objects.filter(appointment_on__date = (datetime.today()))
+    appointments_paginator = Paginator(appointments,8)
+    appointments_page_num = request.GET.get('page')
+    appointments_pag_obj = appointments_paginator.get_page(appointments_page_num)
     context = {
-        'appointments':appointments,
+        'appointments':appointments_pag_obj,
         'doctors':doctors,
         'patients':patients,
     }
+    if request.method == 'POST':
+        app_id = request.POST.get('app_id')
+        app = Appointment.objects.get(id=app_id)
+        app.status = 'RP'
+        app.save()
     return render(request, 'staff/index.html', context)
 
 @login_required(login_url='staff_login')
@@ -108,7 +116,7 @@ def staff_specialities(request):
 
 @login_required(login_url='staff_login')
 def staff_appointment_list(request):
-    appointments = Appointment.objects.filter(appointment_on__date__gte = (datetime.today()))
+    appointments = Appointment.objects.filter(appointment_on__date = (datetime.today()))
 
     patients = Patient.objects.all()
     departments = Department.objects.all()
@@ -151,7 +159,7 @@ def staff_appointment_list(request):
 
 @login_required(login_url='staff_login')
 def staff_transaction(request):
-    appointments = Appointment.objects.filter(appointment_on__date__gte = (datetime.today()))
+    appointments = Appointment.objects.filter(medicalrecord__is_closed=True)
     return render(request, 'staff/transactions-list.html', {'appointments': appointments})
 
 @login_required(login_url='staff_login')

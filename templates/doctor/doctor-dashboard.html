@@ -91,19 +91,12 @@ Doctor Home
 																				<a href="#" class="btn btn-sm bg-info-light" data-toggle="modal" data-target="#appt_details_{{ appointment.id }}">
 																					<i class="far fa-eye"></i> View
 																				</a>
-																				
-																				<a href="{% url 'doc_pat_profile' appointment.patient.id %}" class="btn btn-sm bg-success-light">
-																					<i class="fas fa-check"></i> Open
-																				</a>
-																				<a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
-																					<i class="fas fa-times"></i> Mark as done
-																				</a>
 																			</div>
 																		</td>
 																	</tr>
 																	{% empty %}
 																	<tr>
-																		<td colspan="5" class="text-center"> No appointments for today</td>
+																		<td colspan="5" class="text-center"> No appointments to show</td>
 																	</tr>
 																	{% endfor %}
 																</tbody>
@@ -180,13 +173,11 @@ Doctor Home
 																				<a href="#" class="btn btn-sm bg-info-light" data-toggle="modal" data-target="#appt_details_{{ appointment.id }}">
 																					<i class="far fa-eye"></i> View
 																				</a>
-																				
-																				<a href="{% url 'doc_pat_profile' appointment.patient.id %}" class="btn btn-sm bg-success-light">
+																				{% if appointment.status == 'RP' %}
+																				<a href="{% url 'doc_pat_records' appointment.patient.user.id appointment.appointment_number %}" class="btn btn-sm bg-success-light">
 																					<i class="fas fa-check"></i> Open
 																				</a>
-																				<a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
-																					<i class="fas fa-times"></i> Mark as done
-																				</a>
+																				{% endif %}
 																			</div>
 																		</td>
 																	</tr>
@@ -215,7 +206,6 @@ Doctor Home
 																		<th>Appt Date</th>
 																		<th>Purpose</th>
 																		<th>Type</th>
-																		<th class="text-center">Paid Amount</th>
 																		<th></th>
 																	</tr>
 																</thead>
@@ -270,13 +260,6 @@ Doctor Home
 																			<div class="table-action">
 																				<a href="#" class="btn btn-sm bg-info-light" data-toggle="modal" data-target="#appt_details_{{ appointment.id }}">
 																					<i class="far fa-eye"></i> View
-																				</a>
-																				
-																				<a href="javascript:void(0);" class="btn btn-sm bg-success-light">
-																					<i class="fas fa-check"></i> Open
-																				</a>
-																				<a href="javascript:void(0);" class="btn btn-sm bg-danger-light">
-																					<i class="fas fa-times"></i> Mark as done
 																				</a>
 																			</div>
 																		</td>
@@ -336,6 +319,10 @@ Doctor Home
 										<button type="button" class="btn bg-primary-light btn-sm" id="topup_status">Reported</button>
 										{% elif appointment.status == 'CO' %}
 										<button type="button" class="btn bg-success-light btn-sm" id="topup_status">Completed</button>
+										{% elif appointment.status == 'CA' %}
+										<button type="button" class="btn bg-danger-light btn-sm" id="topup_status">Cancelled</button>
+										{% elif appointment.status == 'NS' %}
+										<button type="button" class="btn bg-dark btn-sm" id="topup_status">No Show</button>
 										{% endif %}
 									</div>
 								</div>
@@ -350,6 +337,10 @@ Doctor Home
 						<i class="fa-solid fa-file-medical text-warning"></i> Reported
 						{% elif appointment.status == 'CO' %}
 						<i class="fa-solid fa-calendar-check text-success"></i> Completed
+						{% elif appointment.status == 'CA' %}
+						<i class="fa-solid fa-calendar-check text-danger"></i> Cancelled
+						{% elif appointment.status == 'NS' %}
+						<i class="fa-solid fa-calendar-check text-muted"></i> No Show
 						{% endif %}
 
 					</li>
@@ -367,4 +358,140 @@ Doctor Home
 	</div>
 </div>
 {% endfor %}
+
+{% for appointment in appointments_prev %}
+<div class="modal fade custom-modal" id="appt_details_{{ appointment.id }}">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Appointment Details - {{ appointment.patient.user.first_name }}</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<ul class="info-details">
+					<li>
+						<div class="details-header">
+							<div class="row">
+								<div class="col-md-6">
+									<span class="title">{{ appointment.appointment_number }}<span>
+									<span class="text">{{ appointment.appointment_on.date }} {{ appointment.appointment_on.start_time }}</span>
+								</div>
+								<div class="col-md-6">
+									<div class="text-right">
+										{% if appointment.status == 'SH' %}
+										<button type="button" class="btn bg-warning-light btn-sm" id="topup_status">Scheduled</button>
+										{% elif appointment.status == 'RP' %}
+										<button type="button" class="btn bg-primary-light btn-sm" id="topup_status">Reported</button>
+										{% elif appointment.status == 'CO' %}
+										<button type="button" class="btn bg-success-light btn-sm" id="topup_status">Completed</button>
+										{% elif appointment.status == 'CA' %}
+										<button type="button" class="btn bg-danger-light btn-sm" id="topup_status">Cancelled</button>
+										{% elif appointment.status == 'NS' %}
+										<button type="button" class="btn bg-dark btn-sm" id="topup_status">No Show</button>
+										{% endif %}
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+					<li>
+						<span class="title">Status:</span>
+						{% if appointment.status == 'SH' %}
+						<i class="fa-solid fa-calendar-day text-info"></i> Scheduled 
+						{% elif appointment.status == 'RP' %}
+						<i class="fa-solid fa-file-medical text-warning"></i> Reported
+						{% elif appointment.status == 'CO' %}
+						<i class="fa-solid fa-calendar-check text-success"></i> Completed
+						{% elif appointment.status == 'CA' %}
+						<i class="fa-solid fa-calendar-check text-danger"></i> Cancelled
+						{% elif appointment.status == 'NS' %}
+						<i class="fa-solid fa-calendar-check text-muted"></i> No Show
+						{% endif %}
+					</li>
+					<li>
+						<span class="title">Confirm Date:</span>
+						<span class="text">{{ appointment.created_at }}</span>
+					</li>
+					<li>
+						<span class="title">Amount</span>
+						<span class="text">₹ {{ appointment.appointment_fees }}</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+{% endfor %}
+
+
+
+{% for appointment in appointments %}
+<div class="modal fade custom-modal" id="appt_details_{{ appointment.id }}">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Appointment Details - {{ appointment.patient.user.first_name }}</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<ul class="info-details">
+					<li>
+						<div class="details-header">
+							<div class="row">
+								<div class="col-md-6">
+									<span class="title">{{ appointment.appointment_number }}<span>
+									<span class="text">{{ appointment.appointment_on.date }} {{ appointment.appointment_on.start_time }}</span>
+								</div>
+								<div class="col-md-6">
+									<div class="text-right">
+										{% if appointment.status == 'SH' %}
+										<button type="button" class="btn bg-warning-light btn-sm" id="topup_status">Scheduled</button>
+										{% elif appointment.status == 'RP' %}
+										<button type="button" class="btn bg-primary-light btn-sm" id="topup_status">Reported</button>
+										{% elif appointment.status == 'CO' %}
+										<button type="button" class="btn bg-success-light btn-sm" id="topup_status">Completed</button>
+										{% elif appointment.status == 'CA' %}
+										<button type="button" class="btn bg-danger-light btn-sm" id="topup_status">Cancelled</button>
+										{% elif appointment.status == 'NS' %}
+										<button type="button" class="btn bg-dark btn-sm" id="topup_status">No Show</button>
+										{% endif %}
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+					<li>
+						<span class="title">Status:</span>
+						{% if appointment.status == 'SH' %}
+						<i class="fa-solid fa-calendar-day text-info"></i> Scheduled 
+						{% elif appointment.status == 'RP' %}
+						<i class="fa-solid fa-file-medical text-warning"></i> Reported
+						{% elif appointment.status == 'CO' %}
+						<i class="fa-solid fa-calendar-check text-success"></i> Completed
+						{% elif appointment.status == 'CA' %}
+						<i class="fa-solid fa-calendar-check text-danger"></i> Cancelled
+						{% elif appointment.status == 'NS' %}
+						<i class="fa-solid fa-calendar-check text-muted"></i> No Show
+						{% endif %}
+
+					</li>
+					<li>
+						<span class="title">Confirm Date:</span>
+						<span class="text">{{ appointment.created_at }}</span>
+					</li>
+					<li>
+						<span class="title">Amount</span>
+						<span class="text">₹ {{ appointment.appointment_fees }}</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+{% endfor %}
+
 {% endblock %}

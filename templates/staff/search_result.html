@@ -1,209 +1,111 @@
-{% extends 'base.html' %}
-
+{% extends 'doctor/base.html' %}
 {% load static %}
-{% block title %}
-Search
-{% endblock %}
+{% block title %} Search{% endblock %}
 {% block content %}
 
-<!-- Main Wrapper -->
-<div class="main-wrapper">
-
-	{% include 'staff/sidebar.html' %}
-
-	<!-- Page Wrapper -->
-	<div class="page-wrapper">
-		<div class="content container-fluid">
-
-			<!-- Page Header -->
-			<div class="page-header">
-				<div class="row">
-					<div class="col-sm-7">
-						<h3 class="page-title">Search</h3>
-						<ul class="breadcrumb">
-							<li class="breadcrumb-item"><a href="{% url 'staff_dashboard' %}">Dashboard</a></li>
-							<li class="breadcrumb-item active">Search</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<!-- /Page Header -->
-
-			<div class="row">
-				<div class="col-sm-12">
-					<div class="card">
-						<div class="card-body">
-							<div class="table-responsive">
-								<div class="container mt-4 mb-4">
-									<h3>Search Results</h3>
-									<p>
-										{% if query %}
-											Showing results for "<strong>{{ query }}</strong>"
-										{% else %}
-											Enter a search term to find matching records.
-										{% endif %}
-									</p>
-								
-									{% if results.patients or results.doctors or results.departments or results.appointments %}
+<!-- Page Content -->
+<div class="content">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="card">
+					<div class="card-body">
+						<div class="table-responsive">
+							<div class="container mt-4 mb-4">
+								<h3>Search Results</h3>
+								<p>
+									{% if query %}
+										Showing results for "<strong>{{ query }}</strong>"
+									{% else %}
+										Enter a search term to find matching records.
+									{% endif %}
+								</p>
+							
+								{% if results.patients or results.appointments %}
+										{% if results.patients %}
 										<div class="accordion" id="searchAccordion">
-											{% if results.patients %}
-											<div class="">
-												<h5 class="accordion-header" id="headingPatients">
-													<button class="btn btn-info" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePatients" aria-expanded="true" aria-controls="collapsePatients">
+											<div class="accordion-item">
+												<h2 class="accordion-header" id="headingpatients">
+													<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsepatients" aria-expanded="false" aria-controls="collapsepatients">
 														Patients
 													</button>
-												</h5>
-												<div id="collapsePatients" class="accordion-collapse collapse show" aria-labelledby="headingPatients" data-bs-parent="#searchAccordion">
+												</h2>
+												<div id="collapsepatients" class="accordion-collapse collapse" aria-labelledby="headingpatients" data-bs-parent="#searchAccordion">
 													<div class="accordion-body">
 														<ul class="list-group">
 															{% for patient in results.patients %}
 															<li class="list-group-item">
-																<a href="">
-																	{{ patient.user.username }}</li>
-																</a>
-															{% endfor %}
-														</ul>
-													</div>
-												</div>
-											</div>
-											{% endif %}
-								
-											{% if results.doctors %}
-											<div class="accordion-item">
-												<h2 class="accordion-header" id="headingDoctors">
-													<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDoctors" aria-expanded="false" aria-controls="collapseDoctors">
-														Doctors
-													</button>
-												</h2>
-												<div id="collapseDoctors" class="accordion-collapse collapse" aria-labelledby="headingDoctors" data-bs-parent="#searchAccordion">
-													<div class="accordion-body">
-														<ul class="list-group">
-															{% for doctor in results.doctors %}
-															<li class="list-group-item">
-																{{ doctor.user.username }} - {{ doctor.department.name }}
+																<a href="">{{ patient.user.username }}</a>
+																<br>
 															</li>
 															{% endfor %}
 														</ul>
 													</div>
 												</div>
 											</div>
-											{% endif %}
-								
-											{% if results.departments %}
-											<div class="accordion-item">
-												<h2 class="accordion-header" id="headingDepartments">
-													<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDepartments" aria-expanded="false" aria-controls="collapseDepartments">
-														Departments
-													</button>
-												</h2>
-												<div id="collapseDepartments" class="accordion-collapse collapse" aria-labelledby="headingDepartments" data-bs-parent="#searchAccordion">
-													<div class="accordion-body">
-														<ul class="list-group">
-															{% for department in results.departments %}
-															<li class="list-group-item">{{ department.name }}</li>
-															{% endfor %}
-														</ul>
-													</div>
-												</div>
-											</div>
-											{% endif %}
-								
-											{% if results.appointments %}
-											<div class="accordion-item">
-												<h2 class="accordion-header" id="headingAppointments">
-													<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAppointments" aria-expanded="false" aria-controls="collapseAppointments">
-														Appointments
-													</button>
-												</h2>
-												<div id="collapseAppointments" class="accordion-collapse collapse" aria-labelledby="headingAppointments" data-bs-parent="#searchAccordion">
-													<div class="accordion-body">
-														<ul class="list-group">
-															{% for appointment in results.appointments %}
-															<li class="list-group-item">
-																Patient: {{ appointment.patient.user.username }}<br>
-																Doctor: {{ appointment.doctor.user.username }}<br>
-																Department: {{ appointment.doctor.department.name }}
-															</li>
-															{% endfor %}
-														</ul>
-													</div>
-												</div>
-											</div>
-											{% endif %}
 										</div>
-									{% else %}
-										<p>No results found.</p>
 									{% endif %}
-								</div>
-								<!-- <nav>
-									<ul class="pagination">
-										{% if results.has_previous %}
-											<li class="page-item">
-												<a class="page-link" href="?page=1">First</a>
-											</li>
-											<li class="page-item">
-												<a class="page-link" href="?page={{ results.previous_page_number }}">Previous</a>
-											</li>
-										{% endif %}
-								
-										<li class="page-item active">
-											<span class="page-link">Page {{ results.number }} of {{ results.paginator.num_pages }}</span>
-										</li>
-								
-										{% if results.has_next %}
-											<li class="page-item">
-												<a class="page-link" href="?page={{ results.next_page_number }}">Next</a>
-											</li>
-											<li class="page-item">
-												<a class="page-link" href="?page={{ results.paginator.num_pages }}">Last</a>
-											</li>
-										{% endif %}
-									</ul>
-								</nav> -->
+									
+									{% if results.appointments %}
+									<div class="accordion" id="searchAccordion">
+										<div class="accordion-item">
+											<h2 class="accordion-header" id="headingAppointments">
+												<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAppointments" aria-expanded="false" aria-controls="collapseAppointments">
+													Appointments
+												</button>
+											</h2>
+											<div id="collapseAppointments" class="accordion-collapse collapse" aria-labelledby="headingAppointments" data-bs-parent="#searchAccordion">
+												<div class="accordion-body">
+													<ul class="list-group">
+														{% for appointment in results.appointments %}
+														<li class="list-group-item">
+															Patient: {{ appointment.patient.user.username }}<br>
+															Doctor: {{ appointment.doctor.user.username }}<br>
+															Department: {{ appointment.doctor.department.name }}
+														</li>
+														{% endfor %}
+													</ul>
+												</div>
+											</div>
+										</div>
+									</div>
+									{% endif %}
+								{% else %}
+									<p>No results found.</p>
+								{% endif %}
 							</div>
+							<!-- <nav>
+								<ul class="pagination">
+									{% if results.has_previous %}
+										<li class="page-item">
+											<a class="page-link" href="?page=1">First</a>
+										</li>
+										<li class="page-item">
+											<a class="page-link" href="?page={{ results.previous_page_number }}">Previous</a>
+										</li>
+									{% endif %}
+							
+									<li class="page-item active">
+										<span class="page-link">Page {{ results.number }} of {{ results.paginator.num_pages }}</span>
+									</li>
+							
+									{% if results.has_next %}
+										<li class="page-item">
+											<a class="page-link" href="?page={{ results.next_page_number }}">Next</a>
+										</li>
+										<li class="page-item">
+											<a class="page-link" href="?page={{ results.paginator.num_pages }}">Last</a>
+										</li>
+									{% endif %}
+								</ul>
+							</nav> -->
 						</div>
 					</div>
 				</div>
 			</div>
-
-			<!-- <div class="modal fade" id="Add_New_Doctor" aria-hidden="true" role="dialog">
-				<div class="modal-dialog modal-dialog-centered" role="document">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title">Add New Doctor</h5>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-						<div class="modal-body">
-							<form method="post">
-								<div class="row form-row">
-									{% for field in form %}
-									<div class="col-12 col-sm-12">
-										<div class="form-group">
-											{{ field }}
-											{% if field.errors %}
-											<div class="text-danger small  mt-1">
-												{{ field.errors|join:", " }}
-											</div>
-											{% endif %}
-											{% if field.help_text and not field.errors %}
-											<div class="form-text text-muted">
-												{{ field.help_text }}
-											</div>
-											{% endif %}
-										</div>
-									</div>
-									{% endfor %}
-								</div>
-								<button type="submit" class="btn btn-primary btn-block">Add Doctor</button>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div> -->
-
 		</div>
 	</div>
-	<!-- /Page Wrapper -->
-	{% endblock %}
+</div>
+<!-- /Page Content -->
+
+{% endblock %}

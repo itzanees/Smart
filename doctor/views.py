@@ -66,6 +66,9 @@ def doctor_forgot_password(request):
 
 @login_required(login_url='doctor_login')
 def doctor_dashboard(request):
+    if request.user.is_superuser:
+        return render(request, 'doctor/doctor-dashboard.html')
+    
     user = CustomUser.objects.get(id=request.user.id)
     doctor = Doctor.objects.get(user=user)
     today = timezone.now()
@@ -119,7 +122,7 @@ def doctor_appointment_list(request):
     user = CustomUser.objects.get(id=request.user.id)
     doctor = Doctor.objects.get(user=user)
     today = timezone.now()
-    appointments = Appointment.objects.filter(doctor=doctor)
+    appointments = Appointment.objects.filter(doctor=doctor, appointment_on__date=today.date())
     return render(request, 'doctor/appointments.html', {'doctor':doctor, 'appointments':appointments})
 
 @login_required(login_url='doctor_login')
@@ -132,11 +135,15 @@ def patients(request):
 @login_required(login_url='doctor_login')
 def doc_pat_profile(request, pk):
     pat = Patient.objects.get(id=pk)
-    appointment = Appointment.objects.filter(patient=pat)
-
+    appointment = Appointment.objects.filter(patient=pat).order_by('-appointment_on__date')
+    appointment_paginator = Paginator(appointment, 5)
+    appointment_page_num = request.GET.get('page')
+    appointment_page_obj = appointment_paginator.get_page(appointment_page_num)
+    today = timezone.now()
     context = {
+        'today':today.date(),
         'patient':pat,
-        'appointments':appointment,
+        'appointments':appointment_page_obj,
     }
     return render(request, 'doctor/patient-profile.html', context)
 
@@ -147,9 +154,9 @@ def doc_pat_records(request, pk, app_no):
     appointment = get_object_or_404(Appointment, appointment_number=app_no)
     
     record, created = MedicalRecord.objects.get_or_create(appointment=appointment, defaults={
-        'patient': patient,
-        'doctor': Doctor.objects.get(user=request.user),
-        'department': Department.objects.get(doctor=Doctor.objects.get(user=request.user)),
+        # 'patient': patient,
+        # 'doctor': Doctor.objects.get(user=request.user),
+        # 'department': Department.objects.get(doctor=Doctor.objects.get(user=request.user)),
         'is_opened': True
     })
     
@@ -182,6 +189,14 @@ def doc_pat_records(request, pk, app_no):
         'app': appointment,
         'record': record
     }
+
+    condition = False
+    if record.is_closed:
+        condition = True
+
+    if condition:
+        for field in form.fields.values():
+            field.widget.attrs['disabled'] = 'disabled'
     return render(request, 'doctor/medical-records.html', context)
 
 @login_required(login_url='doctor_login')

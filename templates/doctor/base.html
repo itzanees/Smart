@@ -5,8 +5,8 @@
 <!-- doccure/doctor-dashboard.html  30 Nov 2019 04:12:03 GMT -->
 <head>
 		<meta charset="utf-8">
-		<title>{% block title %}{% endblock %}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+		<title>{% block title %}{% endblock %}</title>
 		
 		<!-- Favicons -->
         <link href="{% static 'images/favicon.png' %}" rel="icon">
@@ -61,11 +61,22 @@
 								<i class="fas fa-times"></i>
 							</a>
 						</div>
+						<ul class="main-nav">
+							<li {% if request.path == '/doctor/' %} class="active" {% endif %}>
+								<a href="{% url 'doctor_dashboard' %}">Dashboard</a>
+							</li>
+							<li {% if request.path == '/doctor/appointments/' %} class="active" {% endif %}>
+								<a href="{% url 'doctor_appointment_list' %}">Appointments</a>
+							</li>
+							<li {% if request.path == '/doctor/patients/' %} class="active" {% endif %}>
+								<a href="{% url 'doctor_patients_list' %}">My patients</a>
+							</li>							
+						</ul>
 					</div>		 
 					<ul class="nav header-navbar-rht">
 						<li class="nav-item contact-item">
 							<div class="top-nav-search">
-								<form method="get" action="{% url 'doc_search' %}">
+								<form method="get" action="{% url 'doc_pat_search' %}">
 									<input type="text" name='q' value="{{ query|default:'' }}" class="form-control" placeholder="Search here">
 									<button class="btn" type="submit"><i class="fa fa-search"></i></button>
 								</form>
@@ -104,12 +115,11 @@
 										alt="User Image" class="avatar-img rounded-circle">
 									</div>
 									<div class="user-text">
-										<h6></h6>
-										<p class="text-muted mb-0">{{ doctor.user_type }}</p>
+										<h6>{{ doctor.user.first_name }} {{ doctor.user.last_name }}</h6>
+										<p class="text-muted mb-0">{{ doctor.user.user_type }}</p>
 									</div>
 								</div>
-								<a class="dropdown-item" href="doctor-dashboard.html">Dashboard</a>
-								<a class="dropdown-item" href="doctor-profile-settings.html">Profile Settings</a>
+								<a class="dropdown-item" href="{% url 'doctor_profile' %}">Profile Settings</a>
 								<form action="{% url 'logout' %}" method="post">
                                     {% csrf_token %}
                                     <button class="dropdown-item">Logout</button>
@@ -126,17 +136,6 @@
 			<!-- Breadcrumb -->
 			<div class="breadcrumb-bar">
 				<div class="container-fluid">
-					<div class="row align-items-center">
-						<div class="col-md-12 col-12">
-							<nav aria-label="breadcrumb" class="page-breadcrumb">
-								<ol class="breadcrumb">
-									<li class="breadcrumb-item"><a href="">Home</a></li>
-									<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-								</ol>
-							</nav>
-							<h2 class="breadcrumb-title">Dashboard</h2>
-						</div>
-					</div>
 				</div>
 			</div>
 			<!-- /Breadcrumb -->

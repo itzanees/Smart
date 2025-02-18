@@ -90,7 +90,7 @@ Appointments
 													</h2>
 												</td>
 												<td>{{ appointment.appointment_on.date }} <span class="text-primary d-block">
-													{{ appointment.appointment_on.start_time }} - {{ appointment.appointment_on.end_time }}  </span>
+													{{ appointment.appointment_on.start_time }}</span>
 												</td>
 												<td>
 													{% if appointment.status == 'SH' %}
@@ -99,17 +99,14 @@ Appointments
 													<i class="fa-solid fa-file-medical text-warning"></i> Reported
 													{% elif appointment.status == 'CO' %}
 													<i class="fa-solid fa-calendar-check text-success"></i> Completed
-													
+													{% elif appointment.status == 'CA' %}
+													<i class="fa-solid fa-calendar-check text-danger"></i> Cancelled
+													{% elif appointment.status == 'NS' %}
+													<i class="fa-solid fa-calendar-check text-muted"></i> No Show
 													{% endif %}
-													<!-- <div class="status-toggle">
-														<input disabled type="checkbox" id="status_1" class="check" 
-														checked>
-														<label for="status_1" class="checktoggle">Status</label>
-													</div> -->
-													
 												</td>
 												<td class="text-right">
-													₹200.00
+													₹ {{ appointment.appointment_fees }}
 												</td>
 												<td>
 													<div class="actions">
@@ -210,7 +207,7 @@ Appointments
 															<a href="{% url 'admin_profile' %}">{{ appointment.patient.user.first_name }}, {{ appointment.patient.user.last_name }} </a>
 														</h2>
 													</td>
-													<td>{{ appointment.appointment_on.date }} <span class="text-primary d-block">{{ appointment.appointment_on.start_time }} - {{ appointment.appointment_on.end_time }}  </span>
+													<td>{{ appointment.appointment_on.date }} <span class="text-primary d-block">{{ appointment.appointment_on.start_time }}</span>
 													</td>
 													<td>
 														{% if appointment.status == 'SH' %}
@@ -219,17 +216,14 @@ Appointments
 														<i class="fa-solid fa-file-medical text-warning"></i> Reported
 														{% elif appointment.status == 'CO' %}
 														<i class="fa-solid fa-calendar-check text-success"></i> Completed
-														
+														{% elif appointment.status == 'CA' %}
+														<i class="fa-solid fa-calendar-check text-danger"></i> Cancelled
+														{% elif appointment.status == 'NS' %}
+														<i class="fa-solid fa-calendar-check text-muted"></i> No Show
 														{% endif %}
-														<!-- <div class="status-toggle">
-															<input disabled type="checkbox" id="status_1" class="check" 
-															checked>
-															<label for="status_1" class="checktoggle">Status</label>
-														</div> -->
-														
 													</td>
 													<td class="text-right">
-														₹200.00
+														₹ {{ appointment.appointment_fees }}
 													</td>
 													<td>
 														<div class="actions">

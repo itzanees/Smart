@@ -77,15 +77,14 @@ Staffs
 											</td>
 											<td>
 												<h2 class="table-avatar">
-													{% if staff.staff.profile_pic %}
 													<a href="{% url 'admin_profile' %}"
 														class="avatar avatar-sm mr-2">
 														<img
 															class="avatar-img rounded-circle"
 															{% if user.profile_pic %}
-															src="{{ staff.staff.profile_pic.url }}"
+															src="{{ staff.profile_pic.url }}"
 															{% else %}
-															{% if staff.staff.gender == 'M' %}
+															{% if staff.gender == 'M' %}
 															src="{% static 'images/profiles/male.jpg' %}"
 															{% else %}
 															 src="{% static 'images/profiles/female.jpg' %}"
@@ -93,7 +92,6 @@ Staffs
 															{% endif %}
 															alt="User Image">
 														</a>
-														{% endif %}
 													<a href="{% url 'users_profile' staff.id %}">{{ staff.first_name }}</a>
 												</h2>
 											</td>
@@ -109,13 +107,6 @@ Staffs
 													</a>
 												</div>
 											</td>
-
-											<!-- <td>
-												<div class="status-toggle">
-													<input type="checkbox" id="status_1" class="check" checked>
-													<label for="status_1" class="checktoggle">checkbox</label>
-												</div>
-											</td> -->
 										</tr>
 										<!-- Delete Modal -->
 										<div class="modal fade" id="delete_{{ staff.id }}" aria-hidden="true" role="dialog">

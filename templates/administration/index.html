@@ -192,14 +192,14 @@ Admin Dashboard
                                                             {% if pat.user.profile_pic %}
                                                             src="{{ pat.user.profile_pic.url }}"
                                                             {% else %}
-                                                            {% if pat.user.gender is 'M' %}
+                                                            {% if pat.user.gender == 'M' %}
                                                             src="{% static '/images/profiles/male.jpg' %}"
                                                             {% else %}
                                                             src="{% static '/images/profiles/female.jpg' %}"
                                                             {% endif %}
                                                             {% endif %}
                                                             alt="User Image"></a>
-                                                    <a>{{ pat.user.first_name }} {{ pat.user.last_name }}</a>
+                                                    <a>{{ pat.user.first_name }} {{ pat.user.last_name }} {{ pat.user.username }}</a>
                                                 </h2>
                                             </td>
                                             <td>{{ pat.user.city }}</td>
@@ -285,6 +285,10 @@ Admin Dashboard
 													<i class="fa-solid fa-file-medical text-warning"></i> Reported
 													{% elif app.status == 'CO' %}
 													<i class="fa-solid fa-calendar-check text-success"></i> Completed
+                                                    {% elif appointment.status == 'CA' %}
+                                                    <i class="fa-solid fa-calendar-check text-danger"></i> Cancelled
+                                                    {% elif appointment.status == 'NS' %}
+                                                    <i class="fa-solid fa-calendar-check text-muted"></i> No Show
 													{% endif %}
                                                 </div>
                                             </td>

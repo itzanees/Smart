@@ -87,12 +87,6 @@ Appoinments
 													<tr>
 														<td>
 															<h2 class="table-avatar">
-																<!-- <a href="doctor-profile.html"
-																	class="avatar avatar-sm mr-2">
-																	<img class="avatar-img rounded-circle"
-																		src="assets/img/doctors/doctor-thumb-02.jpg"
-																		alt="User Image">
-																</a> -->
 																<a href="">{{ app.doctor.user.first_name }} {{ app.doctor.user.last_name }}
 																	<span>{{ app.doctor.department.name }}</span></a>
 															</h2>
@@ -108,10 +102,14 @@ Appoinments
 														<td class="text-right">
 															<div class="table-action">
 																{% if app.doctor.user == request.user %}
+																{% if not app.medicalrecord.is_closed %}
+																{% if app.appointment_on.date == today %}
 																<a href="{% url 'doc_pat_records' app.patient.user.id app.appointment_number %}"
 																	class="btn btn-sm bg-success-light">
 																		<i class="far fa-edit"></i> Open
 																</a>
+																{% endif %}
+																{% endif %}
 																{% endif %}
 																<a href="{% url 'doc_pat_records' app.patient.id app.appointment_number %}"
 																	class="btn btn-sm bg-warning-light">
@@ -120,20 +118,39 @@ Appoinments
 															</div>
 														</td>
 													</tr>
-													<!-- Prescription Tab -->
-							
-							<!-- /Prescription Tab -->
 													{% endfor %}
 												</tbody>
 											</table>
+											<nav>
+												<ul class="pagination mt-2">
+													{% if appointments.has_previous %}
+														<li class="page-item">
+															<a class="page-link" href="?page=1">First</a>
+														</li>
+														<li class="page-item">
+															<a class="page-link" href="?page={{ appointments.previous_page_number }}">Previous</a>
+														</li>
+													{% endif %}
+											
+													<li class="page-item active">
+														<span class="page-link">Page {{ appointments.number }} of {{ appointments.paginator.num_pages }}</span>
+													</li>
+											
+													{% if appointments.has_next %}
+														<li class="page-item">
+															<a class="page-link" href="?page={{ appointments.next_page_number }}">Next</a>
+														</li>
+														<li class="page-item">
+															<a class="page-link" href="?page={{ appointments.paginator.num_pages }}">Last</a>
+														</li>
+													{% endif %}
+												</ul>
+											</nav>
 										</div>
 									</div>
 								</div>
 							</div>
 							<!-- /Appointment Tab -->
-
-							<!-- Medical Records Tab -->
-							<!-- /Medical Records Tab -->
 						</div>
 					</div>
 				</div>

@@ -85,7 +85,6 @@ def pat_change_password(request):
 @login_required(login_url='patient_login')
 def patient_dashboard(request):
     if request.user.user_type != 'Patient':
-        print('Im not a pat')
         patient = Patient.objects.get(user=request.user)
         if patient.profile_updated:
             return render(request, 'patient/patient-dashboard.html')
@@ -94,12 +93,18 @@ def patient_dashboard(request):
     else:
         user = CustomUser.objects.get(id=request.user.id)
         patient = Patient.objects.get(user=request.user)
-        appointments = Appointment.objects.filter(patient=patient).order_by('appointment_on__date')
+        appointments = Appointment.objects.filter(patient=patient).order_by('-appointment_on__date')
+        appointments_paginator = Paginator(appointments, 5)
+        appointments_page_num = request.GET.get('page')
+        appointments_page_obj = appointments_paginator.get_page(appointments_page_num)
         mrecords = MedicalRecord.objects.filter(appointment__patient=patient)
+        mrecords_paginator = Paginator(mrecords, 5)
+        mrecords_page_num = request.GET.get('page')
+        mrecords_page_obj = mrecords_paginator.get_page(mrecords_page_num)
         context = {
             'user':user,
-            'appointments':appointments,
-            'mrecords':mrecords,
+            'appointments':appointments_page_obj,
+            'mrecords':mrecords_page_obj,
             }
         return render(request, 'patient/patient-dashboard.html', context)
 
@@ -258,7 +263,6 @@ def pat_search(request):
         results['doctors'] = doctors
         results['departments'] = departments
 
-
     return render(request, 'patient/search_result.html', {'results': results, 'query': query})
 
 @login_required(login_url='patient_login')
@@ -278,37 +282,6 @@ def pat_schedule_view(request, doctor_id):
         'booked_slots': booked_slots,
     }
     return render(request, 'administration/schedule.html', context)
-
-# @login_required(login_url='patient_login')
-# def pat_book_slot(request, slot_id):
-#     slot = Schedule.objects.get(id=slot_id)
-#     if request.method == 'POST':
-#         patient =Patient.objects.get(user = request.user)
-#         doctor =Doctor.objects.get(user = slot.doctor.user.id)
-#         date = slot.date
-#         # check if patient already have appointment with same doctor same date
-#         bookings = Appointment.objects.filter(doctor = doctor, patient = patient)
-#         is_found = False
-#         for i in bookings:
-#             if i.appointment_on.date == date:
-#                 is_found =True
-#                 break
-
-#         if is_found:
-#             error = "You already have a booking on this date."
-#             return render(request, 'patient/book-slot.html', {'slot': slot, 'error':error})
-#         else:
-#             slot.is_booked = True
-#             Appointment.objects.create(
-#                 patient =Patient.objects.get(user = request.user),
-#                 doctor = slot.doctor,
-#                 appointment_on = slot,
-#             )
-#             slot.save()
-#             print(Appointment.objects.all())
-#             return redirect('pat_book_success')
-#     return render(request, 'patient/book-slot.html', {'slot': slot})
-
 
 @login_required(login_url='patient_login')
 def pat_book_slot(request, slot_id):

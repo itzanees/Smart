@@ -27,9 +27,112 @@ Staff Dashboard
                 </div>
             </div>
             <!-- /Page Header -->
-            <div class="row">
+                <div class="row">
+                    <div class="col-md-12">
+    
+                        <!-- Appointments -->
+                        <div class="card card-table">
+                            <div class="card-header">
+                                <h4 class="card-title">Appointment List</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-center mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Doctor Name</th>
+                                                <th>Speciality</th>
+                                                <th>Patient Name</th>
+                                                <th>Apointment Time</th>
+                                                <th>Status</th>
+                                                <th>Reported</th>
+                                                <th class="text-right">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for appointment in appointments %}
+                                            <tr>
+                                                <td>
+                                                    <h2 class="table-avatar">
+                                                        <a href=""
+                                                            class="avatar avatar-sm mr-2">
+                                                            <img class="avatar-img rounded-circle"
+                                                                {% if appointment.doctor.user.profile_pic %}
+                                                                src="{{ appointment.doctor.user.profile_pic.url }}"
+                                                                {% else %}
+                                                                {% if doc.user.gender == 'M' %}
+                                                                src="{% static 'images/doctors/doc.png' %}"
+                                                                {% else %}
+                                                                src="{% static 'images/doctors/fdoc.png' %}"
+                                                                {% endif %}
+                                                                {% endif %}
+                                                                alt="User Image">
+                                                            </a>
+                                                        <a href="">{{ appointment.doctor.user.first_name }} {{ appointment.doctor.user.last_name }}</a>
+                                                    </h2>
+                                                </td>
+                                                <td>{{ appointment.doctor.department.name }}</td>
+                                                <td>
+                                                    <h2 class="table-avatar">
+                                                        <a href=""
+                                                            class="avatar avatar-sm mr-2"><img
+                                                                class="avatar-img rounded-circle"
+                                                                {% if appointment.patient.user.profile_pic %}
+                                                                src="{{ appointment.patient.user.profile_pic.url }}"
+                                                                {% else %}
+                                                                {% if appointment.patient.user.gender == 'M' %}
+                                                                src="{% static 'images/profiles/male.jpg' %}"
+                                                                {% else %}
+                                                                src="{% static 'images/profiles/female.jpg' %}"
+                                                                {% endif %}
+                                                                {% endif %}
+                                                                alt="User Image"></a>
+                                                        <a href="">{{ appointment.patient.user.first_name }}, {{ appointment.patient.user.last_name }} </a>
+                                                    </h2>
+                                                </td>
+                                                <td>{{ appointment.appointment_on.date }} <span class="text-primary d-block">{{ appointment.appointment_on.start_time }} - {{ appointment.appointment_on.end_time }}  </span>
+                                                </td>
+                                                <td>
+                                                    {% if appointment.status == 'SH' %}
+                                                    <i class="fa-solid fa-calendar-day text-info"></i> Scheduled 
+                                                    {% elif appointment.status == 'RP' %}
+                                                    <i class="fa-solid fa-file-medical text-warning"></i> Reported
+                                                    {% elif appointment.status == 'CO' %}
+                                                    <i class="fa-solid fa-calendar-check text-success"></i> Completed
+                                                    {% elif appointment.status == 'CA' %}
+                                                    <i class="fa-solid fa-calendar-check text-danger"></i> Cancelled
+                                                    {% elif appointment.status == 'NS' %}
+                                                    <i class="fa-solid fa-calendar-check text-muted"></i> No Show
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <div class="status-toggle">
+                                                        <form action="" method="post">
+                                                            {% csrf_token %}
+                                                            <input type="checkbox" id="status_{{ appointment.id }}" class="check" {% if appointment.status == 'RP' %} checked{% endif %} onchange="submit()"
+                                                            {% if appointment.status != 'SH' %}
+                                                            disabled {% endif %}>
+                                                            <label for="status_{{ appointment.id }}" class="checktoggle">Status</label>
+                                                            <input type="hidden" name="app_id" value="{{ appointment.id }}">
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                                <td class="text-right">
+                                                    ₹ {{ appointment.doctor.consult_fees }}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Appointments -->
+    
+                    </div>
+                </div>
+                <div class="row">
                 <div class="col-md-6 d-flex">
-
                     <!-- Doctors -->
                     <div class="card card-table flex-fill">
                         <div class="card-header">
@@ -111,97 +214,7 @@ Staff Dashboard
 
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-
-                    <!-- Appointments -->
-                    <div class="card card-table">
-                        <div class="card-header">
-                            <h4 class="card-title">Appointment List</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-hover table-center mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th>Doctor Name</th>
-                                            <th>Speciality</th>
-                                            <th>Patient Name</th>
-                                            <th>Apointment Time</th>
-                                            <th>Status</th>
-                                            <th class="text-right">Amount</th>
-                                            <!-- <th></th> -->
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-										{% for appointment in appointments %}
-										<tr>
-											<td>
-												<h2 class="table-avatar">
-													<a href=""
-														class="avatar avatar-sm mr-2">
-														<img class="avatar-img rounded-circle"
-															src="{% static 'images//doctors/doctor-thumb-01.jpg' %}"
-															alt="User Image">
-														</a>
-													<a href="">{{ appointment.doctor.user.first_name }} {{ appointment.doctor.user.last_name }}</a>
-												</h2>
-											</td>
-											<td>{{ appointment.doctor.department.name }}</td>
-											<td>
-												<h2 class="table-avatar">
-													<a href="{% url 'admin_profile' %}"
-														class="avatar avatar-sm mr-2"><img
-															class="avatar-img rounded-circle"
-															src="{% static 'images//patients/patient1.jpg' %}"
-															alt="User Image"></a>
-													<a href="{% url 'admin_profile' %}">{{ appointment.patient.user.first_name }}, {{ appointment.patient.user.last_name }} </a>
-												</h2>
-											</td>
-											<td>{{ appointment.appointment_on.date }} <span class="text-primary d-block">{{ appointment.appointment_on.start_time }} - {{ appointment.appointment_on.end_time }}  </span>
-											</td>
-											<td>
-												{% if appointment.status == 'SH' %}
-												<i class="fa-solid fa-calendar-day text-info"></i> Scheduled 
-												{% elif appointment.status == 'RP' %}
-												<i class="fa-solid fa-file-medical text-warning"></i> Reported
-												{% elif appointment.status == 'CO' %}
-												<i class="fa-solid fa-calendar-check text-success"></i> Completed
-												
-												{% endif %}
-												<!-- <div class="status-toggle">
-													<input disabled type="checkbox" id="status_1" class="check" 
-													checked>
-													<label for="status_1" class="checktoggle">Status</label>
-												</div> -->
-												
-											</td>
-											<td class="text-right">
-												₹ {{ appointment.doctor.consult_fees }}
-											</td>
-											<!-- <td>
-												<div class="actions">
-													<a class="btn btn-sm bg-success-light" data-toggle="modal"
-														href="#edit_appointment_details">
-														<i class="fe fe-pencil"></i> Edit
-													</a>
-													<a data-toggle="modal" href="#delete_modal"
-														class="btn btn-sm bg-danger-light">
-														<i class="fe fe-trash"></i> Delete
-													</a>
-												</div>
-											</td> -->
-										</tr>
-										{% endfor %}
-									</tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /Appointments -->
-
-                </div>
-            </div>
+            
 
         </div>
     </div>

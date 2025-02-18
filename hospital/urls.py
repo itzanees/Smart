@@ -32,6 +32,4 @@ urlpatterns = [
     path('staff/', include('staff.urls')),
     path('intranet', intranet, name ='intranet'),
     path('logout', Logout, name='logout')
-    # path('change_password/', change_password, name='change_password'),
-    # path("password_change_done/", PasswordChangeDoneView.as_view(template_name="password_change_done.html"), name="password_change_done"),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

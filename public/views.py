@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from localflavor.in_.in_states import STATE_CHOICES
 
 import datetime
 
@@ -21,12 +20,6 @@ def services(request):
 
 def contact(request):
     return render(request, 'public/contact.html')
-
-def signin(request):
-    return render(request, 'signin.html')
-
-def signup(request):
-    return render(request, 'signup.html')
 
 def webAppointment(request):
     today = datetime.date.today()

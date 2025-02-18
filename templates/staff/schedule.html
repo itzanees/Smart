@@ -54,7 +54,6 @@
 									<th>Date</th>
 									<th>Time</th>
 									<th>Duration (mins)</th>
-									<th>Action</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -63,9 +62,6 @@
 									<td>{{ slot.date }}</td>
 									<td>{{ slot.start_time }}</td>
 									<td>{{ slot.duration }}</td>
-									<td>
-										<a href="{% url 'book_slot' slot.id %}" class="btn btn-success">Book</a>
-									</td>
 								</tr>
 								{% endfor %}
 							</tbody>

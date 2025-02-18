@@ -85,17 +85,14 @@ Appointments
 												<i class="fa-solid fa-file-medical text-warning"></i> Reported
 												{% elif appointment.status == 'CO' %}
 												<i class="fa-solid fa-calendar-check text-success"></i> Completed
-												
-												{% endif %}
-												<!-- <div class="status-toggle">
-													<input disabled type="checkbox" id="status_1" class="check" 
-													checked>
-													<label for="status_1" class="checktoggle">Status</label>
-												</div> -->
-												
+												{% elif appointment.status == 'CA' %}
+												<i class="fa-solid fa-calendar-check text-danger"></i> Cancelled
+												{% elif appointment.status == 'NS' %}
+												<i class="fa-solid fa-calendar-check text-muted"></i> No Show
+												{% endif %}												
 											</td>
 											<td class="text-right">
-												₹200.00
+												₹ {{ appointment.appointment_fees }}
 											</td>
 											<td>
 												<div class="actions">
@@ -108,6 +105,12 @@ Appointments
 														<i class="fe fe-trash"></i> Delete
 													</a>
 												</div>
+											</td>
+										</tr>
+										{% empty %}
+										<tr>
+											<td colspan="7" class="text-center">
+												No Appointments for today
 											</td>
 										</tr>
 										{% endfor %}

@@ -32,8 +32,8 @@ Doctor Home
                             <div class="card-header">
                                 <h4 class="card-title">Medical Record</h4>
                                 <div class="booking-doc-img">
-                                    <h6> {{ pat.first_name }} {{ pat.last_name }} | <span class="text-info">
-                                            {{ app.appointment_number }}</span>
+                                    <h6> {{ pat.first_name }} {{ pat.last_name }} 
+                                        {{ app.appointment_on.date }} | <span class="text-info"> {{ app.appointment_number }} </span>
                                     </h6>
                                 </div>
                                 {% if record %}
@@ -49,17 +49,36 @@ Doctor Home
                         <div class="card-body">
                             <form method="post" enctype="multipart/form-data">
                                 {% csrf_token %}
-                                {{ form }}
-
+                                {% for field in form %}
+                                <div class="form-group">
+                                    <label for="{{ field.name }}" class="ml-2">
+                                        {{ field.label }}
+                                    </label>
+                                    {{ field }}
+                                    {% if field.errors %}
+                                    <div class="text-warning small  mt-1">
+                                        {{ field.errors|join:", " }}
+                                    </div>
+                                    {% endif %}
+                                    {% if field.help_text and not field.errors %}
+                                    <div class="form-text text-muted">
+                                        {{ field.help_text }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+<!-- {{ form }} -->
                                 <div class="form-group form-check mt-2">
                                     <input type="checkbox" class="form-check-input" name="is_closed" id="is_closed"
                                     {% if record.is_closed %} checked disabled {% endif %}>
                                     <label class="form-check-label" for="is_closed">Mark as Completed</label>
                                 </div>
                                 {% if app.doctor.user == request.user %}
+                                {% if not record.is_closed %}
                                 <div class="text-right">
                                     <button type="submit" class="btn btn-primary">Save Record</button>
                                 </div>
+                                {% endif %}
                                 {% endif %}
                             </form>
                             <!-- <h3>Saved Record</h3>

@@ -382,16 +382,19 @@ def patients(request):
 def Logout(request):
     if request.user.user_type == 'Patient':
         logout(request)
-        return redirect('patient_dashboard') 
+        return redirect(reverse('patient_dashboard'))
+    
     elif request.user.user_type == 'Staff':
         logout(request)
-        return redirect('staff_dashboard')
+        return redirect(reverse('staff_dashboard'))
+
     elif request.user.user_type == 'Doctor':
         logout(request)
-        return redirect('doctor_dashboard')
+        return redirect(reverse('doctor_dashboard'))
+        
     else:
         logout(request)
-        return redirect('admin_home')
+        return redirect(reverse('admin_home'))
     
 def generate_schedule_for_all_doctors():
     today = timezone.now().date()
@@ -488,7 +491,7 @@ class CustomPasswordChangeView(PasswordChangeView):
 @login_required(login_url='admin_login')
 @never_cache
 def transaction(request):
-    transactions = Appointment.objects.all()
+    transactions = Appointment.objects.filter(medicalrecord__is_closed=True)
     transactions_paginator = Paginator(transactions, 5)
     transactions_page_num = request.GET.get('page')
     transactions_page_obj = transactions_paginator.get_page(transactions_page_num)

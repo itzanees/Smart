@@ -73,9 +73,10 @@ Patients
 													<h2 class="table-avatar">
 														<a href="{% url 'users_profile' patient.id %}" class="avatar avatar-sm mr-2">
 															<img class="avatar-img rounded-circle" 
-															{% if patient.patient.profile_pic %}
-															src="{{ patient.patient.profile_pic.url }}"
-															{% if patient.patient.gender == 'M' %}
+															{% if patient.profile_pic %}
+															src="{{ patient.profile_pic.url }}"
+															{% else %}
+															{% if patient.gender == 'M' %}
 															src="{% static 'images/profiles/male.jpg' %}"
 															{% else %}
 															 src="{% static 'images/profiles/female.jpg' %}"
@@ -92,10 +93,6 @@ Patients
 												<td>{{ patient.created_at.date }} <br><small>{{ patient.created_at.time }}</small></td>
 												<td>
 													<div class="actions">
-														<!-- <a class="btn btn-sm bg-success-light" data-toggle="modal"
-															href="#edit_{{ user.id }}_details">
-															<i class="fe fe-pencil"></i> Edit
-														</a> -->
 														<a data-toggle="modal" href="#delete_{{ patient.id }}"
 															class="btn btn-sm bg-danger-light">
 															<i class="fe fe-trash"></i> Delete

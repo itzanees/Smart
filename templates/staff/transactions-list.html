@@ -37,7 +37,6 @@ Transactions
 								<table class="datatable table table-hover table-center mb-0">
 									<thead>
 										<tr>
-											<th>Inv Num</th>
 											<th>Patient ID</th>
 											<th>Appt. Number</th>
 											<th>Patient Name</th>
@@ -51,7 +50,6 @@ Transactions
 									<tbody>
 										{% for appointment in appointments %}
 										<tr>
-											<td><a href="">#IN0001</a></td>
 											<td>{{ appointment.patient.pat_mrd_no }}</td>
 											<td>{{ appointment.appointment_number }}</td>
 											<td>
@@ -72,7 +70,7 @@ Transactions
 													<a href="">{{ appointment.patient.user.first_name }} {{ appointment.patient.user.last_name }}</a>
 												</h2>
 											</td>
-											<td>{{ appointment.doctor }}</td>
+											<td>{{ appointment.doctor.user.first_name }} {{ appointment.doctor.user.last_name }}</td>
 											<td>{{ appointment.appointment_on.date }}</td>
 											<td>{{ appointment.appointment_on.date }}</td>
 											<td> {{ appointment.appointment_fees }}</td>
@@ -83,6 +81,10 @@ Transactions
 												<span class="badge badge-pill bg-warning inv-badge">Reported</span>
 												{% elif appointment.status == 'SH' %}
 												<span class="badge badge-pill bg-info inv-badge">Scheduled</span>
+												{% elif appointment.status == 'CA' %}
+												<span class="badge badge-pill bg-danger inv-badge">Cancelled</span>
+												{% elif appointment.status == 'NS' %}
+												<span class="badge badge-pill bg-gray inv-badge">No Show</span>
 												{% endif %}
 											</td>
 											<!-- <td class="text-right">

@@ -1,4 +1,5 @@
 {% extends 'doctor/base.html' %}
+{% load static %}
 {% block title %}
 Appoinments 
 {% endblock %} 
@@ -14,9 +15,9 @@ Appoinments
           {% for appointment in appointments %}
           <div class="appointment-list">
             <div class="profile-info-widget">
-              <a href="patient-profile.html" class="booking-doc-img">
+              <a href="" class="booking-doc-img">
                 <img 
-                  {% if user.profile_pic %}
+                  {% if appointment.patient.user.profile_pic %}
                   src="{{ appointment.patient.user.profile_pic.url }}" 
                   {% else %}
                   {% if appointment.patient.user.gender == 'M' %}
@@ -30,18 +31,18 @@ Appoinments
               <div class="profile-det-info">
                 <h3>
                   <a href="">
-					{{ appointment.patient.user.first_name }}
-					 {{ appointment.patient.user.last_name }}
-					</a>
+					          {{ appointment.patient.user.first_name }}
+					          {{ appointment.patient.user.last_name }}
+					        </a>
                 </h3>
                 <div class="patient-details">
                   <h5>
                     <i class="far fa-clock"></i> {{ appointment.appointment_on.date }}
-					 {{ appointment.appointment_on.start_time }}
+					          {{ appointment.appointment_on.start_time }}
                   </h5>
                   <h5>
                     <i class="fas fa-map-marker-alt"></i> {{ appointment.patient.user.city }}, 
-					{{ appointment.patient.user.state }}
+					          {{ appointment.patient.user.state }}
                   </h5>
                   <h5>
                     <i class="fa-solid fa-droplet"></i> {{ appointment.patient.blood_group }}
@@ -50,7 +51,7 @@ Appoinments
               </div>
             </div>
             <div class="appointment-action">
-              <a href="#" class="btn btn-sm bg-info-light" data-toggle="modal" data-target="#appt_details">
+              <a href="{% url 'doc_pat_records' appointment.patient.user.id appointment.appointment_number %}" class="btn btn-sm bg-info-light">
                 <i class="far fa-eye"></i> View
               </a>
               <!-- <a href="javascript:void(0);" class="btn btn-sm bg-success-light">
