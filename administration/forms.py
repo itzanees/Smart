@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
-from .models import CustomUser, Department, Doctor, Patient, Schedule
-from datetime import datetime, date, timedelta
+from .models import CustomUser, Department, Patient, Schedule
+from datetime import date, timedelta
 from django.utils import timezone
 
 class PatientRegistrationForm(UserCreationForm):

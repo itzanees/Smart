@@ -1,6 +1,4 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from .forms import ContactUsForm
 from administration.models import ContactUs
 from django.contrib import messages
 
@@ -22,7 +20,6 @@ def services(request):
     return render(request, 'public/services.html')
 
 def contact(request):
-    # form = ContactUsForm()
     if request.method == "POST":
         name  = request.POST['name']
         email = request.POST['email']
@@ -30,8 +27,6 @@ def contact(request):
         contact_type = request.POST['contact_type']
         message  = request.POST['message']
 
-        # if form.is_valid():
-        #     form.save()
         try:
             c = ContactUs (
                 name = name,
@@ -43,12 +38,11 @@ def contact(request):
             c.save()
             messages.success(request, "Message Submitted")
             return redirect('contact')
+        
         except Exception as e:
             messages.error(request, f"Message not submitted, {e}")
             return redirect('contact')
-    # context = {
-    #     'form':form
-    # }
+        
     return render(request, 'public/contact.html')
 
 def webAppointment(request):

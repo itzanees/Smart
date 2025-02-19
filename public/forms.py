@@ -1,6 +1,5 @@
 from django import forms
 from administration.models import ContactUs
-from django.utils import timezone
 
 class ContactUsForm(forms.Form):
     CONACT_TYPES = [

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, update_session_auth_hash, get_user_model
 from django.contrib.auth.decorators import login_required
-from administration.models import Doctor, Patient, Staff, Schedule, Appointment, Department, MedicalRecord, CustomUser
+from administration.models import Doctor, Patient, Schedule, Appointment, MedicalRecord, CustomUser
 from . forms import DoctorLoginForm, MedicalRecordForm, DoctorPasswordResetRequestForm
 from administration.forms import CustomPasswordChangeForm, ProfileUpdateForm
 from django.utils import timezone

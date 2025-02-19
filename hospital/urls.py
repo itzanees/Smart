@@ -20,8 +20,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 from administration.views import intranet
 from administration.views import Logout
-# from administration.views import change_password, intranet
-# from django.contrib.auth.views import PasswordChangeDoneView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,4 +30,7 @@ urlpatterns = [
     path('staff/', include('staff.urls')),
     path('intranet', intranet, name ='intranet'),
     path('logout', Logout, name='logout')
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+if settings.DEBUG:
+    urlpatterns +=  static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

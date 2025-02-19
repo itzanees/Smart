@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth import authenticate
-from administration.models import Appointment, Department, Doctor, Schedule, Patient, CustomUser
+from administration.models import Appointment, Department, Doctor, Schedule, CustomUser
 from django.contrib.auth.forms import PasswordChangeForm
 
 from datetime import date, timedelta

@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, get_user_model
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from administration.models import Appointment, Doctor, Patient, Staff, Schedule, CustomUser, Department
+from administration.models import Appointment, Doctor, Patient, Schedule, CustomUser, Department
 from administration.forms import ProfileUpdateForm
 from .forms import CustomLoginForm, InPatientRegistrationForm
 from administration.forms import CustomPasswordChangeForm
