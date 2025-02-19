@@ -467,26 +467,26 @@ def schedule_view(request, doctor_id):
     }
     return render(request, 'administration/schedule.html', context)
 
-@login_required(login_url='admin_login')
-@never_cache
-def book_slot(request, slot_id):
-    slot = Schedule.objects.get(id=slot_id)
-    if request.method == 'POST':
-        patient =Patient.objects.get(user = request.user)
-        print(patient)
+# @login_required(login_url='admin_login')
+# @never_cache
+# def book_slot(request, slot_id):
+#     slot = Schedule.objects.get(id=slot_id)
+#     if request.method == 'POST':
+#         patient =Patient.objects.get(user = request.user)
+#         print(patient)
 
-        slot.is_booked = True
-        slot.save()
+#         slot.is_booked = True
+#         slot.save()
         
-        Appointment.objects.create(
-            patient =Patient.objects.get(user = request.user),
-            doctor = slot.doctor,
-            appointment_on = slot
-        )
+#         Appointment.objects.create(
+#             patient =Patient.objects.get(user = request.user),
+#             doctor = slot.doctor,
+#             appointment_on = slot
+#         )
 
-        return redirect('schedule_view', doctor_id=slot.doctor.user.id)
+#         return redirect('schedule_view', doctor_id=slot.doctor.user.id)
 
-    return render(request, 'administration/book-slot.html', {'slot': slot})
+#     return render(request, 'administration/book-slot.html', {'slot': slot})
 
 @login_required(login_url='admin_login')
 @never_cache
