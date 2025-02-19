@@ -34,7 +34,12 @@ Appointments
 			<!-- /Page Header -->
 			<div class="row">
 				<div class="col-md-12">
-
+					{% for message in messages %}
+					<div class="alert alert-success">
+						<a class="close" href="#" data-dismiss="alert">×</a>
+						{{ message }}
+					</div>
+					{% endfor %}
 					<!-- Appointments  -->
 					<div class="card">
 						<div class="card-body">
@@ -48,7 +53,6 @@ Appointments
 											<th>Apointment Time</th>
 											<th>Status</th>
 											<th class="text-right">Amount</th>
-											<th>Action</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -59,7 +63,15 @@ Appointments
 													<a href=""
 														class="avatar avatar-sm mr-2">
 														<img class="avatar-img rounded-circle"
-															src="{% static 'images//doctors/doctor-thumb-01.jpg' %}"
+														{% if appointment.doctor.user.profile_pic %}
+														src="{{ appointment.doctor.user.profile_pic.url }}"
+														{% else %}
+														{% if appointment.doctor.user.gender == 'M' %}
+														src="{% static 'images/doctors/doc.png' %}"
+														{% else %}
+														src="{% static 'images/doctors/fdoc.png' %}"
+														{% endif %}
+														{% endif %}
 															alt="User Image">
 														</a>
 													<a href="">{{ appointment.doctor.user.first_name }} {{ appointment.doctor.user.last_name }}</a>
@@ -68,12 +80,20 @@ Appointments
 											<td>{{ appointment.doctor.department.name }}</td>
 											<td>
 												<h2 class="table-avatar">
-													<a href="{% url 'admin_profile' %}"
+													<a href=""
 														class="avatar avatar-sm mr-2"><img
 															class="avatar-img rounded-circle"
-															src="{% static 'images//patients/patient1.jpg' %}"
+															{% if appointment.patient.user.profile_pic %}
+															src="{{ appointment.patient.user.profile_pic.url }}"
+															{% else %}
+															{% if appointment.patient.user.gender == 'M' %}
+															src="{% static 'images/profiles/male.jpg' %}"
+															{% else %}
+															src="{% static 'images/profiles/female.jpg' %}"
+															{% endif %}
+															{% endif %}
 															alt="User Image"></a>
-													<a href="{% url 'admin_profile' %}">{{ appointment.patient.user.first_name }}, {{ appointment.patient.user.last_name }} </a>
+													<a href="">{{ appointment.patient.user.first_name }}, {{ appointment.patient.user.last_name }} </a>
 												</h2>
 											</td>
 											<td>{{ appointment.appointment_on.date }} <span class="text-primary d-block">{{ appointment.appointment_on.start_time }} - {{ appointment.appointment_on.end_time }}  </span>
@@ -94,18 +114,6 @@ Appointments
 											<td class="text-right">
 												₹ {{ appointment.appointment_fees }}
 											</td>
-											<td>
-												<div class="actions">
-													<a class="btn btn-sm bg-success-light" data-toggle="modal"
-														href="#edit_appointment_details">
-														<i class="fe fe-pencil"></i> Edit
-													</a>
-													<a data-toggle="modal" href="#delete_modal"
-														class="btn btn-sm bg-danger-light">
-														<i class="fe fe-trash"></i> Delete
-													</a>
-												</div>
-											</td>
 										</tr>
 										{% empty %}
 										<tr>
@@ -116,6 +124,31 @@ Appointments
 										{% endfor %}
 									</tbody>
 								</table>
+								<nav class="mx-2 pt-2">
+									<ul class="pagination">
+										{% if appointments.has_previous %}
+											<li class="page-item">
+												<a class="page-link" href="?page=1">First</a>
+											</li>
+											<li class="page-item">
+												<a class="page-link" href="?page={{ appointments.previous_page_number }}">Previous</a>
+											</li>
+										{% endif %}
+								
+										<li class="page-item active">
+											<span class="page-link">Page {{ appointments.number }} of {{ appointments.paginator.num_pages }}</span>
+										</li>
+								
+										{% if appointments.has_next %}
+											<li class="page-item">
+												<a class="page-link" href="?page={{ appointments.next_page_number }}">Next</a>
+											</li>
+											<li class="page-item">
+												<a class="page-link" href="?page={{ appointments.paginator.num_pages }}">Last</a>
+											</li>
+										{% endif %}
+									</ul>
+								</nav>
 							</div>
 						</div>
 					</div>
@@ -137,7 +170,14 @@ Appointments
 										<div class="row form-row">
 											<div class="col-12 col-sm-6">
 												<div class="form-group">
-													<label>Patient</label>
+													<div class="row">
+														<div class="col-4">
+															<label>Patient</label>
+														</div>
+														<div class="col-8">
+															<span class="text-right"> <a href="#new_patient" data-toggle="modal">New Patient</a></span>
+														</div>
+													</div>
 													<select class="form-control" name="pat_id" id="">
 														{% for patient in patients %}
 														<option value="{{ patient.id }}">{{ patient.pat_mrd_no }}-{{ patient.user.first_name }}</option>
@@ -165,18 +205,6 @@ Appointments
 													</select>
 												</div>
 											</div>
-											<!-- <div class="col-12 col-sm-4">
-												<div class="form-group">
-													<label>Date</label>
-													<input name="date" type="date" class="form-control">
-												</div>
-											</div>
-											<div class="col-12 col-sm-4">
-												<div class="form-group">
-													<label>Time</label>
-													<input type="time" class="form-control">
-												</div>
-											</div> -->
 											<div class="col-12 col-sm-4">
 												<div class="form-group">
 													<label>Amount</label>
@@ -267,7 +295,41 @@ Appointments
 						</div>
 					</div>
 					<!-- /Delete Modal -->
-
+					<div class="modal fade" id="new_patient" aria-hidden="true" role="dialog">
+						<div class="modal-dialog modal-dialog-centered" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title">Add New User</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<form method="post">
+										{% csrf_token %}
+										{% for field in userForm %}
+										<div class="form-group">
+											{{ field }}
+											{% if field.errors %}
+											<div class="text-warning small  mt-1">
+												{{ field.errors|join:", " }}
+											</div>
+											{% endif %}
+											{% if field.help_text and not field.errors %}
+											<div class="form-text text-muted">
+												{{ field.help_text }}
+											</div>
+											{% endif %}
+										</div>
+										{% endfor %}
+										<input type="hidden" name="newuser" value="true">
+			
+										<button class="w-100 mb-2 btn btn-lg  btn-primary" type="submit">Add user</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

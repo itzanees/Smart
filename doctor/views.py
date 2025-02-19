@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, update_session_auth_hash, get_user_model
 from django.contrib.auth.decorators import login_required
-from administration.models import Doctor, Patient, Staff, Schedule, Appointment, Department, MedicalRecord, Billing, CustomUser
+from administration.models import Doctor, Patient, Staff, Schedule, Appointment, Department, MedicalRecord, CustomUser
 from . forms import DoctorLoginForm, MedicalRecordForm, DoctorPasswordResetRequestForm
 from administration.forms import CustomPasswordChangeForm, ProfileUpdateForm
 from django.utils import timezone
@@ -154,9 +154,6 @@ def doc_pat_records(request, pk, app_no):
     appointment = get_object_or_404(Appointment, appointment_number=app_no)
     
     record, created = MedicalRecord.objects.get_or_create(appointment=appointment, defaults={
-        # 'patient': patient,
-        # 'doctor': Doctor.objects.get(user=request.user),
-        # 'department': Department.objects.get(doctor=Doctor.objects.get(user=request.user)),
         'is_opened': True
     })
     

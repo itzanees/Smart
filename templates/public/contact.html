@@ -13,54 +13,72 @@
 </div>
 
 <div class=" content-1">
+    {% for message in messages %}
+    <div class="container container-fluid w-min">
+    {% if message.tags == 'error' %}
+    <!-- bootstrap alert -->
+    <div class="text-center alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>{{ message }}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+    {% if message.tags == 'success' %}
+        <!-- bootstrap alert -->
+        <div class="text-center alert alert-success alert-dismissible fade show" role="alert">
+            <strong>{{ message }}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endif %}
+    </div>
+{% endfor %}
     <h3 class="text-center text-white">Contact Us</h3>
     <form action="" method="post">
         {% csrf_token %}
         <div class="row pt-3">
             <div class="col-md-4">
                 <div class="form-floating">
-                    <input type="text" class="form-control" id="floatingPassword" placeholder="Full Name">
+                    <input type="text" name="name" class="form-control" id="floatingPassword" placeholder="Full Name" required>
                     <label for="floatingPassword">Name</label>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                    <input type="email" name="email" class="form-control" id="floatingInput" placeholder="name@example.com" required>
                     <label for="floatingInput">Email address</label>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-floating mb-3">
-                    <input type="number" class="form-control" id="floatingInput" placeholder="">
+                    <input type="number" min='5000000000' max="9999999999" name="phone_num" class="form-control" id="floatingInput" placeholder="Phone Number" required >
                     <label for="floatingInput">Phone Number</label>
                 </div>
             </div>
 
             <div class="col-md-12 text-white">
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
-                        value="Message" checked>
+                    <input class="form-check-input" type="radio" name="contact_type" id="inlineRadio1"
+                        value="ME" checked>
                     <label class="form-check-label" for="inlineRadio1">Message</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
-                        value="Enquiry">
-                    <label class="form-check-label" for="inlineRadio1">Enquiry</label>
+                    <input class="form-check-input" type="radio" name="contact_type" id="inlineRadio2"
+                        value="EQ">
+                    <label class="form-check-label" for="inlineRadio2">Enquiry</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2"
-                        value="Suggestion">
-                    <label class="form-check-label" for="inlineRadio2">Suggestion</label>
+                    <input class="form-check-input" type="radio" name="contact_type" id="inlineRadio3"
+                        value="SU">
+                    <label class="form-check-label" for="inlineRadio3">Suggestion</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3"
-                        value="Complaint">
-                    <label class="form-check-label" for="inlineRadio3">Complaint</label>
+                    <input class="form-check-input" type="radio" name="contact_type" id="inlineRadio4"
+                        value="CO">
+                    <label class="form-check-label" for="inlineRadio4">Complaint</label>
                 </div>
             </div>
             <div class="col-md-12 my-2">
                 <div class="form-floating">
-                    <textarea class="form-control" placeholder="Leave your feedback here" id="floatingTextarea"
+                    <textarea class="form-control" name="message" placeholder="Leave your feedback here" id="floatingTextarea"
                         style="height: 100px"></textarea>
                     <label for="floatingTextarea">Message</label>
                 </div>

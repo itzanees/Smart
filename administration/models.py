@@ -197,28 +197,42 @@ class MedicalRecord(models.Model):
     def __str__(self):
         return f"{self.patient.user.username}'s Medical Record."
 
-class Billing(models.Model):
-    PSTATUS= [
-       ('PD','Paid'),
-       ('PE', 'Pending'),
-       ('UP', 'Unpaid')
+class ContactUs(models.Model):
+    CONACT_TYPES = [
+        ('ME', "Message"),
+        ('EQ', 'Enquiry'),
+        ('SU', 'Suggestion'),
+        ('CO', 'Complaint'),
     ]
+    name = models.CharField(max_length=255)
+    email = models.EmailField()
+    phone_num = models.CharField(max_length=10)
+    contact_type = models.CharField(max_length=2, choices=CONACT_TYPES)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
 
-    staff = models.ForeignKey(Staff, on_delete=models.SET_NULL, null=True)
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
-    bill_no = models.CharField(max_length=32)
-    date = models.DateTimeField()
-    consult_charge = models.DecimalField(max_digits=6,decimal_places=2)
-    medication_charge = models.DecimalField(max_digits=10,decimal_places=2)
-    procedure_charge = models.DecimalField(max_digits=10,decimal_places=2)
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=2, choices=PSTATUS, default='PE')
+# class Billing(models.Model):
+#     PSTATUS= [
+#        ('PD','Paid'),
+#        ('PE', 'Pending'),
+#        ('UP', 'Unpaid')
+#     ]
 
-    def save(self, *args, **kwargs):
-        if not self.bill_no:
-            last_inv = Billing.objects.last()
-            today = f"{datetime.today().year}{datetime.today().month}{datetime.today().day}"
-            last_id = int(last_inv.appointment_number.split('-')[1]) if last_inv else 1
-            self.appointment_number = f"SINV-{today}000{last_id + 1}"
-        super().save(*args, **kwargs)
+#     staff = models.ForeignKey(Staff, on_delete=models.SET_NULL, null=True)
+#     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+#     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+#     bill_no = models.CharField(max_length=32)
+#     date = models.DateTimeField()
+#     consult_charge = models.DecimalField(max_digits=6,decimal_places=2)
+#     medication_charge = models.DecimalField(max_digits=10,decimal_places=2)
+#     procedure_charge = models.DecimalField(max_digits=10,decimal_places=2)
+#     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+#     status = models.CharField(max_length=2, choices=PSTATUS, default='PE')
+
+#     def save(self, *args, **kwargs):
+#         if not self.bill_no:
+#             last_inv = Billing.objects.last()
+#             today = f"{datetime.today().year}{datetime.today().month}{datetime.today().day}"
+#             last_id = int(last_inv.appointment_number.split('-')[1]) if last_inv else 1
+#             self.appointment_number = f"SINV-{today}000{last_id + 1}"
+#         super().save(*args, **kwargs)

@@ -99,9 +99,9 @@
 																	</td>
 																	<td class="text-right">
 																		<div class="table-action">
-																			<a href="" class="btn btn-sm bg-primary-light">
+																			<!-- <a href="" class="btn btn-sm bg-primary-light">
 																				<i class="fas fa-print"></i> Print
-																			</a>
+																			</a> -->
 																			<a href="{% url 'view_pat_bill' %}" class="btn btn-sm bg-info-light">
 																				<i class="far fa-eye"></i> View
 																			</a>
@@ -176,11 +176,8 @@
 																	</td>
 																	<td class="text-right">
 																		<div class="table-action">
-																			<a href="javascript:void(0);" class="btn btn-sm bg-info-light">
+																			<a href="#" class="btn btn-sm bg-info-light" data-toggle="modal" data-target="#appt_details_{{ record.id }}">
 																				<i class="far fa-eye"></i> View
-																			</a>
-																			<a href="javascript:void(0);" class="btn btn-sm bg-primary-light">
-																				<i class="fas fa-print"></i> Print
 																			</a>
 																		</div>
 																	</td>
@@ -206,4 +203,45 @@
 				</div>
 			</div>		
 			<!-- /Page Content -->
+{% endblock %}
+{% block popup %}
+
+{% for record in mrecords %}
+<div class="modal fade custom-modal" id="appt_details_{{ record.id }}">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Prescription by Dr. {{ record.appointment.doctor.user.first_name }}</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<ul class="info-details">
+					<li>
+						<div class="details-header">
+							<div class="row">
+								<div class="col-md-6">
+									<span class="title">{{ record.appointment.appointment_number }}<span>
+									<span class="text">{{ record.appointment.appointment_on.date }}</span>
+								</div>
+							</div>
+						</div>
+					</li>
+					<li>
+						<span class="title">Prescription</span>
+						<span class="text">
+							{% if record.prescription %}
+							{{ record.prescription }}
+							{% else %}
+							NO MEDICINE PRESCRIBED
+							{% endif %}
+						</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+{% endfor %}
 {% endblock %}

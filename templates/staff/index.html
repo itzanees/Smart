@@ -33,7 +33,7 @@ Staff Dashboard
                         <!-- Appointments -->
                         <div class="card card-table">
                             <div class="card-header">
-                                <h4 class="card-title">Appointment List</h4>
+                                <h4 class="card-title">Todays Appointment List</h4>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -124,6 +124,31 @@ Staff Dashboard
                                             {% endfor %}
                                         </tbody>
                                     </table>
+                                    <nav class="mx-2 pt-2">
+                                        <ul class="pagination">
+                                            {% if appointments.has_previous %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?page=1">First</a>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?page={{ appointments.previous_page_number }}">Previous</a>
+                                                </li>
+                                            {% endif %}
+                                    
+                                            <li class="page-item active">
+                                                <span class="page-link">Page {{ appointments.number }} of {{ appointments.paginator.num_pages }}</span>
+                                            </li>
+                                    
+                                            {% if appointments.has_next %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?page={{ appointments.next_page_number }}">Next</a>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?page={{ appointments.paginator.num_pages }}">Last</a>
+                                                </li>
+                                            {% endif %}
+                                        </ul>
+                                    </nav>
                                 </div>
                             </div>
                         </div>
@@ -165,6 +190,31 @@ Staff Dashboard
                                         {% endfor %}
                                     </tbody>
                                 </table>
+                                <nav class="pt-3 mx-2">
+									<ul class="pagination">
+										{% if doctors.has_previous %}
+											<li class="page-item">
+												<a class="page-link" href="?page=1">First</a>
+											</li>
+											<li class="page-item">
+												<a class="page-link" href="?page={{ doctors.previous_page_number }}">Previous</a>
+											</li>
+										{% endif %}
+								
+										<li class="page-item active">
+											<span class="page-link">Page {{ doctors.number }} of {{ doctors.paginator.num_pages }}</span>
+										</li>
+								
+										{% if doctors.has_next %}
+											<li class="page-item">
+												<a class="page-link" href="?page={{ doctors.next_page_number }}">Next</a>
+											</li>
+											<li class="page-item">
+												<a class="page-link" href="?page={{ doctors.paginator.num_pages }}">Last</a>
+											</li>
+										{% endif %}
+									</ul>
+								</nav>
                             </div>
                         </div>
                     </div>
@@ -207,6 +257,31 @@ Staff Dashboard
                                         {% endfor %}
                                     </tbody>
                                 </table>
+                                <nav class="mx-2 pt-2">
+									<ul class="pagination">
+										{% if patients.has_previous %}
+											<li class="page-item">
+												<a class="page-link" href="?page=1">First</a>
+											</li>
+											<li class="page-item">
+												<a class="page-link" href="?page={{ patients.previous_page_number }}">Previous</a>
+											</li>
+										{% endif %}
+								
+										<li class="page-item active">
+											<span class="page-link">Page {{ patients.number }} of {{ patients.paginator.num_pages }}</span>
+										</li>
+								
+										{% if patients.has_next %}
+											<li class="page-item">patients
+												<a class="page-link" href="?page={{ patients.next_page_number }}">Next</a>
+											</li>
+											<li class="page-item">
+												<a class="page-link" href="?page={{ patients.paginator.num_pages }}">Last</a>
+											</li>
+										{% endif %}
+									</ul>
+								</nav>
                             </div>
                         </div>
                     </div>

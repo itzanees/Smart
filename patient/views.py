@@ -153,10 +153,6 @@ def appointment_doc(request, pk):
     }
     return render(request, 'patient/booking.html', context)
 
-# @login_required(login_url='patient_login')
-# def bookings(request):
-#     return render(request, 'patient/booking.html')
-
 @login_required(login_url='patient_login')
 def hosp_specialities(request):
     specialities = Department.objects.all()
@@ -173,14 +169,6 @@ def doc_hosp_specialities(request, pk):
     doc_page_num = request.GET.get('page')
     doc_page_obj = doc_paginator.get_page(doc_page_num)
     return render (request, 'patient/specialities.html',{'doctors':doc_page_obj})
-
-@login_required(login_url='patient_login')
-def hos_doctors_list(request):
-    doctors = CustomUser.objects.filter(user_type='Doctor')
-    context = {
-        'doctors':doctors,
-    }
-    return render(request, 'patient/doctor-list.html', context)
 
 @login_required(login_url='patient_login')
 def pat_doctor_profile(request, pk):
@@ -206,11 +194,11 @@ def pat_schedule_view(request, doctor_id):
         'available_slots': available_slots,
         'booked_slots': booked_slots,
     }
-    return render('patient/schedule.html', context)
+    return render(request, 'patient/schedule.html', context)
 
-@login_required(login_url='patient_login')
-def hosp_services(request):
-    return render(request, 'patient/services.html')
+# @login_required(login_url='patient_login')
+# def hosp_services(request):
+#     return render(request, 'patient/services.html')
 
 @login_required(login_url='patient_login')
 def doc_search(request):
@@ -265,23 +253,23 @@ def pat_search(request):
 
     return render(request, 'patient/search_result.html', {'results': results, 'query': query})
 
-@login_required(login_url='patient_login')
-def pat_schedule_view(request, doctor_id):
-    user = CustomUser.objects.get(id= doctor_id)
-    doctor = Doctor.objects.get(user= user)
+# @login_required(login_url='patient_login')
+# def pat_schedule_view(request, doctor_id):
+#     user = CustomUser.objects.get(id= doctor_id)
+#     doctor = Doctor.objects.get(user= user)
     
-    start_date = timezone.now().date()
-    end_date = start_date + timedelta(days=30)
+#     start_date = timezone.now().date()
+#     end_date = start_date + timedelta(days=30)
 
-    available_slots = Schedule.objects.filter(doctor=doctor, date__range=[start_date, end_date], is_booked=False)
-    booked_slots = Schedule.objects.filter(doctor=doctor, date__range=[start_date, end_date], is_booked=True)
+#     available_slots = Schedule.objects.filter(doctor=doctor, date__range=[start_date, end_date], is_booked=False)
+#     booked_slots = Schedule.objects.filter(doctor=doctor, date__range=[start_date, end_date], is_booked=True)
 
-    context = {
-        'doctor': user,
-        'available_slots': available_slots,
-        'booked_slots': booked_slots,
-    }
-    return render(request, 'administration/schedule.html', context)
+#     context = {
+#         'doctor': user,
+#         'available_slots': available_slots,
+#         'booked_slots': booked_slots,
+#     }
+#     return render(request, 'administration/schedule.html', context)
 
 @login_required(login_url='patient_login')
 def pat_book_slot(request, slot_id):

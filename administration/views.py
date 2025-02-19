@@ -25,7 +25,6 @@ from django.urls import reverse
 from datetime import datetime, timedelta
 from django.utils import timezone
     
-# @permission_required(appname.viewname)
 def adminLogin(request):
     if request.method =='POST':
         username = request.POST['username']
@@ -46,20 +45,32 @@ def adminForgotPassword(request):
 def admin_home(request):
     user = request.user
     if user is not None and user.is_superuser:
-        doctors = Doctor.objects.all()[:5]
-        patients = Patient.objects.all()[:5]
-        appointments = Appointment.objects.all()[:5]
+        doctors = Doctor.objects.all()
+        doctor_paginator = Paginator(doctors, 1)
+        doctor_page_number = request.GET.get('page')
+        doctor_page_obj = doctor_paginator.get_page(doctor_page_number)
+
+        patients = Patient.objects.all()
+        patients_paginator = Paginator(patients, 4)
+        patients_page_number = request.GET.get('page')
+        patients_page_obj = patients_paginator.get_page(patients_page_number)
+
+        appointments = Appointment.objects.filter(appointment_on__date=(timezone.now())).order_by('appointment_on__date')
+        appointments_paginator = Paginator(appointments, 1)
+        appointments_page_number = request.GET.get('page')
+        appointments_page_obj = appointments_paginator.get_page(appointments_page_number)
+
         num_doc = Doctor.objects.all().count()
         num_pat = Patient.objects.all().count()
         num_app = Appointment.objects.all().count()
         revenue = Appointment.objects.aggregate(fees=Sum('appointment_fees'))
 
         context = {
-            'doctors' : doctors,
+            'doctors' : doctor_page_obj,
             'num_doc': num_doc,
-            'patients' : patients,
+            'patients' : patients_page_obj,
             'num_pat': num_pat,
-            'appointments' : appointments,
+            'appointments' : appointments_page_obj,
             'num_app': num_app,
             'revenue': revenue['fees'],
         }
@@ -102,7 +113,7 @@ def intranet(request):
 def all_appointment_list(request):
     user = request.user
     if user is not None and user.is_superuser:
-        all_appointments = Appointment.objects.all()
+        all_appointments = Appointment.objects.all().order_by('-appointment_on__date')
         all_paginator = Paginator(all_appointments, 4)
         all_page_number = request.GET.get('page')
         all_page_obj = all_paginator.get_page(all_page_number)
@@ -120,7 +131,7 @@ def all_appointment_list(request):
 def appointmentList(request):
     user = request.user
     if user is not None and user.is_superuser:
-        latest_appointments = Appointment.objects.filter(appointment_on__date__gte=(timezone.now()))
+        latest_appointments = Appointment.objects.filter(appointment_on__date__gte=(timezone.now())).order_by('appointment_on__date')
         latest_paginator = Paginator(latest_appointments, 4)
         latest_page_number = request.GET.get('page')
         latest_page_obj = latest_paginator.get_page(latest_page_number)

@@ -1,11 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, get_user_model
-# from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
 from administration.models import Appointment, Doctor, Patient, Staff, Schedule, CustomUser, Department
 from administration.forms import ProfileUpdateForm
-from .forms import CustomLoginForm
+from .forms import CustomLoginForm, InPatientRegistrationForm
 from administration.forms import CustomPasswordChangeForm
 from django.contrib.auth.views import PasswordChangeView
 from django.urls import reverse_lazy
@@ -16,6 +15,14 @@ from django.db.models import Q
 
 from django.utils import timezone
 from datetime import datetime, timedelta
+
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.template.loader import render_to_string
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+from django.urls import reverse
 
 def staffLogin(request):
     if request.method == 'POST':
@@ -65,16 +72,25 @@ def staff_change_password(request):
 
 @login_required(login_url='staff_login')
 def staff_dashboard(request):
-    doctors = Doctor.objects.all()[:4]
-    patients = Patient.objects.all()[:4]
-    appointments = Appointment.objects.filter(appointment_on__date = (datetime.today()))
-    appointments_paginator = Paginator(appointments,8)
+    doctors = Doctor.objects.all()
+    doctors_paginator = Paginator(doctors,4)
+    doctors_page_num = request.GET.get('page')
+    doctors_pag_obj = doctors_paginator.get_page(doctors_page_num)
+
+    patients = Patient.objects.all()
+    patients_paginator = Paginator(patients,4)
+    patients_page_num = request.GET.get('page')
+    patients_pag_obj = patients_paginator.get_page(patients_page_num)
+
+    appointments = Appointment.objects.filter(appointment_on__date = (datetime.today())).order_by('-appointment_on__date')
+    appointments_paginator = Paginator(appointments,4)
     appointments_page_num = request.GET.get('page')
     appointments_pag_obj = appointments_paginator.get_page(appointments_page_num)
+    
     context = {
         'appointments':appointments_pag_obj,
-        'doctors':doctors,
-        'patients':patients,
+        'doctors':doctors_pag_obj,
+        'patients':patients_pag_obj,
     }
     if request.method == 'POST':
         app_id = request.POST.get('app_id')
@@ -117,43 +133,73 @@ def staff_specialities(request):
 @login_required(login_url='staff_login')
 def staff_appointment_list(request):
     appointments = Appointment.objects.filter(appointment_on__date = (datetime.today()))
+    appointments_paginator = Paginator(appointments,8)
+    appointments_page_num = request.GET.get('page')
+    appointments_pag_obj = appointments_paginator.get_page(appointments_page_num)
 
     patients = Patient.objects.all()
     departments = Department.objects.all()
     doctors = Doctor.objects.all()
+    userForm = InPatientRegistrationForm()
 
     if request.method == "POST":
-        date = timezone.now().date()
-        start_time = timezone.now().time()
-        pat_id = request.POST.get('pat_id')
-        doc_id = request.POST.get('doc_id')
-        fees = request.POST.get('fees')
-        print(pat_id, doc_id, date, start_time, fees)
-        doctor = Doctor.objects.get(id=doc_id)
-        patient = Patient.objects.get(id=pat_id)
-        schedule = Schedule(
-                doctor=doctor,
-                date=date,
-                start_time=start_time,
-                duration=15,
-                is_booked=True
-                )
-        schedule.save()
-        appointment = Appointment.objects.create(
-            patient=patient,
-            doctor=doctor,
-            appointment_on=schedule,
-            appointment_fees=fees
-        )
+        if 'newuser' in request.POST:
+            form = InPatientRegistrationForm(request.POST)
+            if form.is_valid():
+                user = form.save(commit=False)
+                user.is_active =False
+                user.user_type == 'Patient'
+                user.save()
+                Patient.objects.create(user = user)
+    
+                current_site = get_current_site(request)
+                subject = 'Activate Your Account'
+                message = render_to_string('administration/activation_email.html', {
+                    'user': user,
+                    'domain': current_site.domain,
+                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                    'token': default_token_generator.make_token(user),
+                })
+                send_mail(subject, message, 'itzanees@gmail.com', [user.email])
 
-        appointment.save()
-        messages.success(request, f"Created appointment for {patient.first_name}.")
-        return redirect('staff_appointment_list')
+                messages.success(request, f"User {user.username} Created")
+                return redirect('staff_appointment_list')
+
+        else:
+            date = timezone.now().date()
+            start_time = timezone.now().time()
+            pat_id = request.POST.get('pat_id')
+            doc_id = request.POST.get('doc_id')
+            fees = request.POST.get('fees')
+            print(pat_id, doc_id, date, start_time, fees)
+            doctor = Doctor.objects.get(id=doc_id)
+            patient = Patient.objects.get(id=pat_id)
+            schedule = Schedule(
+                    doctor=doctor,
+                    date=date,
+                    start_time=start_time,
+                    duration=1,
+                    is_booked=True
+                    )
+            schedule.save()
+            print(schedule)
+            appointment = Appointment(
+                patient=patient,
+                doctor=doctor,
+                appointment_on=schedule,
+                appointment_fees=fees
+            )
+
+            appointment.save()
+            print(appointment.appointment_on.date)
+            messages.success(request, f"Created appointment for {patient.user.first_name}.")
+            return redirect('staff_appointment_list')
     context = {
-        'appointments':appointments,
+        'appointments':appointments_pag_obj,
         'patients' : patients,
         'departments' : departments,
         'doctors' : doctors,
+        'userForm':userForm,
     }
     return render(request, 'staff/appointment-list.html', context)
 
