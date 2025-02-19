@@ -8,6 +8,13 @@ class PatientRegistrationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = CustomUser
         fields = UserCreationForm.Meta.fields + ('first_name', 'last_name', 'email', 'phone_number', 'date_of_birth', 'gender')
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if CustomUser.objects.filter(email=email).exists():
+            raise forms.ValidationError("This email is already in use.")
+        return email
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['phone_number'].label = 'Contact Number'
@@ -60,6 +67,12 @@ class UserRegistrationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
             model = CustomUser
             fields = UserCreationForm.Meta.fields + ('first_name', 'last_name', 'gender', 'email', 'phone_number', 'user_type')
+    
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if CustomUser.objects.filter(email=email).exists():
+            raise forms.ValidationError("This email is already in use.")
+        return email
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

@@ -17,6 +17,7 @@ class CustomUser(AbstractUser):
     ]
 
     user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='', null=True, blank=True)
+    email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=10, unique=True, null=True, blank=True)
     profile_pic = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
@@ -32,6 +33,12 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
          return self.username
+    
+    def save(self, *args, **kwargs):
+        if self.is_superuser and self._state.adding:
+            # This is a superuser being created
+            self.is_active = True
+        super().save(*args, **kwargs)
 
 class Department(models.Model):
     name = models.CharField(max_length=100, unique=True)

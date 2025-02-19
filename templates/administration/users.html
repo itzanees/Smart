@@ -65,6 +65,7 @@ Users
 											<th>Email</th>
 											<th>Phone Number</th>
 											<th>Member Since</th>
+											<th>Disabled</th>
 											<th>Action</th>
 											<!-- <th>Account Status</th> -->
 										</tr>
@@ -112,6 +113,12 @@ Users
 											<td>{{ user.phone_number }}</td>
 											<td>{{ user.created_at }} <br></td>
 											<td>
+												<div class="status-toggle">
+													<input type="checkbox" id="status_1" class="check" checked>
+													<label for="status_1" class="checktoggle">checkbox</label>
+												</div>
+											</td>
+											<td>
 												<div class="actions">
 													<!-- <a class="btn btn-sm bg-success-light" data-toggle="modal"
 														href="#edit_{{ user.id }}_details">
@@ -123,13 +130,6 @@ Users
 													</a>
 												</div>
 											</td>
-
-											<!-- <td>
-												<div class="status-toggle">
-													<input type="checkbox" id="status_1" class="check" checked>
-													<label for="status_1" class="checktoggle">checkbox</label>
-												</div>
-											</td> -->
 										</tr>
 
 										<!-- Delete Modal -->

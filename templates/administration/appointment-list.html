@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-
 {% load static %}
 {% block title %}
 Appointments
@@ -24,10 +23,6 @@ Appointments
 							<li class="breadcrumb-item"><a href="{% url 'admin_home' %}">Dashboard</a></li>
 							<li class="breadcrumb-item active">Appointments</li>
 						</ul>
-					</div>
-					<div class="col-sm-5 col">
-						<a href="#Add_Appointment_details" data-toggle="modal"
-							class="btn btn-primary float-right mt-2">Add</a>
 					</div>
 				</div>
 			</div>
@@ -120,6 +115,10 @@ Appointments
 														</a>
 													</div>
 												</td>
+											</tr>
+											{% empty %}
+											<tr>
+												<td colspan="7">No Appointments</td>
 											</tr>
 											{% endfor %}
 											{% endif %}
@@ -238,6 +237,8 @@ Appointments
 														</div>
 													</td>
 												</tr>
+													{% empty %}
+													<td colspan="7"> Empty</td>
 												{% endfor %}
 											</tbody>
 										</table>

@@ -10,6 +10,12 @@ Admin Login
 <div class="main-wrapper login-body admin">
 	<div class="login-wrapper">
 		<div class="container">
+			{% for message in messages %}
+				<div class="alert alert-success">
+					<a class="close" href="#" data-dismiss="alert">×</a>
+					{{ message }}
+				</div>
+			{% endfor %}
 			<div class="loginbox admin">
 				<div class="login-left admin">
 					<h1>Admin Login</h1>
