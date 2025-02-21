@@ -109,17 +109,26 @@ def staff_doctors(request):
 
 @login_required(login_url='staff_login')
 def staff_patients(request):
-    patients = Patient.objects.all()
+    patients = Patient.objects.all().order_by('id')
     pat_paginator = Paginator(patients, 8)
     pat_page_num = request.GET.get('page')
     pat_page_obj = pat_paginator.get_page(pat_page_num)
     if request.method=='POST':
         pat_id = request.POST.get('pat_id')
-        pat_id = int(pat_id)
-        pat_user = CustomUser.objects.get(id = pat_id)
+        pat_user = CustomUser.objects.get(id=pat_id)
+        if 'edit' in request.POST:
+            form = ProfileUpdateForm(request.POST, instance=pat_user, user=pat_user)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "User profile updated")
+                return redirect(staff_patients)
+            else:
+                messages.error(request, "Can't update profile")
+                return redirect(staff_patients)
+        
         modal_class = 'show'
         form = ProfileUpdateForm(instance=pat_user, user=pat_user)
-        return render(request, 'staff/patient-list.html', {'patients':patients, 'profileform':form, 'modal':modal_class, 'pat_id':pat_id})
+        return render(request, 'staff/patient-list.html', {'patient':pat_user, 'profileform':form, 'modal':modal_class, 'pat_id':pat_id})
     return render(request, 'staff/patient-list.html', {'patients':pat_page_obj})
 
 @login_required(login_url='staff_login')

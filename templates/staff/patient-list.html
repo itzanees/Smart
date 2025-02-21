@@ -35,10 +35,11 @@ Patients
 				<div class="row">
 					<div class="col-md-12">
 					<div class="form-content p-2">
-						<h4 class="modal-title">Edit {{ patient.user.username }}</h4>
+						<h4 class="modal-title">Edit {{ patient.username }}</h4>
 						<form method="post" enctype="multipart/form-data">
 							{% csrf_token %}
 							{{ profileform }}
+							<input type="hidden" name="pat_id" value="{{ patient.id }}">
 							<input type="hidden" name="edit" value="edit">
 							<button type="submit" class="btn btn-primary btn-block mt-3">Save Changes</button>
 						</form>
