@@ -75,7 +75,43 @@
     <!-- /Mobile Menu Toggle -->
 
     <!-- Header Right Menu -->
+        <!-- /Notifications -->
     <ul class="nav user-menu">
+        <li class="nav-item dropdown noti-dropdown">
+            <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                <i class="fe fe-bell"></i> <span class="badge badge-pill">
+                    {% if notifications %}
+                    {{ notifications.count }}
+                    {% endif %}
+                </span>
+            </a>
+            <div class="dropdown-menu notifications">
+                <div class="topnav-dropdown-header">
+                    <span class="notification-title">Notifications</span>
+                </div>
+                <div class="noti-content">
+                    <ul class="notification-list">
+                        {% for noti in notifications %}
+                        <li class="notification-message">
+                            <a href="{% url '' %}">
+                                <div class="media">
+                                    <div class="media-body">
+                                        <p class="noti-details"><span class="noti-title">{{ noti.first_name }} {{ noti.last_name }}</span> requested <span class="noti-title">password reset</span></p>
+                                        <p class="noti-time"><span class="notification-time">{{ noti.updated_at }}</span></p>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <!-- <div class="topnav-dropdown-footer">
+                    <a href="#">View all Notifications</a>
+                </div> -->
+            </div>
+        </li>
+        <!-- /Notifications -->
+
         <!-- User Menu -->
         <li class="nav-item dropdown has-arrow">
             <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">

@@ -32,6 +32,28 @@
 
 			<div class="row">
 				<div class="col-md-12">
+					{% for message in messages %}
+					<div class="container container-fluid w-min">
+					{% if message.tags == 'error' %}
+					<div class="text-center alert alert-danger alert-dismissible fade show" role="alert">
+						<strong>{{ message }}</strong>
+						<a class="close" href="#" data-dismiss="alert">×</a>
+					</div>
+					{% endif %}
+					{% if message.tags == 'warning' %}
+					<div class="text-center alert alert-warning alert-dismissible fade show" role="alert">
+						<strong>{{ message }}</strong>
+						<a class="close" href="#" data-dismiss="alert">×</a>
+					</div>
+					{% endif %}
+					{% if message.tags == 'success' %}
+						<div class="text-center alert alert-success alert-dismissible fade show" role="alert">
+							<strong>{{ message }}</strong>
+						<a class="close" href="#" data-dismiss="alert">×</a>
+						</div>
+					{% endif %}
+					</div>
+					{% endfor %}
 					<div class="profile-header">
 						<div class="row align-items-center">
 							<div class="col-auto profile-image">
@@ -80,9 +102,11 @@
 							<li class="nav-item">
 								<a class="nav-link active" data-toggle="tab" href="#per_details_tab">About</a>
 							</li>
+							{% if user.password_request %}
 							<li class="nav-item">
 								<a class="nav-link" data-toggle="tab" href="#password_tab">Password</a>
 							</li>
+							{% endif %}
 						</ul>
 					</div>
 					<div class="tab-content profile-tab-cont">
@@ -180,48 +204,36 @@
 										</div>
 									</div>
 									<!-- /Edit Details Modal -->
-
 								</div>
-								
-
-
 							</div>
 							<!-- /Personal Details -->
-
 						</div>
 						<!-- /Personal Details Tab -->
-
-						<!-- Change Password Tab -->
-						<div id="password_tab" class="tab-pane fade">
-
-							<div class="card">
-								<div class="card-body">
-									<h5 class="card-title">Change Password</h5>
-									<div class="row">
-										<div class="col-md-10 col-lg-6">
-											<form>
-												<div class="form-group">
-													<label>Old Password</label>
-													<input type="password" class="form-control">
-												</div>
-												<div class="form-group">
-													<label>New Password</label>
-													<input type="password" class="form-control">
-												</div>
-												<div class="form-group">
-													<label>Confirm Password</label>
-													<input type="password" class="form-control">
-												</div>
-												<button class="btn btn-primary" type="submit">Save Changes</button>
-											</form>
-										</div>
+					</div>
+					<!-- Change Password Tab -->
+					{% if user.password_request %}
+					<div id="password_tab" class="tab-pane fade">
+						<div class="card">
+							<div class="card-body">
+								<h5 class="card-title">Set new password</h5>
+								<div class="row">
+									<div class="col-md-10 col-lg-6">
+										<form method="post">
+											{% csrf_token %}
+											<div class="form-group">
+												<label>New Password</label>
+												<input type="password" class="form-control" value="{{ newpassword }}">
+											</div>
+											<input type="hidden" name="set_password">
+											<button class="btn btn-primary" type="submit">Set Password</button>
+										</form>
 									</div>
 								</div>
 							</div>
 						</div>
-						<!-- /Change Password Tab -->
-
 					</div>
+					{% endif %}
+					<!-- /Change Password Tab -->
 				</div>
 			</div>
 

@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.views.decorators.cache import never_cache
 from django.db.models import Sum
+import random, string
 
 # FOR PASSWORD CHANGE
 from django.contrib.auth.views import PasswordChangeView
@@ -60,6 +61,8 @@ def admin_home(request):
         appointments_page_number = request.GET.get('page')
         appointments_page_obj = appointments_paginator.get_page(appointments_page_number)
 
+        notifications = CustomUser.objects.filter(password_request=True)
+        
         num_doc = Doctor.objects.all().count()
         num_pat = Patient.objects.all().count()
         num_app = Appointment.objects.all().count()
@@ -73,6 +76,7 @@ def admin_home(request):
             'appointments' : appointments_page_obj,
             'num_app': num_app,
             'revenue': revenue['fees'],
+            'notifications':notifications,
         }
         return render(request, 'administration/index.html', context)
     else:
@@ -268,7 +272,7 @@ def activate(request, uidb64, token):
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True
         user.save()
-        login(request, user)
+        # login(request, user)
         messages.success(request, "Account activated successfully!")
         if request.user.user_type == 'Patient':
             return redirect('patient_dashboard')
@@ -286,6 +290,21 @@ def users_profile(request, pk):
     user = request.user
     if user is not None and user.is_superuser:
         user = get_object_or_404(get_user_model(), id=pk)
+        words = string.ascii_letters
+        password = []
+        for i in range(10):
+            ran_char = random.choice(words)
+            password.append(ran_char)
+        newpassword = ("".join(password))
+        print(newpassword, user.email)
+        user.set_password(newpassword)
+        subject = 'Your Temporary Password'
+        message = render_to_string('administration/temp_password.html', {
+            'user': user,
+            'newpassword':newpassword,
+        })
+        send_mail(subject, message, 'itzanees@gmail.com', [user.email])
+
         if request.method == 'POST':
             form = ProfileUpdateForm(request.POST, request.FILES, instance=user, user=user)
             if form.is_valid():

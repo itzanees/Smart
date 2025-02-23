@@ -141,7 +141,7 @@ def staff_specialities(request):
 
 @login_required(login_url='staff_login')
 def staff_appointment_list(request):
-    appointments = Appointment.objects.filter(appointment_on__date = (datetime.today()))
+    appointments = Appointment.objects.filter(appointment_on__date = (datetime.today())).order_by('appointment_on__start_time')
     appointments_paginator = Paginator(appointments,8)
     appointments_page_num = request.GET.get('page')
     appointments_pag_obj = appointments_paginator.get_page(appointments_page_num)
@@ -159,7 +159,7 @@ def staff_appointment_list(request):
                 user.is_active =False
                 user.user_type == 'Patient'
                 user.save()
-                Patient.objects.create(user = user)
+                newpat = Patient.objects.create(user = user)
     
                 current_site = get_current_site(request)
                 subject = 'Activate Your Account'
@@ -179,8 +179,6 @@ def staff_appointment_list(request):
             start_time = timezone.now().time()
             pat_id = request.POST.get('pat_id')
             doc_id = request.POST.get('doc_id')
-            fees = request.POST.get('fees')
-            print(pat_id, doc_id, date, start_time, fees)
             doctor = Doctor.objects.get(id=doc_id)
             patient = Patient.objects.get(id=pat_id)
             schedule = Schedule(
@@ -191,16 +189,13 @@ def staff_appointment_list(request):
                     is_booked=True
                     )
             schedule.save()
-            print(schedule)
             appointment = Appointment(
                 patient=patient,
                 doctor=doctor,
-                appointment_on=schedule,
-                appointment_fees=fees
+                appointment_on=schedule
             )
 
             appointment.save()
-            print(appointment.appointment_on.date)
             messages.success(request, f"Created appointment for {patient.user.first_name}.")
             return redirect('staff_appointment_list')
     context = {

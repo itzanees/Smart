@@ -54,11 +54,20 @@ def doctor_forgot_password(request):
     if request.method =='POST':
         form = DoctorPasswordResetRequestForm(request.POST)
         if form.is_valid():
-            doc = form.save(commit=False)
-            doc.password_request = True
-            doc.save()
-            messages.success(request, "Passaword reset request sent.")
-            return redirect('doctor_forgot_password')
+            usr = request.POST.get('username')
+            try:
+                doc = Doctor.objects.get(user__username=usr)
+                if doc:
+                    user = CustomUser.objects.get(username=usr)
+                    print(user.password_request)
+                    user.password_request = True
+                    user.save()
+                    print(user.password_request)
+                    messages.success(request, "Password reset request sent.")
+                    return redirect('doctor_forgot_password')
+            except Exception as e:
+                messages.error(request, f"User not found {e}")
+                return redirect('doctor_forgot_password')
         else:
             messages.error(request, "User not found.")
             return redirect('doctor_forgot_password')

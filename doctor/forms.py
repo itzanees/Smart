@@ -23,7 +23,6 @@ class DoctorLoginForm(forms.Form):
         label=''
     )
 
-
     def clean(self):
         cleaned_data = super().clean()
         username = cleaned_data.get("username")
@@ -44,15 +43,6 @@ class DoctorPasswordResetRequestForm(forms.Form):
          label=''
     )
 
-    def clean(self):
-     cleaned_data = super().clean()
-     username = cleaned_data.get("username")
-     user = CustomUser.objects.get(username=username)
-     try:
-         doctor = Doctor.objects.get(user=user)
-         return cleaned_data
-     except Exception as e:
-         raise forms.ValidationError("Invalid username.")
 
 class MedicalRecordForm(forms.ModelForm):
     next_appointment = forms.DateTimeField(

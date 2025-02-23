@@ -29,7 +29,9 @@ class CustomUser(AbstractUser):
     pincode = models.CharField(max_length=6)
     country = models.CharField(max_length=32, default='', null=True, blank=True)
     is_active = models.BooleanField(default=False)
+    password_request = models.BooleanField(default=False, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
          return self.username
@@ -68,7 +70,7 @@ class Patient(models.Model):
     def save(self, *args, **kwargs):
         if not self.pat_mrd_no:
             last_profile = Patient.objects.last()
-            last_id = int(last_profile.pat_mrd_no.split('-')[1]) if last_profile else 12500001
+            last_id = int(last_profile.pat_mrd_no.split('-')[1]) if last_profile else 12500000
             self.pat_mrd_no = f"SPT-{last_id + 1}"
 
         super().save(*args, **kwargs)
@@ -84,12 +86,11 @@ class Doctor(models.Model):
     license_number  = models.CharField(max_length=32, unique=True, null=True, blank=True)
     consult_fees = models.DecimalField(max_digits=6, decimal_places=2, default=100, null=True, blank=True)
     profile_updated = models.BooleanField(default=False)
-    password_request = models.BooleanField(default=False, blank=True, null=True)
-    # is_active 
+
     def save(self, *args, **kwargs):
         if not self.employ_code:
             last_profile = Doctor.objects.last()
-            last_id = int(last_profile.employ_code.split('-')[1]) if last_profile else 250001
+            last_id = int(last_profile.employ_code.split('-')[1]) if last_profile else 250000
             self.employ_code = f"SDC-{last_id + 1}"
         super().save(*args, **kwargs)
 

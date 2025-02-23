@@ -30,6 +30,13 @@ Patients
 			</div>
 			<!-- /Page Header -->
 
+			{% for message in messages %}
+			<div class="alert alert-success">
+				<a class="close" href="#" data-dismiss="alert">×</a>
+				{{ message }}
+			</div>
+			{% endfor %}
+
 			<div class="container container-fluid">
 				{% if modal %}
 				<div class="row">

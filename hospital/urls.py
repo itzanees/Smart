@@ -29,7 +29,7 @@ urlpatterns = [
     path('doctor/', include('doctor.urls')),
     path('staff/', include('staff.urls')),
     path('intranet', intranet, name ='intranet'),
-    path('logout', Logout, name='logout')
+    path('logout', Logout, name='logout')   
 ]
 
 if settings.DEBUG:
