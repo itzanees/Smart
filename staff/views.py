@@ -31,9 +31,12 @@ def staffLogin(request):
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user = authenticate(request, username= username, password=password)
-            if user is not None and user.user_type == 'Staff' or user.is_superuser:
+            if user is not None and user.is_active and user.user_type == 'Staff' or user.is_superuser:
                 login(request, user)
                 return redirect('staff_dashboard')
+            elif not user.is_active:
+                messages.error(request, "Please activate account")
+                return redirect('staff_login')
             else:
                 messages.error(request, "Access Denied!!")
                 return redirect('staff_login')
