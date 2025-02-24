@@ -5,3 +5,4 @@ old/
 New Folder/
 hospital/settings.py
 */migrations/
+media/*
