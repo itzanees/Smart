@@ -36,9 +36,16 @@ class CustomLoginForm(forms.Form):
 
 
 class InPatientRegistrationForm(UserCreationForm):
+    user_type = forms.CharField(
+         widget=forms.HiddenInput(
+         attrs = {
+              'value' : 'Patient',
+         }
+        ),
+    )
     class Meta(UserCreationForm.Meta):
             model = CustomUser
-            fields = UserCreationForm.Meta.fields + ('first_name', 'last_name', 'gender', 'email', 'phone_number')
+            fields = UserCreationForm.Meta.fields + ('first_name', 'last_name', 'gender', 'email', 'phone_number', 'user_type')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

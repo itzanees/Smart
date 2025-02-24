@@ -173,7 +173,7 @@ class Appointment(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE) 
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     appointment_on = models.OneToOneField(Schedule, on_delete=models.SET_NULL, null=True, blank=True, related_name='schedule')
-    appointment_fees = models.DecimalField(max_digits=6,decimal_places=2, default='100')
+    # appointment_fees = models.DecimalField(max_digits=10,decimal_places=2, default='100')
     status = models.CharField(max_length=2, choices=STATUS, default='SH')
     follow_up = models.DateTimeField(null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)

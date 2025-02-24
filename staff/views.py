@@ -160,6 +160,7 @@ def staff_appointment_list(request):
                 user.user_type == 'Patient'
                 user.save()
                 newpat = Patient.objects.create(user = user)
+                print(newpat.pat_mrd_no)
     
                 current_site = get_current_site(request)
                 subject = 'Activate Your Account'
@@ -173,7 +174,6 @@ def staff_appointment_list(request):
 
                 messages.success(request, f"User {user.username} Created")
                 return redirect('staff_appointment_list')
-
         else:
             date = timezone.now().date()
             start_time = timezone.now().time()
@@ -194,6 +194,7 @@ def staff_appointment_list(request):
                 doctor=doctor,
                 appointment_on=schedule
             )
+            print(f"{schedule}--{appointment}")
 
             appointment.save()
             messages.success(request, f"Created appointment for {patient.user.first_name}.")

@@ -56,9 +56,9 @@ Doctor Home
 																					src="{{ appointment.patient.user.profile_pic.url }}"
 																					{% else %}
 																					{% if appointment.patient.user.gender == 'M' %}
-																					<img src="{% static 'images/profiles/male.jpg' %}" alt="User Image">
+																					src="{% static 'images/profiles/male.jpg' %}"
 																					{% else %}
-																					<img src="{% static 'images/profiles/female.jpg' %}" alt="User Image">
+																					src="{% static 'images/profiles/female.jpg' %}"
 																					{% endif %}
 																					{% endif %}
 																					alt="User Image">
@@ -100,7 +100,32 @@ Doctor Home
 																	</tr>
 																	{% endfor %}
 																</tbody>
-															</table>		
+															</table>
+															<nav class="mx-2 pt-2">
+																<ul class="pagination">
+																	{% if appointments_prev.has_previous %}
+																		<li class="page-item">
+																			<a class="page-link" href="?page=1">First</a>
+																		</li>
+																		<li class="page-item">
+																			<a class="page-link" href="?page={{ appointments_prev.previous_page_number }}">Previous</a>
+																		</li>
+																	{% endif %}
+															
+																	<li class="page-item active">
+																		<span class="page-link">Page {{ appointments_prev.number }} of {{ appointments_prev.paginator.num_pages }}</span>
+																	</li>
+															
+																	{% if appointments_prev.has_next %}
+																		<li class="page-item">
+																			<a class="page-link" href="?page={{ appointments_prev.next_page_number }}">Next</a>
+																		</li>
+																		<li class="page-item">
+																			<a class="page-link" href="?page={{ appointments_prev.paginator.num_pages }}">Last</a>
+																		</li>
+																	{% endif %}
+																</ul>
+															</nav>
 														</div>
 													</div>
 												</div>
@@ -187,7 +212,32 @@ Doctor Home
 																	</tr>
 																	{% endfor %}
 																</tbody>
-															</table>		
+															</table>
+															<nav class="mx-2 pt-2">
+																<ul class="pagination">
+																	{% if appointments_today.has_previous %}
+																		<li class="page-item">
+																			<a class="page-link" href="?page=1">First</a>
+																		</li>
+																		<li class="page-item">
+																			<a class="page-link" href="?page={{ appointments_today.previous_page_number }}">Previous</a>
+																		</li>
+																	{% endif %}
+															
+																	<li class="page-item active">
+																		<span class="page-link">Page {{ appointments_today.number }} of {{ appointments_today.paginator.num_pages }}</span>
+																	</li>
+															
+																	{% if appointments_today.has_next %}
+																		<li class="page-item">
+																			<a class="page-link" href="?page={{ appointments_today.next_page_number }}">Next</a>
+																		</li>
+																		<li class="page-item">
+																			<a class="page-link" href="?page={{ appointments_today.paginator.num_pages }}">Last</a>
+																		</li>
+																	{% endif %}
+																</ul>
+															</nav>
 														</div>
 													</div>
 												</div>
@@ -270,7 +320,32 @@ Doctor Home
 																	</tr>
 																	{% endfor %}
 																</tbody>
-															</table>		
+															</table>
+															<nav class="mx-2 pt-2">
+																<ul class="pagination">
+																	{% if appointments.has_previous %}
+																		<li class="page-item">
+																			<a class="page-link" href="?page=1">First</a>
+																		</li>
+																		<li class="page-item">
+																			<a class="page-link" href="?page={{ appointments.previous_page_number }}">Previous</a>
+																		</li>
+																	{% endif %}
+															
+																	<li class="page-item active">
+																		<span class="page-link">Page {{ appointments.number }} of {{ appointments.paginator.num_pages }}</span>
+																	</li>
+															
+																	{% if appointments.has_next %}
+																		<li class="page-item">
+																			<a class="page-link" href="?page={{ appointments.next_page_number }}">Next</a>
+																		</li>
+																		<li class="page-item">
+																			<a class="page-link" href="?page={{ appointments.paginator.num_pages }}">Last</a>
+																		</li>
+																	{% endif %}
+																</ul>
+															</nav>
 														</div>	
 													</div>	
 												</div>	
@@ -350,7 +425,7 @@ Doctor Home
 					</li>
 					<li>
 						<span class="title">Amount</span>
-						<span class="text">₹ {{ appointment.appointment_fees }}</span>
+						<span class="text">₹ {{ appointment.doctor.consult_fees }}</span>
 					</li>
 				</ul>
 			</div>
@@ -416,7 +491,7 @@ Doctor Home
 					</li>
 					<li>
 						<span class="title">Amount</span>
-						<span class="text">₹ {{ appointment.appointment_fees }}</span>
+						<span class="text">₹ {{ appointment.doctor.consult_fees }}</span>
 					</li>
 				</ul>
 			</div>
@@ -485,7 +560,7 @@ Doctor Home
 					</li>
 					<li>
 						<span class="title">Amount</span>
-						<span class="text">₹ {{ appointment.appointment_fees }}</span>
+						<span class="text">₹ {{ appointment.doctor.consult_fees }}</span>
 					</li>
 				</ul>
 			</div>

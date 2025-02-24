@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, update_session_auth_hash, get_user_model
 from django.contrib.auth.decorators import login_required
 from administration.models import Doctor, Patient, Schedule, Appointment, MedicalRecord, CustomUser
-from . forms import DoctorLoginForm, MedicalRecordForm, DoctorPasswordResetRequestForm
+from . forms import DoctorLoginForm, MedicalRecordForm
 from administration.forms import CustomPasswordChangeForm, ProfileUpdateForm
 from django.utils import timezone
 from django.contrib import messages
@@ -49,30 +49,6 @@ def doctor_change_password(request):
         elif request.user.user_type == 'Doctor':
             return redirect('doctor_dashboard')
 
-def doctor_forgot_password(request):
-    form = DoctorPasswordResetRequestForm()
-    if request.method =='POST':
-        form = DoctorPasswordResetRequestForm(request.POST)
-        if form.is_valid():
-            usr = request.POST.get('username')
-            try:
-                doc = Doctor.objects.get(user__username=usr)
-                if doc:
-                    user = CustomUser.objects.get(username=usr)
-                    print(user.password_request)
-                    user.password_request = True
-                    user.save()
-                    print(user.password_request)
-                    messages.success(request, "Password reset request sent.")
-                    return redirect('doctor_forgot_password')
-            except Exception as e:
-                messages.error(request, f"User not found {e}")
-                return redirect('doctor_forgot_password')
-        else:
-            messages.error(request, "User not found.")
-            return redirect('doctor_forgot_password')
-    return render(request, 'doctor/doctor-change-password.html', {'form':form})
-
 @login_required(login_url='doctor_login')
 def doctor_dashboard(request):
     if request.user.is_superuser:
@@ -82,10 +58,27 @@ def doctor_dashboard(request):
     doctor = Doctor.objects.get(user=user)
     today = timezone.now()
     appointments_prev = Appointment.objects.filter(doctor=doctor, appointment_on__date__lt=today)
+    appointments_prev_paginator = Paginator(appointments_prev, 5)
+    appointments_prev_page_num = request.GET.get('page')
+    appointments_prev_page_obj = appointments_prev_paginator.get_page(appointments_prev_page_num)
     appointments = Appointment.objects.filter(doctor=doctor, appointment_on__date__gt=today)
+    appointments_paginator = Paginator(appointments, 5)
+    appointments_page_num = request.GET.get('page')
+    appointments_page_obj = appointments_paginator.get_page(appointments_page_num)
     appointments_today = Appointment.objects.filter(doctor=doctor, appointment_on__date=today)
+    appointments_today_paginator = Paginator(appointments_today, 5)
+    appointments_today_page_num = request.GET.get('page')
+    appointments_today_page_obj = appointments_today_paginator.get_page(appointments_today_page_num)
+
+    context={
+        'doctor': doctor,
+        'appointments':appointments_page_obj,
+        'appointments_today':appointments_today_page_obj,
+        'appointments_prev':appointments_prev_page_obj
+         }
+
     if doctor.profile_updated:
-        return render(request, 'doctor/doctor-dashboard.html', {'doctor': doctor, 'appointments':appointments, 'appointments_today':appointments_today, 'appointments_prev':appointments_prev})
+        return render(request, 'doctor/doctor-dashboard.html', context)
     else:
         messages.warning(request,"Please Update your profile!!")
         return redirect('doctor_profile')

@@ -2,13 +2,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required, permission_required
 from administration.models import CustomUser, Patient, Department, Doctor, Schedule, Appointment, MedicalRecord
-from administration.forms import PatientRegistrationForm
+from administration.forms import PatientRegistrationForm, PasswordResetRequestForm
 from .forms import PatientLoginForm, UserProfileUpdateForm, DocSearchForm
 from django.contrib import messages
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.db.models import Q
 from django.core.paginator import Paginator
+
+import random,string
 
 # FOR PASSWORD CHANGE
 from django.contrib.auth.views import PasswordChangeView
@@ -66,8 +68,39 @@ def patient_login(request):
         form = PatientLoginForm()
     return render(request, 'patient/login.html', {'form':form})
 
-def pat_forgot_password(request):
-    return render(request, 'patient/forgot-password.html')
+def forgot_password(request):
+    form = PasswordResetRequestForm()
+    if request.method =='POST':
+        form = PasswordResetRequestForm(request.POST)
+        if form.is_valid():
+            usr = request.POST.get('username')
+            try:
+                pat = Patient.objects.get(user__username=usr)
+                user = CustomUser.objects.get(username=usr)
+                if pat:
+                    words = string.ascii_letters
+                    password = []
+                    for i in range(10):
+                        ran_char = random.choice(words)
+                        password.append(ran_char)
+                    newpassword = ("".join(password))
+                    user.set_password(newpassword)
+                    user.save()
+                    subject = 'Your Temporary Password'
+                    message = render_to_string('administration/temp_password.html', {
+                        'user': user,
+                        'newpassword':newpassword,
+                        })
+                    send_mail(subject, message, 'itzanees@gmail.com', [user.email])
+                    messages.success(request, f"{user.username}'s new password sent to your mail")
+                    return redirect('pat_forgot_password')
+            except Exception as e:
+                messages.error(request, f"User not found {e}")
+                return redirect('pat_forgot_password')
+        else:
+            messages.error(request, "User not found.")
+            return redirect('forgot_password')
+    return render(request, 'forgot-password.html', {'form':form})
 
 @login_required(login_url='patient_login')
 def pat_change_password(request):
@@ -296,7 +329,6 @@ def pat_book_slot(request, slot_id):
                 patient =Patient.objects.get(user = request.user),
                 doctor = slot.doctor,
                 appointment_on = slot,
-                appointment_fees = doctor.consult_fees
             )
             return redirect('pat_book_success')
     return render(request, 'patient/book-slot.html', {'slot': slot})

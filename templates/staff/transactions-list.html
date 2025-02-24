@@ -73,7 +73,7 @@ Transactions
 											<td>{{ appointment.doctor.user.first_name }} {{ appointment.doctor.user.last_name }}</td>
 											<td>{{ appointment.appointment_on.date }}</td>
 											<td>{{ appointment.appointment_on.date }}</td>
-											<td> {{ appointment.appointment_fees }}</td>
+											<td> {{ appointment.doctor.consult_fees }}</td>
 											<td class="text-center">
 												{% if appointment.status == 'CO' %}
 												<span class="badge badge-pill bg-success inv-badge">Completed</span>

@@ -200,7 +200,20 @@ class ProfileUpdateForm(forms.ModelForm):
             if commit:
                 doctor_profile.save()
         return user
-    
+
+
+class PasswordResetRequestForm(forms.Form):
+    username = forms.CharField(
+         widget=forms.TextInput(
+              attrs= {
+                   'class' : 'form-control',
+                   'placeholder' : 'Username',
+              }
+         ),
+         label=''
+    )
+
+
 class SheduleCreatorForm(forms.ModelForm):
     class Meta:
         model = Schedule

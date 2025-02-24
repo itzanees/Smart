@@ -221,8 +221,7 @@
 										<form method="post">
 											{% csrf_token %}
 											<div class="form-group">
-												<label>New Password</label>
-												<input type="password" class="form-control" value="{{ newpassword }}">
+												<label>Send Random Password</label>
 											</div>
 											<input type="hidden" name="set_password">
 											<button class="btn btn-primary" type="submit">Set Password</button>

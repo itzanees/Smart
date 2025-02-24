@@ -32,17 +32,6 @@ class DoctorLoginForm(forms.Form):
             raise forms.ValidationError("Invalid username or password")
         return cleaned_data
 
-class DoctorPasswordResetRequestForm(forms.Form):
-    username = forms.CharField(
-         widget=forms.TextInput(
-              attrs= {
-                   'class' : 'form-control',
-                   'placeholder' : 'Username',
-              }
-         ),
-         label=''
-    )
-
 
 class MedicalRecordForm(forms.ModelForm):
     next_appointment = forms.DateTimeField(

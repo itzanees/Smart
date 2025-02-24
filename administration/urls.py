@@ -18,7 +18,6 @@ urlpatterns = [
     path('patients/', views.patients, name='patients_list'),
     path('transaction/', views.transaction, name='transaction'),
     path('login/', views.adminLogin, name='admin_login'),
-    path('forgot_password/', views.adminForgotPassword, name='admin_forgot_password'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
     path('activation_sent/', lambda request: render(request, 'administration/activation_sent.html'), name='activation_sent'),
     path('activation_invalid/', lambda request: render(request, 'administration/activation_invalid.html'), name='activation_invalid'),

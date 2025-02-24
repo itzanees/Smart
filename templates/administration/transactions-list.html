@@ -71,7 +71,7 @@ Transactions
 											</td>
 											<td>Dr. {{ tr.doctor.user.first_name }} {{ tr.doctor.user.last_name }}</td>
 											<td>{{ tr.appointment_on.date }}</td>
-											<td> {{ tr.appointment_fees }}</td>
+											<td> {{ tr.doctor.consult_fees }}</td>
 											<td>
 												{% if tr.status == 'CO' %}
 												<span class="badge badge-pill bg-success inv-badge">Completed</span>

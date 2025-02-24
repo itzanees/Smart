@@ -12,7 +12,6 @@ urlpatterns = [
     path('schedule/', views.schedules, name='doctor_schedule'),
     path('login/', views.doctor_login, name='doctor_login'),
     path('change_password/', views.doctor_change_password, name="doctor_change_password"),
-    path('forgot_password/', views.doctor_forgot_password, name='doctor_forgot_password'),
     path('profile/', views.doctor_profile, name='doctor_profile'),
 
 ]

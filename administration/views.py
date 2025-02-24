@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.decorators import login_required
-from . forms import DepartmentCreationForm, UserRegistrationForm, PatientProfileForm, ProfileUpdateForm
+from . forms import DepartmentCreationForm, UserRegistrationForm, PatientProfileForm, ProfileUpdateForm, PasswordResetRequestForm
 from . models import CustomUser, Department, Staff, Doctor, Patient, Schedule, Appointment
 from django.contrib import messages
 from django.core.paginator import Paginator
@@ -66,7 +66,7 @@ def admin_home(request):
         num_doc = Doctor.objects.all().count()
         num_pat = Patient.objects.all().count()
         num_app = Appointment.objects.all().count()
-        revenue = Appointment.objects.aggregate(fees=Sum('appointment_fees'))
+        revenue = Appointment.objects.aggregate(fees=Sum('doctor__consult_fees'))
 
         context = {
             'doctors' : doctor_page_obj,
@@ -95,12 +95,13 @@ def admin_profile(request):
         today = datetime.today()
         today = str(today)
         form = ProfileUpdateForm(instance=request.user, user=request.user)
+        notifications = CustomUser.objects.filter(password_request=True)
         if request.method == "POST":
             form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user, user=request.user)
             if form.is_valid():
                 form.save()
                 return redirect('admin_profile')
-        return render(request, 'administration/profile.html', {'today':today, 'profileform':form})
+        return render(request, 'administration/profile.html', {'today':today, 'profileform':form,'notifications':notifications,})
     else:
         if request.user.user_type == 'Patient':
             return redirect('patient_dashboard')
@@ -121,7 +122,8 @@ def all_appointment_list(request):
         all_paginator = Paginator(all_appointments, 4)
         all_page_number = request.GET.get('page')
         all_page_obj = all_paginator.get_page(all_page_number)
-        return render(request, 'administration/appointment-list.html', {'all_page_obj':all_page_obj})
+        notifications = CustomUser.objects.filter(password_request=True)
+        return render(request, 'administration/appointment-list.html', {'all_page_obj':all_page_obj,'notifications':notifications,})
     else:
         if request.user.user_type == 'Patient':
             return redirect('patient_dashboard')
@@ -139,7 +141,8 @@ def appointmentList(request):
         latest_paginator = Paginator(latest_appointments, 4)
         latest_page_number = request.GET.get('page')
         latest_page_obj = latest_paginator.get_page(latest_page_number)
-        return render(request, 'administration/appointment-list.html', {'latest_page_obj':latest_page_obj})
+        notifications = CustomUser.objects.filter(password_request=True)
+        return render(request, 'administration/appointment-list.html', {'latest_page_obj':latest_page_obj,'notifications':notifications,})
     else:
         if request.user.user_type == 'Patient':
             return redirect('patient_dashboard')
@@ -157,6 +160,7 @@ def specialities(request):
         specialities_paginator =Paginator(specialities, 8)
         spe_page_num = request.GET.get('page')
         spe_page_obj = specialities_paginator.get_page(spe_page_num)
+        notifications = CustomUser.objects.filter(password_request=True)
         form = DepartmentCreationForm()
         if request.method == 'POST':
             if 'delete_department' in request.POST:
@@ -189,7 +193,7 @@ def specialities(request):
                     return redirect('specialities')
 
         form = DepartmentCreationForm()
-        return render(request, 'administration/departments.html', {'form':form, 'specialities': spe_page_obj})
+        return render(request, 'administration/departments.html', {'form':form, 'specialities': spe_page_obj,'notifications':notifications,})
     else:
         if request.user.user_type == 'Patient':
             return redirect('patient_dashboard')
@@ -208,9 +212,11 @@ def users(request):
         user_page_num = request.GET.get('page')
         user_page_obj = user_paginator.get_page(user_page_num)
         form = UserRegistrationForm()
+        notifications = CustomUser.objects.filter(password_request=True)
         context = {
             'users': user_page_obj,
             'form': form,
+            'notifications':notifications,
         }
         if request.method == 'POST':
             form = UserRegistrationForm(request.POST)
@@ -283,6 +289,28 @@ def activate(request, uidb64, token):
     else:
         return render(request, 'administration/activation_invalid.html')
 
+def forgot_password(request):
+    form = PasswordResetRequestForm()
+    if request.method =='POST':
+        form = PasswordResetRequestForm(request.POST)
+        if form.is_valid():
+            usr = request.POST.get('username')
+            try:
+                user = CustomUser.objects.get(username=usr)
+                if user:
+                    print(user.password_request)
+                    user.password_request = True
+                    user.save()
+                    print(user.password_request)
+                    messages.success(request, "Password reset request sent.")
+                    return redirect('forgot_password')
+            except Exception as e:
+                messages.error(request, f"User not found {e}")
+                return redirect('forgot_password')
+        else:
+            messages.error(request, "User not found.")
+            return redirect('forgot_password')
+    return render(request, 'forgot-password.html', {'form':form})
 
 @login_required(login_url='admin_login')
 @never_cache
@@ -290,30 +318,34 @@ def users_profile(request, pk):
     user = request.user
     if user is not None and user.is_superuser:
         user = get_object_or_404(get_user_model(), id=pk)
-        words = string.ascii_letters
-        password = []
-        for i in range(10):
-            ran_char = random.choice(words)
-            password.append(ran_char)
-        newpassword = ("".join(password))
-        print(newpassword, user.email)
-        user.set_password(newpassword)
-        subject = 'Your Temporary Password'
-        message = render_to_string('administration/temp_password.html', {
-            'user': user,
-            'newpassword':newpassword,
-        })
-        send_mail(subject, message, 'itzanees@gmail.com', [user.email])
-
         if request.method == 'POST':
-            form = ProfileUpdateForm(request.POST, request.FILES, instance=user, user=user)
-            if form.is_valid():
-                form.save()
-                messages.success(request, f"{user.username}'s profile updated")
+            if 'set_password' in request.POST:
+                words = string.ascii_letters
+                password = []
+                for i in range(10):
+                    ran_char = random.choice(words)
+                    password.append(ran_char)
+                newpassword = ("".join(password))
+                user.set_password(newpassword)
+                user.password_request = False
+                user.save()
+                subject = 'Your Temporary Password'
+                message = render_to_string('administration/temp_password.html', {
+                    'user': user,
+                    'newpassword':newpassword,
+                    })
+                send_mail(subject, message, 'itzanees@gmail.com', [user.email])
+                messages.success(request, f"{user.username}'s new password sent to {user.email}")
                 return redirect('users_profile', pk) 
             else:
-                messages.error(request,"Profile is not uptaded!!!")
-                return redirect('users_profile', pk)
+                form = ProfileUpdateForm(request.POST, request.FILES, instance=user, user=user)
+                if form.is_valid():
+                    form.save()
+                    messages.success(request, f"{user.username}'s profile updated")
+                    return redirect('users_profile', pk) 
+                else:
+                    messages.error(request,"Profile is not uptaded!!!")
+                    return redirect('users_profile', pk)
         profileform = ProfileUpdateForm(user=user, instance=user)
         return render (request, 'administration/profile.html', {'user':user, 'profileform':profileform})
     else:

@@ -80,15 +80,17 @@ Doctors
 											<td>
 												<h2 class="table-avatar">
 													<a href="{% url 'users_profile' doctor.id %}" class="avatar avatar-sm mr-2">
+														<img class="avatar-img rounded-circle" 
 														{% if doctor.profile_pic %}
-														<img class="avatar-img rounded-circle" src="{{ doctor.profile_pic.url }}" alt="User Image">
+														src="{{ doctor.profile_pic.url }}" 
 														{% else %}
 														{% if doctor.gender == 'M' %}
-														<img class="avatar-img rounded-circle" src="{% static 'images/doctors/doc.png' %}" alt="User Image">
+														src="{% static 'images/doctors/doc.png' %}"
 														{% else %}
-														<imgclass="avatar-img rounded-circle"  src="{% static 'images/doctors/fdoc.png' %}" alt="User Image">
+														src="{% static 'images/doctors/fdoc.png' %}"
 														{% endif %}
 														{% endif %}
+														alt="User Image">
 													</a>
 													<a href="{% url 'users_profile' doctor.id %}">Dr. {{ doctor.first_name }}</a>
 												</h2>

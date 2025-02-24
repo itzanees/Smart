@@ -79,13 +79,14 @@
     <ul class="nav user-menu">
         <li class="nav-item dropdown noti-dropdown">
             <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-                <i class="fe fe-bell"></i> <span class="badge badge-pill">
-                    {% if notifications %}
+                <i class="fe fe-bell"></i> 
+                {% if notifications %}
+                <span class="badge badge-pill">
                     {{ notifications.count }}
-                    {% endif %}
                 </span>
+                {% endif %}
             </a>
-            <div class="dropdown-menu notifications">
+            <div class="dropdown-menu notifications" {% if not notifications %} style="height:100px"{% endif %}>
                 <div class="topnav-dropdown-header">
                     <span class="notification-title">Notifications</span>
                 </div>
@@ -93,11 +94,21 @@
                     <ul class="notification-list">
                         {% for noti in notifications %}
                         <li class="notification-message">
-                            <a href="{% url '' %}">
+                            <a href="{% url 'users_profile' noti.id %}">
                                 <div class="media">
                                     <div class="media-body">
                                         <p class="noti-details"><span class="noti-title">{{ noti.first_name }} {{ noti.last_name }}</span> requested <span class="noti-title">password reset</span></p>
                                         <p class="noti-time"><span class="notification-time">{{ noti.updated_at }}</span></p>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        {% empty %}
+                        <li class="notification-message">
+                            <a>
+                                <div class="media">
+                                    <div class="media-body">
+                                        <p class="noti-details"><span class="noti-title"></span> No Notifications</p>
                                     </div>
                                 </div>
                             </a>
