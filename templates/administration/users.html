@@ -72,11 +72,10 @@ Users
 									</thead>
 									<tbody>
 										{% for user in users %} 
+										{% if not user.is_superuser %}
 										<tr>
 											<td>
-												{% if user.is_superuser %}
-													Administrator
-												{% elif user.user_type == 'Patient' %}
+												{% if user.user_type == 'Patient' %}
 													{{ user.patient.pat_mrd_no }}
 												{% elif user.user_type == 'Staff' %} 
 													{{ user.staff.employee_code }}
@@ -131,6 +130,7 @@ Users
 												</div>
 											</td>
 										</tr>
+										{% endif %}
 
 										<!-- Delete Modal -->
 										<div class="modal fade" id="delete_{{ user.id }}" aria-hidden="true" role="dialog">

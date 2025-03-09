@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block title %}
+Not Authorized
+{% endblock %}
+{% block content %}
+
+<!-- Main Wrapper -->
+<div class="main-wrapper login-body">
+	<div class="login-wrapper">
+		<div class="container">
+			<div class="loginbox">
+				<div class="login-left">
+					<h1>Unauthorized</h1>
+					<img class="img-fluid" src="{% static 'images/logo-white.png' %}" alt="Logo">
+					<p class="account-subtitle">Unauthorized Access</p>
+				</div>
+				<div class="login-right">
+					<div class="login-right-wrap">
+						<h1 class="text-white pb-3">You are logged in as <strong class="strong text-warning">{{ request.user.username }}</strong>, Please logout to request a password change</h1>
+						<div class="text-center forgotpass">
+							<a href="javascript:history.back()" class="btn btn-lg bg-secondary text-white text-decoration-none">Go Back</a>
+						</div>
+			
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /Main Wrapper -->
+
+{% endblock %}

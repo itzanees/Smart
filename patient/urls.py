@@ -7,7 +7,7 @@ urlpatterns = [
     path('', views.patient_dashboard, name='patient_dashboard'),
     path('login/', views.patient_login, name='patient_login'),
     path('registration/', views.patient_registration, name='patient_registration'),
-    path('forgot_password/', views.forgot_password, name='pat_forgot_password'),
+    # path('forgot_password/', views.forgot_password, name='pat_forgot_password'),
     path('change_password/', views.pat_change_password, name='pat_change_password'),
     path("password_change_done/", PasswordChangeDoneView.as_view(template_name="password_change_done.html"), name="password_change_done"),
     path('profile/', views.patient_profile, name='patient_profile'),

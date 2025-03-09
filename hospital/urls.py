@@ -19,7 +19,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from administration.views import intranet
-from administration.views import forgot_password,Logout
+from administration.views import forgot_password,Logout,unauthorized
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,7 +30,8 @@ urlpatterns = [
     path('staff/', include('staff.urls')),
     path('intranet', intranet, name ='intranet'),
     path('forgot_password/', forgot_password, name='forgot_password'),
-    path('logout', Logout, name='logout')   
+    path('logout', Logout, name='logout'),
+    path('unauthorized', unauthorized, name='unauthorized'),
 ]
 
 if settings.DEBUG:

@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserCreationForm
 from administration.models import CustomUser
+from datetime import date
 
 class CustomLoginForm(forms.Form):
     username = forms.CharField(
@@ -45,7 +46,7 @@ class InPatientRegistrationForm(UserCreationForm):
     )
     class Meta(UserCreationForm.Meta):
             model = CustomUser
-            fields = UserCreationForm.Meta.fields + ('first_name', 'last_name', 'gender', 'email', 'phone_number', 'user_type')
+            fields = UserCreationForm.Meta.fields + ('first_name', 'last_name', 'gender', 'date_of_birth', 'email', 'phone_number', 'user_type')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -56,3 +57,12 @@ class InPatientRegistrationForm(UserCreationForm):
             field.widget.attrs['class'] = 'form-control'
             field.widget.attrs['placeholder'] = field.label
             field.help_text = None
+            if field_name == 'date_of_birth':
+               field.widget = forms.DateInput(attrs={
+               'type': 'text',
+               'class': 'form-control',
+               'placeholder': 'Date of Birth',
+               'max' : str(date.today()),
+               'onclick':"(this.type='date')",
+               'onblur':"(this.type='text')",
+               })

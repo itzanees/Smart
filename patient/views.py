@@ -117,29 +117,34 @@ def pat_change_password(request):
 
 @login_required(login_url='patient_login')
 def patient_dashboard(request):
-    if request.user.user_type != 'Patient':
+    if request.user.user_type == 'Patient':
         patient = Patient.objects.get(user=request.user)
         if patient.profile_updated:
-            return render(request, 'patient/patient-dashboard.html')
+            # return render(request, 'patient/patient-dashboard.html')
+            user = CustomUser.objects.get(id=request.user.id)
+            patient = Patient.objects.get(user=request.user)
+            appointments = Appointment.objects.filter(patient=patient).order_by('-appointment_on__date')
+            appointments_paginator = Paginator(appointments, 5)
+            appointments_page_num = request.GET.get('page')
+            appointments_page_obj = appointments_paginator.get_page(appointments_page_num)
+            mrecords = MedicalRecord.objects.filter(appointment__patient=patient)
+            mrecords_paginator = Paginator(mrecords, 5)
+            mrecords_page_num = request.GET.get('page')
+            mrecords_page_obj = mrecords_paginator.get_page(mrecords_page_num)
+            context = {
+                'user':user,
+                'appointments':appointments_page_obj,
+                'mrecords':mrecords_page_obj,
+                }
+            return render(request, 'patient/patient-dashboard.html', context)
         else:
             return redirect('patient_profile')
+    elif request.user.user_type == 'Staff':
+        return redirect('staff_dashboard')
+    elif request.user.user_type == 'Doctor':
+        return redirect('doctor_dashboard')
     else:
-        user = CustomUser.objects.get(id=request.user.id)
-        patient = Patient.objects.get(user=request.user)
-        appointments = Appointment.objects.filter(patient=patient).order_by('-appointment_on__date')
-        appointments_paginator = Paginator(appointments, 5)
-        appointments_page_num = request.GET.get('page')
-        appointments_page_obj = appointments_paginator.get_page(appointments_page_num)
-        mrecords = MedicalRecord.objects.filter(appointment__patient=patient)
-        mrecords_paginator = Paginator(mrecords, 5)
-        mrecords_page_num = request.GET.get('page')
-        mrecords_page_obj = mrecords_paginator.get_page(mrecords_page_num)
-        context = {
-            'user':user,
-            'appointments':appointments_page_obj,
-            'mrecords':mrecords_page_obj,
-            }
-        return render(request, 'patient/patient-dashboard.html', context)
+        return render(request, 'patient/patient-dashboard.html')
 
 @login_required(login_url='patient_login')
 def patient_profile(request):
@@ -172,62 +177,85 @@ def patient_profile(request):
 
 @login_required(login_url='patient_login')
 def appointment_doc(request, pk):
-    doctor = Doctor.objects.get(id = pk)
-    today = timezone.now()
-    # bookable_day = today+timedelta(days=3)
-    bookable_day = today
-    schedules = Schedule.objects.filter(doctor_id = pk, is_booked = False, date__gte = bookable_day).order_by('date')
-    av_sched_paginator = Paginator(schedules, 8)
-    av_sched_page_num = request.GET.get('page')
-    av_sched_page_obj = av_sched_paginator.get_page(av_sched_page_num)
-    context = {
-        'schedules':av_sched_page_obj,
-        'doctor':doctor,
-    }
-    return render(request, 'patient/booking.html', context)
+    patient = Patient.objects.get(user=request.user)
+    if patient.profile_updated:
+        doctor = Doctor.objects.get(id = pk)
+        today = timezone.now()
+        bookable_day = today+timedelta(days=3)
+        bookable_day = today
+        schedules = Schedule.objects.filter(doctor_id = pk, is_booked = False, date__gte = bookable_day).order_by('date')
+        av_sched_paginator = Paginator(schedules, 8)
+        av_sched_page_num = request.GET.get('page')
+        av_sched_page_obj = av_sched_paginator.get_page(av_sched_page_num)
+        context = {
+            'schedules':av_sched_page_obj,
+            'doctor':doctor,
+        }
+        return render(request, 'patient/booking.html', context)
+    else:
+        return redirect('patient_profile')
+
 
 @login_required(login_url='patient_login')
 def hosp_specialities(request):
-    specialities = Department.objects.all()
-    sp_paginator = Paginator(specialities, 8)
-    sp_page_num = request.GET.get('page')
-    sp_page_obj = sp_paginator.get_page(sp_page_num)
-    return render(request, 'patient/specialities.html',{'specialities':sp_page_obj})
+    patient = Patient.objects.get(user=request.user)
+    if patient.profile_updated:
+        specialities = Department.objects.all()
+        sp_paginator = Paginator(specialities, 8)
+        sp_page_num = request.GET.get('page')
+        sp_page_obj = sp_paginator.get_page(sp_page_num)
+        return render(request, 'patient/specialities.html',{'specialities':sp_page_obj})
+    else:
+        return redirect('patient_profile')
 
 @login_required(login_url='patient_login')
 def doc_hosp_specialities(request, pk):
-    department = Department.objects.get(id = pk)
-    doctors = Doctor.objects.filter(department = department)
-    doc_paginator = Paginator(doctors, 8)
-    doc_page_num = request.GET.get('page')
-    doc_page_obj = doc_paginator.get_page(doc_page_num)
-    return render (request, 'patient/specialities.html',{'doctors':doc_page_obj})
+    patient = Patient.objects.get(user=request.user)
+    if patient.profile_updated:
+        department = Department.objects.get(id = pk)
+        doctors = Doctor.objects.filter(department = department)
+        doc_paginator = Paginator(doctors, 8)
+        doc_page_num = request.GET.get('page')
+        doc_page_obj = doc_paginator.get_page(doc_page_num)
+        return render (request, 'patient/specialities.html',{'doctors':doc_page_obj})
+    else:
+        return redirect('patient_profile')
 
 @login_required(login_url='patient_login')
 def pat_doctor_profile(request, pk):
-    doctor = Doctor.objects.get(id=pk)
-    context = {
-        'doctor':doctor,
-    }
-    return render(request, 'patient/doctor-profile.html', context)
+    patient = Patient.objects.get(user=request.user)
+    if patient.profile_updated:
+        doctor = Doctor.objects.get(id=pk)
+        context = {
+            'doctor':doctor,
+        }
+        return render(request, 'patient/doctor-profile.html', context)
+    else:
+        return redirect('patient_profile')
+
 
 @login_required(login_url='patient_login')
 def pat_schedule_view(request, doctor_id):
-    user = CustomUser.objects.get(id= doctor_id)
-    doctor = Doctor.objects.get(user= user)
+    patient = Patient.objects.get(user=request.user)
+    if patient.profile_updated:
+        user = CustomUser.objects.get(id= doctor_id)
+        doctor = Doctor.objects.get(user= user)
 
-    start_date = timezone.now().date()
-    end_date = start_date + timedelta(days=30)
+        start_date = timezone.now().date()
+        end_date = start_date + timedelta(days=30)
 
-    available_slots = Schedule.objects.filter(doctor=doctor, date__range=[start_date, end_date], is_booked=False)
-    booked_slots = Schedule.objects.filter(doctor=doctor, date__range=[start_date, end_date], is_booked=True)
+        available_slots = Schedule.objects.filter(doctor=doctor, date__range=[start_date, end_date], is_booked=False)
+        booked_slots = Schedule.objects.filter(doctor=doctor, date__range=[start_date, end_date], is_booked=True)
 
-    context = {
-        'doctor': user,
-        'available_slots': available_slots,
-        'booked_slots': booked_slots,
-    }
-    return render(request, 'patient/schedule.html', context)
+        context = {
+            'doctor': user,
+            'available_slots': available_slots,
+            'booked_slots': booked_slots,
+        }
+        return render(request, 'patient/schedule.html', context)
+    else:
+        return redirect('patient_profile')
+
 
 # @login_required(login_url='patient_login')
 # def hosp_services(request):
@@ -235,56 +263,65 @@ def pat_schedule_view(request, doctor_id):
 
 @login_required(login_url='patient_login')
 def doc_search(request):
-    doctors = Doctor.objects.all()
-    form = DocSearchForm()
+    patient = Patient.objects.get(user=request.user)
+    if patient.profile_updated:
+        doctors = Doctor.objects.all()
+        form = DocSearchForm()
 
-    if request.method =="POST":
-        form = DocSearchForm(request.POST)
-        if form.is_valid():
-            date = form.cleaned_data.get('date')
-            gender = form.cleaned_data.get('gender')
-            department = form.cleaned_data.get('department')
-            results = Q()
+        if request.method =="POST":
+            form = DocSearchForm(request.POST)
+            if form.is_valid():
+                date = form.cleaned_data.get('date')
+                gender = form.cleaned_data.get('gender')
+                department = form.cleaned_data.get('department')
+                results = Q()
 
-            if gender:
-                results &= Q(user__gender__in=gender)
-            if department:
-                results &= Q(department=department)
-            if date:
-                results &= Q(schedule__date =date, schedule__is_booked=False)
-                
-            doctors = doctors.filter(results).distinct()
+                if gender:
+                    results &= Q(user__gender__in=gender)
+                if department:
+                    results &= Q(department=department)
+                if date:
+                    results &= Q(schedule__date =date, schedule__is_booked=False)
+                    
+                doctors = doctors.filter(results).distinct()
 
-            context ={
-                'form':form,
-                'doctors':doctors,
-                # 'departments' : departments,
-                    }
-            return render (request, 'patient/search.html', context)
+                context ={
+                    'form':form,
+                    'doctors':doctors,
+                    # 'departments' : departments,
+                        }
+                return render (request, 'patient/search.html', context)
 
-    context ={
-        'doctors':doctors,
-        'form':form,
-    }
+        context ={
+            'doctors':doctors,
+            'form':form,
+        }
 
-    return render (request, 'patient/search.html', context)
+        return render (request, 'patient/search.html', context)
+    else:
+        return redirect('patient_profile')
 
 @login_required(login_url='patient_login')
 def pat_search(request):
-    query = request.GET.get('q', '')
-    results = {
-        'doctors':[],
-        'departments':[],
-        }
+    patient = Patient.objects.get(user=request.user)
+    if patient.profile_updated:
+        query = request.GET.get('q', '')
+        results = {
+            'doctors':[],
+            'departments':[],
+            }
 
-    if query:
-        doctors = Doctor.objects.filter(Q(user__username__icontains = query) | Q(department__name__icontains = query))
-        departments = Department.objects.filter(Q(name__icontains=query))
+        if query:
+            doctors = Doctor.objects.filter(Q(user__username__icontains = query) | Q(department__name__icontains = query))
+            departments = Department.objects.filter(Q(name__icontains=query))
 
-        results['doctors'] = doctors
-        results['departments'] = departments
+            results['doctors'] = doctors
+            results['departments'] = departments
 
-    return render(request, 'patient/search_result.html', {'results': results, 'query': query})
+        return render(request, 'patient/search_result.html', {'results': results, 'query': query})
+    else:
+        return redirect('patient_profile')
+
 
 # @login_required(login_url='patient_login')
 # def pat_schedule_view(request, doctor_id):
@@ -306,38 +343,51 @@ def pat_search(request):
 
 @login_required(login_url='patient_login')
 def pat_book_slot(request, slot_id):
-    slot = Schedule.objects.get(id=slot_id)
-    if request.method == 'POST':
-        patient =Patient.objects.get(user = request.user)
-        doctor =Doctor.objects.get(user = slot.doctor.user.id)
-        date = slot.date
-        # check if patient already have appointment with same doctor same date
-        bookings = Appointment.objects.filter(doctor = doctor, patient = patient)
-        is_found = False
-        for i in bookings:
-            if i.appointment_on.date == date:
-                is_found =True
-                break
+    patient = Patient.objects.get(user=request.user)
+    if patient.profile_updated:
+        slot = Schedule.objects.get(id=slot_id)
+        if request.method == 'POST':
+            patient =Patient.objects.get(user = request.user)
+            doctor =Doctor.objects.get(user = slot.doctor.user.id)
+            date = slot.date
+            # check if patient already have appointment with same doctor same date
+            bookings = Appointment.objects.filter(doctor = doctor, patient = patient)
+            is_found = False
+            for i in bookings:
+                if i.appointment_on.date == date:
+                    is_found =True
+                    break
 
-        if is_found:
-            error = "You already have a booking on this date."
-            return render(request, 'patient/book-slot.html', {'slot': slot, 'error':error})
-        else:
-            slot.is_booked = True
-            slot.save()
-            Appointment.objects.create(
-                patient =Patient.objects.get(user = request.user),
-                doctor = slot.doctor,
-                appointment_on = slot,
-            )
-            return redirect('pat_book_success')
-    return render(request, 'patient/book-slot.html', {'slot': slot})
+            if is_found:
+                error = "You already have a booking on this date."
+                return render(request, 'patient/book-slot.html', {'slot': slot, 'error':error})
+            else:
+                slot.is_booked = True
+                slot.save()
+                Appointment.objects.create(
+                    patient =Patient.objects.get(user = request.user),
+                    doctor = slot.doctor,
+                    appointment_on = slot,
+                )
+                return redirect('pat_book_success')
+        return render(request, 'patient/book-slot.html', {'slot': slot})
+    else:
+        return redirect('patient_profile')
+
 
 def pat_book_success(request):
-    appointment = Appointment.objects.all().order_by('created_at').last()
-    print(appointment)
-    return render(request, 'patient/booking-success.html', {'appointment':appointment})
+    patient = Patient.objects.get(user=request.user)
+    if patient.profile_updated:
+        appointment = Appointment.objects.all().order_by('created_at').last()
+        print(appointment)
+        return render(request, 'patient/booking-success.html', {'appointment':appointment})
+    else:
+        return redirect('patient_profile')
 
 
 def view_pat_bill(request):
-    return render(request, 'patient/invoice-view.html')
+    patient = Patient.objects.get(user=request.user)
+    if patient.profile_updated:
+        return render(request, 'patient/invoice-view.html')
+    else:
+        return redirect('patient_profile')

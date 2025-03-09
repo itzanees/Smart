@@ -46,8 +46,8 @@ def adminForgotPassword(request):
 def admin_home(request):
     user = request.user
     if user is not None and user.is_superuser:
-        doctors = Doctor.objects.all()
-        doctor_paginator = Paginator(doctors, 1)
+        doctors = Doctor.objects.all().order_by('id')
+        doctor_paginator = Paginator(doctors, 4)
         doctor_page_number = request.GET.get('page')
         doctor_page_obj = doctor_paginator.get_page(doctor_page_number)
 
@@ -156,7 +156,7 @@ def appointmentList(request):
 def specialities(request):
     user = request.user
     if user is not None and user.is_superuser:
-        specialities = Department.objects.all()
+        specialities = Department.objects.all().order_by('id')
         specialities_paginator =Paginator(specialities, 8)
         spe_page_num = request.GET.get('page')
         spe_page_obj = specialities_paginator.get_page(spe_page_num)
@@ -207,7 +207,7 @@ def specialities(request):
 def users(request):
     user = request.user
     if user is not None and user.is_superuser:
-        users = CustomUser.objects.all()
+        users = CustomUser.objects.all().order_by('id')
         user_paginator = Paginator(users, 8)
         user_page_num = request.GET.get('page')
         user_page_obj = user_paginator.get_page(user_page_num)
@@ -290,27 +290,31 @@ def activate(request, uidb64, token):
         return render(request, 'administration/activation_invalid.html')
 
 def forgot_password(request):
-    form = PasswordResetRequestForm()
-    if request.method =='POST':
-        form = PasswordResetRequestForm(request.POST)
-        if form.is_valid():
-            usr = request.POST.get('username')
-            try:
-                user = CustomUser.objects.get(username=usr)
-                if user:
-                    print(user.password_request)
-                    user.password_request = True
-                    user.save()
-                    print(user.password_request)
-                    messages.success(request, "Password reset request sent.")
+    if request.user == 'AnonymousUser':
+        if request.method =='POST':
+            form = PasswordResetRequestForm(request.POST)
+            if form.is_valid():
+                usr = request.POST.get('username')
+                try:
+                    user = CustomUser.objects.get(username=usr)
+                    if user:
+                        print(user.password_request)
+                        user.password_request = True
+                        user.save()
+                        print(user.password_request)
+                        messages.success(request, "Password reset request sent.")
+                        return redirect('forgot_password')
+                except Exception as e:
+                    messages.error(request, f"User Not Found")
                     return redirect('forgot_password')
-            except Exception as e:
-                messages.error(request, f"User not found {e}")
+            else:
+                messages.error(request, "User not found.")
                 return redirect('forgot_password')
-        else:
-            messages.error(request, "User not found.")
-            return redirect('forgot_password')
-    return render(request, 'forgot-password.html', {'form':form})
+        form = PasswordResetRequestForm()
+        return render(request, 'forgot-password.html', {'form':form})
+    else:
+        print(request.user)
+        return redirect('unauthorized')
 
 @login_required(login_url='admin_login')
 @never_cache
@@ -318,6 +322,7 @@ def users_profile(request, pk):
     user = request.user
     if user is not None and user.is_superuser:
         user = get_object_or_404(get_user_model(), id=pk)
+        notifications = CustomUser.objects.filter(password_request=True)
         if request.method == 'POST':
             if 'set_password' in request.POST:
                 words = string.ascii_letters
@@ -347,7 +352,7 @@ def users_profile(request, pk):
                     messages.error(request,"Profile is not uptaded!!!")
                     return redirect('users_profile', pk)
         profileform = ProfileUpdateForm(user=user, instance=user)
-        return render (request, 'administration/profile.html', {'user':user, 'profileform':profileform})
+        return render (request, 'administration/profile.html', {'user':user, 'profileform':profileform, 'notifications':notifications,})
     else:
         if request.user.user_type == 'Patient':
             return redirect('patient_dashboard')
@@ -365,6 +370,7 @@ def doctors(request):
         doc_paginator = Paginator(doctors, 8)
         doc_page_num = request.GET.get('page')
         doc_page_obj = doc_paginator.get_page(doc_page_num)
+        notifications = CustomUser.objects.filter(password_request=True)
         if request.method == "POST":
                 user_id = request.POST.get('doc_id')
                 user = get_object_or_404(CustomUser, id=user_id)
@@ -373,6 +379,7 @@ def doctors(request):
                 return redirect('doctors_list')
         context = {
             'doctors':doc_page_obj,
+            'notifications':notifications,
         }
         return render(request, 'administration/doctor-list.html', context)
     else:
@@ -388,10 +395,11 @@ def doctors(request):
 def staff(request):
     user = request.user
     if user is not None and user.is_superuser:
-        staffs = CustomUser.objects.filter(user_type='Staff')
+        staffs = CustomUser.objects.filter(user_type='Staff').order_by('id')
         staff_paginator = Paginator(staffs, 8)
         staff_page_num = request.GET.get('page')
         staff_page_obj = staff_paginator.get_page(staff_page_num)
+        notifications = CustomUser.objects.filter(password_request=True)
         if request.method == "POST":
                 staff_id = request.POST.get('staff_id')
                 staff = get_object_or_404(CustomUser, id=staff_id)
@@ -400,6 +408,7 @@ def staff(request):
                 return redirect('staff_list')
         context = {
             'staffs' : staff_page_obj,
+            'notifications':notifications,
         }
         return render(request, 'administration/staff-list.html', context)
     else:
@@ -415,10 +424,11 @@ def staff(request):
 def patients(request):
     user = request.user
     if user is not None and user.is_superuser:
-        patients = CustomUser.objects.filter(user_type='Patient')
+        patients = CustomUser.objects.filter(user_type='Patient').order_by('patient__pat_mrd_no')
         pat_paginator = Paginator(patients, 8)
         pat_page_num = request.GET.get('page')
         pat_page_obj = pat_paginator.get_page(pat_page_num)
+        notifications = CustomUser.objects.filter(password_request=True)
         if request.method == "POST":
                 pat_id = request.POST.get('pat_id')
                 pat = get_object_or_404(CustomUser, id=pat_id)
@@ -429,6 +439,7 @@ def patients(request):
         context = {
                 'patients':pat_page_obj,
                 'pat_prof':patient_profile_form,
+                'notifications':notifications,
                 }    
         return render(request, 'administration/patient-list.html', context)
     else:
@@ -507,14 +518,16 @@ def schedule_view(request, doctor_id):
     av_slot_page_num = request.GET.get('page')
     av_slot_page_obj = av_slot_paginator.get_page(av_slot_page_num)
 
-    booked_slots = Schedule.objects.filter(doctor=doctor, date__range=[start_date, end_date], is_booked=True)
+    booked_slots = Schedule.objects.filter(doctor=doctor, date__range=[start_date, end_date], is_booked=True).order_by('id')
     book_slot_paginator = Paginator(booked_slots, 8)
     book_slot_page_num = request.GET.get('page')
     book_slot_page_obj = book_slot_paginator.get_page(book_slot_page_num)
+    notifications = CustomUser.objects.filter(password_request=True)
     context = {
         'doctor': user,
         'available_slots': av_slot_page_obj,
         'booked_slots': book_slot_page_obj,
+        'notifications':notifications,
     }
     return render(request, 'administration/schedule.html', context)
 
@@ -539,22 +552,28 @@ def schedule_view(request, doctor_id):
 
 #     return render(request, 'administration/book-slot.html', {'slot': slot})
 
-@login_required(login_url='admin_login')
-@never_cache
-class CustomPasswordChangeView(PasswordChangeView):
-    form_class = CustomPasswordChangeForm
-    template_name = "change-password.html"
-    success_url = reverse_lazy("password_change_done")
+# @login_required(login_url='admin_login')
+# @never_cache
+# class CustomPasswordChangeView(PasswordChangeView):
+#     form_class = CustomPasswordChangeForm
+#     template_name = "change-password.html"
+#     success_url = reverse_lazy("password_change_done")
 
-    def form_valid(self, form):
-        messages.success(self.request, "Your password has been changed successfully.")
-        return super().form_valid(form)
+#     def form_valid(self, form):
+#         messages.success(self.request, "Your password has been changed successfully.")
+#         return super().form_valid(form)
 
 @login_required(login_url='admin_login')
 @never_cache
 def transaction(request):
-    transactions = Appointment.objects.filter(medicalrecord__is_closed=True)
+    transactions = Appointment.objects.filter(medicalrecord__is_closed=True).order_by('id')
     transactions_paginator = Paginator(transactions, 5)
     transactions_page_num = request.GET.get('page')
     transactions_page_obj = transactions_paginator.get_page(transactions_page_num)
-    return render(request, 'administration/transactions-list.html', {'transactions':transactions_page_obj})
+    notifications = CustomUser.objects.filter(password_request=True)
+
+    return render(request, 'administration/transactions-list.html', {'transactions':transactions_page_obj, 'notifications':notifications})
+
+
+def unauthorized(request):
+    return render(request,'unauthorized.html')

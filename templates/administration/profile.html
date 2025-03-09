@@ -34,52 +34,47 @@
 				<div class="col-md-12">
 					{% for message in messages %}
 					<div class="container container-fluid w-min">
-					{% if message.tags == 'error' %}
-					<div class="text-center alert alert-danger alert-dismissible fade show" role="alert">
-						<strong>{{ message }}</strong>
-						<a class="close" href="#" data-dismiss="alert">×</a>
-					</div>
-					{% endif %}
-					{% if message.tags == 'warning' %}
-					<div class="text-center alert alert-warning alert-dismissible fade show" role="alert">
-						<strong>{{ message }}</strong>
-						<a class="close" href="#" data-dismiss="alert">×</a>
-					</div>
-					{% endif %}
-					{% if message.tags == 'success' %}
+						{% if message.tags == 'error' %}
+						<div class="text-center alert alert-danger alert-dismissible fade show" role="alert">
+							<strong>{{ message }}</strong>
+							<a class="close" href="#" data-dismiss="alert">×</a>
+						</div>
+						{% endif %}
+						{% if message.tags == 'warning' %}
+						<div class="text-center alert alert-warning alert-dismissible fade show" role="alert">
+							<strong>{{ message }}</strong>
+							<a class="close" href="#" data-dismiss="alert">×</a>
+						</div>
+						{% endif %}
+						{% if message.tags == 'success' %}
 						<div class="text-center alert alert-success alert-dismissible fade show" role="alert">
 							<strong>{{ message }}</strong>
-						<a class="close" href="#" data-dismiss="alert">×</a>
+							<a class="close" href="#" data-dismiss="alert">×</a>
 						</div>
-					{% endif %}
+						{% endif %}
 					</div>
 					{% endfor %}
 					<div class="profile-header">
 						<div class="row align-items-center">
 							<div class="col-auto profile-image">
-								{% if user.profile_pic %}
-								<a href="#">
+								<a>
 									<img class="rounded-circle" alt="User Image"
-									{% if user.profile_pic %}
-									src="{{ user.profile_pic.url }}"
-									{% else %}
-									{% if user.gender == 'M' %}
-									src="{% static 'images/profiles/male.jpg' %}"
-									{% else %}
-									src="{% static 'images/profiles/female.jpg' %}"
-									{% endif %}
-									{% endif %}
+										{% if user.profile_pic %}
+										src="{{ user.profile_pic.url }}"
+										{% else %}
+										{% if user.gender == 'M' %}
+										src="{% static 'images/profiles/male.jpg' %}"
+										{% else %}
+										src="{% static 'images/profiles/female.jpg' %}"
+										{% endif %}
+										{% endif %}
 										style="height: 110px;">
 								</a>
-								{% else %}
-								<a href="#">
-									<img class="rounded-circle" alt="User Image"
-										src="{% static 'images/profiles/male.jpg' %}">
-								</a>
-								{% endif %}
 							</div>
 							<div class="col ml-md-n2 profile-user-info">
-								<h4 class="user-name mb-0">{% if user.firstname %} {{ user.first_name }}
+								<h4 class="user-name mb-0">
+									{% if user.firstname %}
+									{{ user.first_name }}
 									{% else %}
 									{{ user.username }}
 									{% endif %}
@@ -87,14 +82,15 @@
 								<h6 class="text-muted">
 									{{ user.email }}
 								</h6>
-								<div class="user-Location"><i class="fa fa-map-marker"></i> {{ user.city.capitalize }}, {{ user.state.capitalize }}</div>
+								<div class="user-Location"><i class="fa fa-map-marker"></i> {{ user.city.capitalize }},
+									{{ user.state.capitalize }}</div>
 								{% if user.username == 'admin' %}
 								<div class="about-text">Professional Web developer, RedHat Certified System
 									Administrator, Technical Support Engineer, and Mentor. Specialized in Python,
 									Django, MySQL, Microsoft Windows Server 2016, and Redhat Linux. </div>
-									{% endif %}
+								{% endif %}
 							</div>
-							
+
 						</div>
 					</div>
 					<div class="profile-menu">
@@ -144,10 +140,20 @@
 											</div>
 											<div class="row">
 												<p class="col-sm-2 text-muted text-sm-right mb-0">Address</p>
-												<p class="col-sm-10 mb-0">{{ user.address1 }},<br>
-													{% if user.address2 %}{{ user.address2 }}{% endif %}<br>
+												{% if user.address1 %}
+												<p class="col-sm-10 mb-0">
+													{{ user.address1 }}, <br>
+													{% if user.address2 %}
+													{{ user.address2 }}
+													{% endif %}<br>
 													{{ user.city }}, {{ user.state }}, {{ user.pincode }},<br>
-													{{ user.country }}</p>
+													{{ user.country }}
+												</p>
+												{% else %}
+												<p class="col-sm-10 mb-0 text-danger">
+													Profile Not Updated
+												</p>
+												{% endif %}
 											</div>
 										</div>
 									</div>
@@ -159,87 +165,92 @@
 													<span>Professional Details</span>
 												</h5>
 												<div class="row">
-													<p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Qualification</p>
+													<p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">
+														Qualification
+													</p>
 													<p class="col-sm-10">{{ user.doctor.qualification }}</p>
 												</div>
 												<div class="row">
-													<p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Department
+													<p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">
+														Department
 													</p>
 													<p class="col-sm-10">{{ user.doctor.department }}
 													</p>
 												</div>
 												<div class="row">
-													<p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Licence Number</p>
+													<p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">
+														Licence Number</p>
 													<p class="col-sm-10">{{ user.doctor.license_number }}</p>
 												</div>
 												<div class="row">
-													<p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">Member Since</p>
+													<p class="col-sm-2 text-muted text-sm-right mb-0 mb-sm-3">
+														Member Since</p>
 													<p class="col-sm-10">{{ user.created_at.date }}</p>
 												</div>
 											</div>
 										</div>
-									{% endif %}
-									
+										{% endif %}
 
-									<!-- Edit Details Modal -->
-									<div class="modal fade" id="edit_personal_details" aria-hidden="true" role="dialog">
-										<div class="modal-dialog modal-dialog-centered" role="document">
-											<div class="modal-content">
-												<div class="modal-header">
-													<h5 class="modal-title">Personal Details</h5>
-													<button type="button" class="close" data-dismiss="modal"
-														aria-label="Close">
-														<span aria-hidden="true">&times;</span>
-													</button>
-												</div>
-												<div class="modal-body">
-													<form method="post" enctype="multipart/form-data">
-														{% csrf_token %}
-														{{ profileform }}
-														<button type="submit" class="btn btn-primary btn-block mt-3">Save
-															Changes</button>
-													</form>
+
+										<!-- Edit Details Modal -->
+										<div class="modal fade" id="edit_personal_details" aria-hidden="true"
+											role="dialog">
+											<div class="modal-dialog modal-dialog-centered" role="document">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h5 class="modal-title">Personal Details</h5>
+														<button type="button" class="close" data-dismiss="modal"
+															aria-label="Close">
+															<span aria-hidden="true">&times;</span>
+														</button>
+													</div>
+													<div class="modal-body">
+														<form method="post" enctype="multipart/form-data">
+															{% csrf_token %}
+															{{ profileform }}
+															<button type="submit"
+																class="btn btn-primary btn-block mt-3">Save
+																Changes</button>
+														</form>
+													</div>
 												</div>
 											</div>
 										</div>
+										<!-- /Edit Details Modal -->
 									</div>
-									<!-- /Edit Details Modal -->
 								</div>
+								<!-- /Personal Details -->
 							</div>
-							<!-- /Personal Details -->
-						</div>
-						<!-- /Personal Details Tab -->
-					</div>
-					<!-- Change Password Tab -->
-					{% if user.password_request %}
-					<div id="password_tab" class="tab-pane fade">
-						<div class="card">
-							<div class="card-body">
-								<h5 class="card-title">Set new password</h5>
-								<div class="row">
-									<div class="col-md-10 col-lg-6">
-										<form method="post">
-											{% csrf_token %}
-											<div class="form-group">
-												<label>Send Random Password</label>
+							<!-- /Personal Details Tab -->
+							<!-- Change Password Tab -->
+							{% if user.password_request %}
+							<div id="password_tab" class="tab-pane fade">
+								<div class="card">
+									<div class="card-body">
+										<h5 class="card-title">Set new password</h5>
+										<div class="row">
+											<div class="col-md-10 col-lg-6">
+												<form method="post">
+													{% csrf_token %}
+													<div class="form-group">
+														<label>Send Random Password</label>
+													</div>
+													<input type="hidden" name="set_password">
+													<button class="btn btn-primary" type="submit">Set Password</button>
+												</form>
 											</div>
-											<input type="hidden" name="set_password">
-											<button class="btn btn-primary" type="submit">Set Password</button>
-										</form>
+										</div>
 									</div>
 								</div>
 							</div>
+							{% endif %}
+							<!-- /Change Password Tab -->
 						</div>
 					</div>
-					{% endif %}
-					<!-- /Change Password Tab -->
 				</div>
 			</div>
-
 		</div>
+		<!-- /Page Wrapper -->
 	</div>
-	<!-- /Page Wrapper -->
-
-</div>
-<!-- /Main Wrapper -->
-{% endblock %}
+	<!-- /Main Wrapper -->
+	{% endblock %}

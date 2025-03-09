@@ -57,7 +57,7 @@ Patients
 											<tr>
 												<th>Patient ID</th>
 												<th>Patient Name</th>
-												<th>Age</th>
+												<th>DOB, Sex</th>
 												<th>Address</th>
 												<th>Phone</th>
 												<!-- <th>Last Visit</th> -->
@@ -87,7 +87,7 @@ Patients
 														<a href="{% url 'users_profile' patient.id %}">{{ patient.username }}</a>
 													</h2>
 												</td>
-												<td>{{ patient.date_of_birth }}</td>
+												<td>{{ patient.date_of_birth }}, {{ patient.gender }}</td>
 												<td>{{ patient.address1 }}, {{ patient.city }}, {{ patient.state }}</td>
 												<td>{{ patient.phone_number }}</td>
 												<td>{{ patient.created_at.date }} <br><small>{{ patient.created_at.time }}</small></td>
