@@ -89,7 +89,7 @@ Appointments
 												</td>
 												<td>
 													{% if appointment.status == 'SH' %}
-													<i class="fa-solid fa-calendar-day text-info"></i> Scheduled 
+													<i class="fa-solid fa-calendar-day text-info"></i> Scheduled
 													{% elif appointment.status == 'RP' %}
 													<i class="fa-solid fa-file-medical text-warning"></i> Reported
 													{% elif appointment.status == 'CO' %}
@@ -118,7 +118,7 @@ Appointments
 											</tr>
 											{% empty %}
 											<tr>
-												<td colspan="7">No Appointments</td>
+												<td colspan="7" class="text-center">No Appointments</td>
 											</tr>
 											{% endfor %}
 											{% endif %}
@@ -135,11 +135,11 @@ Appointments
 													<a class="page-link" href="?page={{ latest_page_obj.previous_page_number }}">Previous</a>
 												</li>
 											{% endif %}
-									
+
 											<li class="page-item active">
 												<span class="page-link">Page {{ latest_page_obj.number }} of {{ latest_page_obj.paginator.num_pages }}</span>
 											</li>
-									
+
 											{% if latest_page_obj.has_next %}
 												<li class="page-item">
 													<a class="page-link" href="?page={{ latest_page_obj.next_page_number }}">Next</a>
@@ -210,7 +210,7 @@ Appointments
 													</td>
 													<td>
 														{% if appointment.status == 'SH' %}
-														<i class="fa-solid fa-calendar-day text-info"></i> Scheduled 
+														<i class="fa-solid fa-calendar-day text-info"></i> Scheduled
 														{% elif appointment.status == 'RP' %}
 														<i class="fa-solid fa-file-medical text-warning"></i> Reported
 														{% elif appointment.status == 'CO' %}
@@ -238,7 +238,7 @@ Appointments
 													</td>
 												</tr>
 													{% empty %}
-													<td colspan="7"> Empty</td>
+													<td colspan="7" class="text-center"> No Appointments</td>
 												{% endfor %}
 											</tbody>
 										</table>
@@ -252,11 +252,11 @@ Appointments
 														<a class="page-link" href="?page={{ all_page_obj.previous_page_number }}">Previous</a>
 													</li>
 												{% endif %}
-										
+
 												<li class="page-item active">
 													<span class="page-link">Page {{ all_page_obj.number }} of {{ all_page_obj.paginator.num_pages }}</span>
 												</li>
-										
+
 												{% if all_page_obj.has_next %}
 													<li class="page-item">
 														<a class="page-link" href="?page={{ all_page_obj.next_page_number }}">Next</a>

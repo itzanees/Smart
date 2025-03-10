@@ -31,7 +31,7 @@ urlpatterns = [
     path('intranet', intranet, name ='intranet'),
     path('forgot_password/', forgot_password, name='forgot_password'),
     path('logout', Logout, name='logout'),
-    path('unauthorized', unauthorized, name='unauthorized'),
+    # path('unauthorized', unauthorized, name='unauthorized'),
 ]
 
 if settings.DEBUG:

@@ -25,7 +25,7 @@ from django.urls import reverse
 
 from datetime import datetime, timedelta
 from django.utils import timezone
-    
+
 def adminLogin(request):
     if request.method =='POST':
         username = request.POST['username']
@@ -62,7 +62,7 @@ def admin_home(request):
         appointments_page_obj = appointments_paginator.get_page(appointments_page_number)
 
         notifications = CustomUser.objects.filter(password_request=True)
-        
+
         num_doc = Doctor.objects.all().count()
         num_pat = Patient.objects.all().count()
         num_app = Appointment.objects.all().count()
@@ -244,21 +244,21 @@ def users(request):
 
                 messages.success(request, f"User {user.username} Created")
                 return redirect('users')
-            
-            
+
+
             elif 'delete_user' in request.POST:
                 user_id = request.POST.get('user_id')
                 user = get_object_or_404(CustomUser, id=user_id)
                 user.delete()
                 messages.success(request, f"Deleted User {user.username}")
                 return redirect('users')
-            
+
             elif form.is_valid() == False:
                 for error in form.errors:
                     messages.error(request, form.errors[error])
                     return redirect('users')
             else:
-                return render(request, 'administration/users.html', context)    
+                return render(request, 'administration/users.html', context)
         return render(request, 'administration/users.html', context)
     else:
         if request.user.user_type == 'Patient':
@@ -290,31 +290,27 @@ def activate(request, uidb64, token):
         return render(request, 'administration/activation_invalid.html')
 
 def forgot_password(request):
-    if request.user == 'AnonymousUser':
-        if request.method =='POST':
-            form = PasswordResetRequestForm(request.POST)
-            if form.is_valid():
-                usr = request.POST.get('username')
-                try:
-                    user = CustomUser.objects.get(username=usr)
-                    if user:
-                        print(user.password_request)
-                        user.password_request = True
-                        user.save()
-                        print(user.password_request)
-                        messages.success(request, "Password reset request sent.")
-                        return redirect('forgot_password')
-                except Exception as e:
-                    messages.error(request, f"User Not Found")
+    if request.method =='POST':
+        form = PasswordResetRequestForm(request.POST)
+        if form.is_valid():
+            usr = request.POST.get('username')
+            try:
+                user = CustomUser.objects.get(username=usr)
+                if user:
+                    print(user.password_request)
+                    user.password_request = True
+                    user.save()
+                    print(user.password_request)
+                    messages.success(request, "Password reset request sent.")
                     return redirect('forgot_password')
-            else:
-                messages.error(request, "User not found.")
+            except Exception as e:
+                messages.error(request, f"User Not Found")
                 return redirect('forgot_password')
-        form = PasswordResetRequestForm()
-        return render(request, 'forgot-password.html', {'form':form})
-    else:
-        print(request.user)
-        return redirect('unauthorized')
+        else:
+            messages.error(request, "User not found.")
+            return redirect('forgot_password')
+    form = PasswordResetRequestForm()
+    return render(request, 'forgot-password.html', {'form':form})
 
 @login_required(login_url='admin_login')
 @never_cache
@@ -341,13 +337,13 @@ def users_profile(request, pk):
                     })
                 send_mail(subject, message, 'itzanees@gmail.com', [user.email])
                 messages.success(request, f"{user.username}'s new password sent to {user.email}")
-                return redirect('users_profile', pk) 
+                return redirect('users_profile', pk)
             else:
                 form = ProfileUpdateForm(request.POST, request.FILES, instance=user, user=user)
                 if form.is_valid():
                     form.save()
                     messages.success(request, f"{user.username}'s profile updated")
-                    return redirect('users_profile', pk) 
+                    return redirect('users_profile', pk)
                 else:
                     messages.error(request,"Profile is not uptaded!!!")
                     return redirect('users_profile', pk)
@@ -440,7 +436,7 @@ def patients(request):
                 'patients':pat_page_obj,
                 'pat_prof':patient_profile_form,
                 'notifications':notifications,
-                }    
+                }
         return render(request, 'administration/patient-list.html', context)
     else:
         if request.user.user_type == 'Patient':
@@ -456,7 +452,7 @@ def Logout(request):
     if request.user.user_type == 'Patient':
         logout(request)
         return redirect(reverse('patient_dashboard'))
-    
+
     elif request.user.user_type == 'Staff':
         logout(request)
         return redirect(reverse('staff_dashboard'))
@@ -464,11 +460,11 @@ def Logout(request):
     elif request.user.user_type == 'Doctor':
         logout(request)
         return redirect(reverse('doctor_dashboard'))
-        
+
     else:
         logout(request)
         return redirect(reverse('admin_home'))
-    
+
 def generate_schedule_for_all_doctors():
     today = timezone.now().date()
     date_to = today + timedelta(days=12)
@@ -509,7 +505,7 @@ def createschedule(request):
 def schedule_view(request, doctor_id):
     user = CustomUser.objects.get(id= doctor_id)
     doctor = Doctor.objects.get(user= user)
-    
+
     start_date = timezone.now().date()
     end_date = start_date + timedelta(days=30)
 
@@ -541,7 +537,7 @@ def schedule_view(request, doctor_id):
 
 #         slot.is_booked = True
 #         slot.save()
-        
+
 #         Appointment.objects.create(
 #             patient =Patient.objects.get(user = request.user),
 #             doctor = slot.doctor,
