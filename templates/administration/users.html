@@ -110,7 +110,7 @@ Users
 											<td>{{ user.user_type }}</td>
 											<td>{{ user.email }}</td>
 											<td>{{ user.phone_number }}</td>
-											<td>{{ user.created_at }} <br></td>
+											<td>{{ user.created_at.date }} <br><small>{{ user.created_at.time }}</small></td>
 											<td>
 												<div class="status-toggle">
 													<input type="checkbox" id="status_1" class="check" checked>
