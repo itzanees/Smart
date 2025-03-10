@@ -14,7 +14,7 @@ class PatientRegistrationForm(UserCreationForm):
         if CustomUser.objects.filter(email=email).exists():
             raise forms.ValidationError("This email is already in use.")
         return email
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['phone_number'].label = 'Contact Number'
@@ -52,10 +52,10 @@ class DepartmentCreationForm(forms.ModelForm):
                         'type' : 'textarea',
                         'rows' : '2',
                         'class' :'form-control',
-                        'placeholder': field.label, 
+                        'placeholder': field.label,
                     }
                 )
-            if field_name == 'is_active':    
+            if field_name == 'is_active':
                 field.widget = forms.CheckboxInput(
                     attrs={
                         'class' : 'form-control',
@@ -66,8 +66,8 @@ class DepartmentCreationForm(forms.ModelForm):
 class UserRegistrationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
             model = CustomUser
-            fields = UserCreationForm.Meta.fields + ('first_name', 'last_name', 'gender', 'email', 'phone_number', 'user_type')
-    
+            fields = UserCreationForm.Meta.fields + ('first_name', 'last_name', 'gender', 'date_of_birth', 'email', 'phone_number', 'user_type')
+
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if CustomUser.objects.filter(email=email).exists():
@@ -83,12 +83,20 @@ class UserRegistrationForm(UserCreationForm):
             field.widget.attrs['class'] = 'form-control'
             field.widget.attrs['placeholder'] = field.label
             field.help_text = None
+            if field_name == 'date_of_birth':
+                field.widget = forms.DateInput(attrs={
+                    'type': 'text',
+                    'class': 'form-control',
+                    'placeholder': 'Date of Birth',
+                    'max' : str(date.today()),
+                    'onclick':"(this.type='date')",
+                    'onblur':"(this.type='text')",
+                })
 
 class PatientProfileForm(forms.ModelForm):
     class Meta:
         model = Patient
         fields = ['user']
-
 
 class ProfileUpdateForm(forms.ModelForm):
     GENDER_CHOICES = [
@@ -120,7 +128,7 @@ class ProfileUpdateForm(forms.ModelForm):
     qualification = forms.CharField(max_length=64, required=True)
     license_number = forms.CharField(max_length=32, required=True)
     consult_fees = forms.DecimalField(max_digits=6, decimal_places=2)
-    
+
     # Fields from StaffProfile
     role = forms.CharField(max_length=20, required=False)
     employee_code = forms.CharField(disabled=True)
@@ -128,7 +136,7 @@ class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ['username', 'first_name','last_name', 'date_of_birth', 'gender', 'email',
-                  'phone_number', 'profile_pic', 'address1', 'address2', 'city', 'state', 
+                  'phone_number', 'profile_pic', 'address1', 'address2', 'city', 'state',
                   'pincode', 'country']
 
     def __init__(self, *args, **kwargs):
@@ -182,7 +190,7 @@ class ProfileUpdateForm(forms.ModelForm):
             profile.pat_mrd_no = self.cleaned_data['pat_mrd_no']
             if commit:
                 profile.save()
-                
+
         if hasattr(user, 'staff'):
             staff_profile = user.staff
             staff_profile.role = self.cleaned_data['role']
